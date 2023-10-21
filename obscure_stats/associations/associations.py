@@ -28,20 +28,20 @@ def xi_corr(x: np.ndarray, y: np.ndarray) -> float:
     xi : float.
         The value of the xi correlation coefficient.
 
-    Reference
-    -------
+    References
+    ----------
     Chatterjee, S. (2021).
     A new coefficient of correlation.
     Journal of the American Statistical Association, 116(536), 2009-2022.
     """
-    N = len(x)
+    n = len(x)
     x_ranked = stats.rankdata(x, method="ordinal")
     y_forward_ranked = stats.rankdata(y, method="max")
     y_backward_ranked = stats.rankdata(-y, method="max")
     y_forward_ranked_ordered = y_forward_ranked[np.argsort(x_ranked)]
     nom = np.sum(np.abs(np.diff(y_forward_ranked_ordered)))
-    denom = np.sum(y_backward_ranked * (N - y_backward_ranked)) / N**3
-    xi = 1.0 - nom / (2 * N**2 * denom)
+    denom = np.sum(y_backward_ranked * (n - y_backward_ranked)) / n**3
+    xi = 1.0 - nom / (2 * n**2 * denom)
     return xi
 
 
@@ -64,8 +64,8 @@ def concordance_corr(x: np.ndarray, y: np.ndarray) -> float:
     ccc : float.
         The value of the concordance correlation coefficient.
 
-    Reference
-    -------
+    References
+    ----------
     Lawrence I-Kuei Lin (1989).
     A concordance correlation coefficient to evaluate reproducibility.
     Biometrics. 45 (1): 255-268.
@@ -104,8 +104,8 @@ def quadrant_count_ratio(
     qcr : float.
         The value of the quadrant count ratio.
 
-    Reference
-    -------
+    References
+    ----------
     Holmes, Peter (Autumn 2001).
     Correlation: From Picture to Formula.
     Teaching Statistics. 23 (3): 67-71.

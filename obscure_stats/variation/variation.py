@@ -26,15 +26,15 @@ def mod_vr(x: np.ndarray) -> float:
     modvr : float
         The value of mode variation ratio.
 
-    Reference
-    -------
+    References
+    ----------
     Wilcox, Allen R. (June 1973).
     Indices of Qualitative Variation and Political Measurement.
     The Western Political Quarterly. 26 (2): 325-343.
     """
     cnts = np.unique(x, return_counts=True)[1]
-    N = len(x)
-    return 1 - np.max(cnts) / N
+    n = len(x)
+    return 1 - np.max(cnts) / n
 
 
 def range_vr(x: np.ndarray) -> float:
@@ -53,8 +53,8 @@ def range_vr(x: np.ndarray) -> float:
     ranvr : float
         The value of range variation ratio.
 
-    Reference
-    -------
+    References
+    ----------
     Wilcox, Allen R. (June 1973).
     Indices of Qualitative Variation and Political Measurement.
     The Western Political Quarterly. 26 (2): 325-343.
@@ -80,8 +80,8 @@ def gibbs_m1(x: np.ndarray) -> float:
     m1 : float
         The value of Gibbs M1 index.
 
-    Reference
-    -------
+    References
+    ----------
     Gibbs, Jack P., Poston Jr, Dudley L. (March 1975).
     The Division of Labor: Conceptualization and Related Measures".
     Social Forces, 53 (3): 468-476.
@@ -118,8 +118,8 @@ def gibbs_m2(x: np.ndarray) -> float:
     m2 : float
         The value of Gibbs M2 index.
 
-    Reference
-    -------
+    References
+    ----------
     Gibbs, Jack P., Poston Jr, Dudley L. (March 1975).
     The Division of Labor: Conceptualization and Related Measures".
     Social Forces, 53 (3): 468-476.
@@ -144,15 +144,15 @@ def b_index(x: np.ndarray) -> float:
     bind : float
         The value of B index.
 
-    Reference
-    -------
+    References
+    ----------
     Wilcox, Allen R. (June 1973).
     Indices of Qualitative Variation and Political Measurement.
     The Western Political Quarterly. 26 (2): 325-343.
     """
-    N = len(x)
-    freq = np.unique(x, return_counts=True)[1] / N
-    return 1 - np.sqrt(1 - np.square(stats.gmean(freq * len(freq) / N)))
+    n = len(x)
+    freq = np.unique(x, return_counts=True)[1] / n
+    return 1 - np.sqrt(1 - np.square(stats.gmean(freq * len(freq) / n)))
 
 
 def ada_index(x: np.ndarray) -> float:
@@ -170,16 +170,16 @@ def ada_index(x: np.ndarray) -> float:
     adind : float
         The value of ADA index.
 
-    Reference
-    -------
+    References
+    ----------
     Wilcox, Allen R. (June 1973).
     Indices of Qualitative Variation and Political Measurement.
     The Western Political Quarterly. 26 (2): 325-343.
     """
-    N = len(x)
-    freq = np.unique(x, return_counts=True)[1] / N
+    n = len(x)
+    freq = np.unique(x, return_counts=True)[1] / n
     k = len(freq)
-    mean = N / k
+    mean = n / k
     return 1 - (np.sum(np.abs(freq - mean)) / (2 * mean * max(k - 1, 1)))
 
 
@@ -198,8 +198,8 @@ def extropy(x: np.ndarray) -> float:
     ext : float
         The value of extropy.
 
-    Reference
-    -------
+    References
+    ----------
     Lad, F., Sanfilippo, G., & Agro, G. (2015).
     Extropy: Complementary dual of entropy.
     Statistical Science, 30(1), 40-58.

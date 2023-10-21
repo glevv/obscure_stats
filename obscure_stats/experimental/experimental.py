@@ -213,8 +213,8 @@ def hodges_lehmann_sen_location(x: np.ndarray) -> float:
     hls : float
         The value of Hodges-Lehmann-Sen estimator.
 
-    Reference
-    -------
+    References
+    ----------
     Hodges, J. L.; Lehmann, E. L. (1963).
     Estimation of location based on ranks.
     Annals of Mathematical Statistics. 34 (2): 598-611.
@@ -241,12 +241,12 @@ def coefficient_of_unalikeability(x: np.ndarray) -> float:
     cu : float
         The value of coefficient of unalikeability.
 
-    Reference
-    ---------
+    References
+    ----------
     Kader, Gary & Perry, Mike. (2007).
     Variability for Categorical Variables.
     Journal of Statistics Education. 15.
     """
     product = np.meshgrid(x, x, sparse=True)
-    N = len(x)
-    return (product[0] == product[1]).sum() / (N**2 - N)
+    n = len(x)
+    return (product[0] == product[1]).sum() / (n**2 - n)

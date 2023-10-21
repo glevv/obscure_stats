@@ -19,8 +19,8 @@ def midrange(x: np.ndarray) -> float:
     mr : float or array_like.
         The value of the midrange.
 
-    Reference
-    -------
+    References
+    ----------
     Dodge, Y. (2003).
     The Oxford dictionary of Statistical Terms.
     Oxford University Press.
@@ -44,8 +44,8 @@ def midhinge(x: np.ndarray) -> float:
     mh : float or array_like.
         The value of the midhinge.
 
-    Reference
-    -------
+    References
+    ----------
     Tukey, J. W. (1977).
     Exploratory Data Analysis.
     Addison-Wesley.
@@ -68,8 +68,8 @@ def trimean(x: np.ndarray) -> float:
     tm : float or array_like.
         The value of the trimean.
 
-    Reference
-    -------
+    References
+    ----------
     Tukey, J. W. (1977).
     Exploratory Data Analysis.
     Addison-Wesley.
@@ -94,8 +94,8 @@ def contraharmonic_mean(x: np.ndarray) -> float:
     chm : float or array_like.
         The value of the contraharmonic mean.
 
-    Reference
-    -------
+    References
+    ----------
     P. S. Bullen (1987).
     Handbook of means and their inequalities.
     Springer.
@@ -117,8 +117,8 @@ def midmean(x: np.ndarray) -> float:
     iqm : float or array_like.
         The value of the interquartile mean.
 
-    Reference
-    -------
+    References
+    ----------
     Salkind, N. (2008).
     Encyclopedia of Research Design.
     SAGE.

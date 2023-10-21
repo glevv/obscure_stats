@@ -21,8 +21,8 @@ def pearson_mode_skew(x: np.ndarray) -> float:
     pmods : float or array_like.
         The value of Pearson's mode skew coefficient.
 
-    Reference
-    -------
+    References
+    ----------
     Pearson, E. S. and Hartley, H. O. (1966).
     Biometrika Tables for Statisticians, vols. I and II.
     Cambridge University Press, Cambridge.
@@ -47,8 +47,8 @@ def pearson_median_skew(x: np.ndarray) -> float:
     pmeds : float or array_like.
         The value of Pearson's median skew coefficient.
 
-    Reference
-    -------
+    References
+    ----------
     Pearson, E.S. and Hartley, H.O. (1966).
     Biometrika Tables for Statisticians, vols. I and II.
     Cambridge University Press, Cambridge.
@@ -73,8 +73,8 @@ def medeen_skew(x: np.ndarray) -> float:
     mss : float or array_like.
         The value of Medeen's skewness statistic.
 
-    Reference
-    -------
+    References
+    ----------
     Groeneveld, R.A.; Meeden, G. (1984).
     Measuring Skewness and Kurtosis.
     The Statistician. 33 (4): 391-399.
@@ -99,8 +99,8 @@ def bowley_skew(x: np.ndarray) -> float:
     bsk : float or array_like.
         The value of Bowley's skewness coefficinet.
 
-    Reference
-    -------
+    References
+    ----------
     Bowley, A. L. (1901).
     Elements of Statistics.
     P.S. King and Son, London.
@@ -124,8 +124,8 @@ def groeneveld_skew(x: np.ndarray) -> float:
     bsk : float or array_like.
         The value of Groeneveld's skewness coefficinet.
 
-    Reference
-    -------
+    References
+    ----------
     Groeneveld, R.A.; Meeden, G. (1984).
     Measuring Skewness and Kurtosis.
     The Statistician. 33 (4): 391-399.
@@ -151,8 +151,8 @@ def kelly_skew(x: np.ndarray) -> float:
     ksc : float or array_like.
         The value of Kelly's skewness coefficinet.
 
-    Reference
-    -------
+    References
+    ----------
     David, F. N. and Johnson, N. L., (1956).
     Some tests of significance with ordered variables.
     J. R. Stat. Soc. Ser. B Stat. Methodol. 18, 1-31.
@@ -176,8 +176,8 @@ def hossain_adnan_skew(x: np.ndarray) -> float:
     has : float or array_like.
         The value of Houssain and Adnan skewness coefficient.
 
-    Reference
-    -------
+    References
+    ----------
     Hossain, M.F. and Adnan, M.A.S.A (2007).
     A New Approach to Determine the Asymmetry of a Distribution.
     Journal of Applied St atistical Science, Vol.15, pp. 127-134.
@@ -201,8 +201,8 @@ def forhad_shorna_rank_skew(x: np.ndarray) -> float:
     fsrs : float or array_like.
         The value of Forhad-Shorna coefficient of Rank Skewness.
 
-    Reference
-    -------
+    References
+    ----------
     Shorna, U. S., & Hossain, M. (2019).
     A New Approach to Determine the Coefficient of Skewness and
     An Alternative Form of Boxplot.
@@ -236,16 +236,16 @@ def auc_skew_gamma(x: np.ndarray, dp: float = 1e-2, weighted: bool = True) -> fl
     aucbs : float or array_like.
         The value of AUC Bowley skewness.
 
-    Reference
-    -------
+    References
+    ----------
     Arachchige, C. N., & Prendergast, L. A. (2019).
     Mean skewness measures.
     arXiv preprint arXiv:1912.06996.
     """
-    N = int(1 / dp)
-    half_n = N // 2
+    n = int(1 / dp)
+    half_n = n // 2
     w = (np.arange(half_n) / half_n)[::-1].reshape(-1, 1) if weighted else 1
-    qs = np.nanquantile(x, np.r_[np.linspace(0, 1, N), 0.5])
+    qs = np.nanquantile(x, np.r_[np.linspace(0, 1, n), 0.5])
     med = qs[-1]
     qs = qs[:-1]
     qs_low = qs[:half_n]

@@ -20,8 +20,8 @@ def efficiency(x: np.ndarray) -> float:
     eff : float or array_like.
         The value of the efficiency.
 
-    Reference
-    -------
+    References
+    ----------
     Grubbs, Frank (1965).
     Statistical Measures of Accuracy for Riflemen and Missile Engineers. pp. 26-27.
     """
@@ -42,8 +42,8 @@ def studentized_range(x: np.ndarray) -> float:
     sr : float or array_like.
         The value of the studentized range.
 
-    Reference
-    -------
+    References
+    ----------
     Student (1927).
     Errors of routine analysis.
     Biometrika. 19 (1/2): 151-164.
@@ -68,8 +68,8 @@ def coefficient_of_lvariation(x: np.ndarray) -> float:
     lcv : float or array_like.
         The value of the linear coefficient of variation.
 
-    Reference
-    -------
+    References
+    ----------
     Hosking, J.R.M. (1990).
     L-moments: analysis and estimation of distributions
     using linear combinations of order statistics.
@@ -94,8 +94,8 @@ def coefficient_of_variation(x: np.ndarray) -> float:
     cv : float or array_like.
         The value of the coefficient of variation.
 
-    Reference
-    -------
+    References
+    ----------
     Brown, C.E. (1998).
     Coefficient of Variation.
     Applied Multivariate Statistics in Geohydrology and Related Sciences. Springer.
@@ -117,8 +117,8 @@ def quartile_coef_of_dispersion(x: np.ndarray) -> float:
     qcd : float or array_like.
         The value of the quartile coefficient of dispersion.
 
-    Reference
-    -------
+    References
+    ----------
     Bonett, D. G. (2006).
     Confidence interval for a coefficient of quartile variation.
     Computational Statistics & Data Analysis. 50 (11): 2953-2957.
@@ -141,8 +141,8 @@ def dispersion_ratio(x: np.ndarray) -> float:
     dr : float or array_like.
         The value of the dispersion ratio.
 
-    Reference
-    -------
+    References
+    ----------
     Soobramoney, J., Chifurira, R., & Zewotir, T. (2022)
     Selecting key features of online behaviour on South African informative websites
     prior to unsupervised machine learning.
@@ -166,8 +166,8 @@ def hoover_index(x: np.ndarray) -> float:
     hi : float or array_like.
         The value of the Hoover index.
 
-    Reference
-    -------
+    References
+    ----------
     Edgar Malone Hoover Jr. (1936).
     The Measurement of Industrial Localization.
     Review of Economics and Statistics, 18, No. 162-71.
@@ -197,8 +197,8 @@ def lloyds_index(x: np.ndarray) -> float:
     li : float or array_like.
         The value of the Lloyd's index.
 
-    Reference
-    -------
+    References
+    ----------
     Lloyd, M (1967).
     Mean crowding.
     J Anim Ecol. 36 (1): 1–30.
@@ -224,8 +224,8 @@ def morisita_index(x: np.ndarray) -> float:
     mi : float or array_like.
         The value of the Morisita's index.
 
-    Reference
-    -------
+    References
+    ----------
     Morisita, M (1959).
     Measuring the dispersion and the analysis of distribution patterns.
     Memoirs of the Faculty of Science, Kyushu University Series e. Biol. 2: 215–235
@@ -248,8 +248,8 @@ def sqad(x: np.ndarray) -> float:
     sqad : float or array_like.
         The value of the SQAD.
 
-    Reference
-    -------
+    References
+    ----------
     Akinshin, A. (2022).
     Quantile absolute deviation.
     arXiv preprint arXiv:2208.13459.

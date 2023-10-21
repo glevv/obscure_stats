@@ -22,8 +22,8 @@ def moors_kurt(x: np.ndarray) -> float:
     mk : float or array_like.
         The value of Moor's kurtosis.
 
-    Reference
-    -------
+    References
+    ----------
     Moors, J. J. A. (1986).
     The meaning of kurtosis: Darlington reexamined.
     The American Statistician, 40 (4): 283-284,
@@ -45,8 +45,8 @@ def moors_octile_kurt(x: np.ndarray) -> float:
     mok : float or array_like.
         The value of Moor's octile kurtosis.
 
-    Reference
-    -------
+    References
+    ----------
     Moors, J. J. A. (1988).
     A quantile alternative for kurtosis.
     Journal of the Royal Statistical Society. Series D, 37(1):25-32.
@@ -72,8 +72,8 @@ def hogg_kurt(x: np.ndarray) -> float:
     hgc : float or array_like.
         The value of Hogg's kurtosis coefficient.
 
-    Reference
-    -------
+    References
+    ----------
     Hogg, R. V. (1972).
     More light on the kurtosis and related statistics.
     Journal of the American Statistical Association, 67(338):422-424.
@@ -103,8 +103,8 @@ def crow_siddiqui_kurt(x: np.ndarray) -> float:
     csk : float or array_like.
         The value of Crow & Siddiqui kurtosis coefficient.
 
-    Reference
-    -------
+    References
+    ----------
     Crow, E. L. and Siddiqui, M. (1967).
     Robust estimation of location.
     Journal of the American Statistical Association, 62(318):353-389.
@@ -128,8 +128,8 @@ def reza_ma_kurt(x: np.ndarray) -> float:
     rmk : float or array_like.
         The value of Reza & Ma kurtosis coefficient.
 
-    Reference
-    -------
+    References
+    ----------
     Reza, M.S., & Ma, J. (2016).
     ICA and PCA integrated feature extraction for classification.
     2016 IEEE 13th International Conference on Signal Processing (ICSP), 1083-1088.
