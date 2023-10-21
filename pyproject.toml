@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "obscure-stats"
 version = "0.1.0"
-description = "\"Collection of less known statistical functions\""
+description = "Collection of less known statistical functions"
 authors = ["Gleb Levitski"]
 readme = "README.md"
 
