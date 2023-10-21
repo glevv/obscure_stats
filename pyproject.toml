@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "obscure-stats"
+version = "0.1.0"
+description = "\"Collection of less known statistical functions\""
+authors = ["Gleb Levitski"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.13"
+numpy = "^1.26.1"
+scipy = "^1.11.3"
+
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.6.1"
+black = "^23.10.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
