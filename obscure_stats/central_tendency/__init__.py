@@ -1,4 +1,4 @@
-from .central_tendencies import (
+from .central_tendency import (
     contraharmonic_mean,
     midhinge,
     midmean,

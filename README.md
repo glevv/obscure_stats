@@ -9,11 +9,11 @@
 
 Highlights:
 
-- Collection of measures of central tendency - `obscure_stats/central_tendencies`.
+- Collection of measures of central tendency - `obscure_stats/central_tendency`.
 - Collection of measures of dispersion - `obscure_stats/dispersion`.
 - Collection of measures of skewness - `obscure_stats/skewness`.
 - Collection of measures of kurtosis - `obscure_stats/kurtosis`.
-- Collection of measures of associations - `obscure_stats/associations`.
+- Collection of measures of association - `obscure_stats/association`.
 - Collection of measures of qualitative variation - `obscure_stats/variation`.
 
 **Installation**
