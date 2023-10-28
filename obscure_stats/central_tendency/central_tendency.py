@@ -100,7 +100,7 @@ def contraharmonic_mean(x: np.ndarray) -> float:
     Handbook of means and their inequalities.
     Springer.
     """
-    return np.sum(x**2) / np.sum(x)
+    return np.sum(np.square(x)) / np.sum(x)
 
 
 def midmean(x: np.ndarray) -> float:

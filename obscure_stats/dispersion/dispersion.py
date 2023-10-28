@@ -231,7 +231,7 @@ def morisita_index(x: np.ndarray) -> float:
     Memoirs of the Faculty of Science, Kyushu University Series e. Biol. 2: 215–235
     """
     x_sum = np.sum(x)
-    return x.shape[0] * (np.sum(x**2) - x_sum) / (x_sum**2 - x_sum)
+    return len(x) * (np.sum(np.square(x)) - x_sum) / (x_sum**2 - x_sum)
 
 
 def sqad(x: np.ndarray) -> float:

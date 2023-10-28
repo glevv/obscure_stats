@@ -244,11 +244,11 @@ def auc_skew_gamma(x: np.ndarray, dp: float = 1e-2, weighted: bool = True) -> fl
     """
     n = int(1 / dp)
     half_n = n // 2
-    w = (np.arange(half_n) / half_n)[::-1].reshape(-1, 1) if weighted else 1
+    w = (np.arange(half_n) / half_n)[::-1] if weighted else 1
     qs = np.nanquantile(x, np.r_[np.linspace(0, 1, n), 0.5])
     med = qs[-1]
     qs = qs[:-1]
     qs_low = qs[:half_n]
     qs_high = qs[-half_n:]
     skews = (qs_low + qs_high - 2 * med) / (qs_high - qs_low) * w
-    return np.trapz(skews, dx=dp, axis=0)
+    return np.trapz(skews, dx=dp)

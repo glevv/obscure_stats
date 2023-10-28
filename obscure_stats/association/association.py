@@ -37,7 +37,7 @@ def xi_corr(x: np.ndarray, y: np.ndarray) -> float:
     n = len(x)
     x_ranked = stats.rankdata(x, method="ordinal")
     y_forward_ranked = stats.rankdata(y, method="max")
-    y_backward_ranked = stats.rankdata(-y, method="max")
+    y_backward_ranked = stats.rankdata(np.negative(y), method="max")
     y_forward_ranked_ordered = y_forward_ranked[np.argsort(x_ranked)]
     nom = np.sum(np.abs(np.diff(y_forward_ranked_ordered)))
     denom = np.sum(y_backward_ranked * (n - y_backward_ranked)) / n**3
@@ -114,16 +114,19 @@ def quadrant_count_ratio(
     Concordance rate of a four-quadrant plot for repeated measurements.
     BMC Medical Research Methodology, 21(1), 1-16.
     """
-    mean_x = np.nanmean(x)
-    mean_y = np.nanmean(y)
+    _x = np.asarray(x)
+    _y = np.asarray(y)
+    mean_x = np.nanmean(_x)
+    mean_y = np.nanmean(_y)
+    n = len(x)
     if exclusion_zone:
-        sem_x = np.std(x, ddof=0) / len(x) ** 0.5
-        sem_y = np.std(y, ddof=0) / len(y) ** 0.5
+        sem_x = np.std(_x, ddof=0) / n**0.5
+        sem_y = np.std(_y, ddof=0) / n**0.5
     else:
         sem_x = 0
         sem_y = 0
-    n_q1 = np.nansum(x > mean_x + sem_x & y > mean_y + sem_y)
-    n_q2 = np.nansum(x < mean_x - sem_x & y > mean_y + sem_y)
-    n_q3 = np.nansum(x < mean_x - sem_x & y < mean_y - sem_y)
-    n_q4 = np.nansum(x > mean_x + sem_x & y < mean_y - sem_y)
-    return (n_q1 + n_q3 - n_q2 - n_q4) / len(x)
+    n_q1 = np.nansum((_x > mean_x + sem_x) & (_y > mean_y + sem_y))
+    n_q2 = np.nansum((_x < mean_x - sem_x) & (_y > mean_y + sem_y))
+    n_q3 = np.nansum((_x < mean_x - sem_x) & (_y < mean_y - sem_y))
+    n_q4 = np.nansum((_x > mean_x + sem_x) & (_y < mean_y - sem_y))
+    return (n_q1 + n_q3 - n_q2 - n_q4) / n
