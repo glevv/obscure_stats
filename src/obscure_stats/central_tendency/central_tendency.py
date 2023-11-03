@@ -169,7 +169,7 @@ def trimmed_harrell_davis_median(x: np.ndarray) -> float:
     Returns
     -------
     thdm : float
-        The value of Hodges-Lehmann-Sen estimator.
+        The value of Trimmed Harrell-Davis median.
 
     References
     ----------

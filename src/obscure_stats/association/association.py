@@ -173,7 +173,7 @@ def zhangi(x: np.ndarray, y: np.ndarray) -> float:
     Returns
     -------
     i : float.
-        The value of the quadrant count ratio.
+        The value of the Zhang I.
 
     References
     ----------
@@ -194,7 +194,7 @@ def zhangi(x: np.ndarray, y: np.ndarray) -> float:
 
 def tanimoto_similarity(x: np.ndarray, y: np.ndarray) -> float:
     """
-    Function for calculating Tanimoto distance.
+    Function for calculating Tanimoto similarity.
 
     Parameters
     ----------
@@ -206,7 +206,7 @@ def tanimoto_similarity(x: np.ndarray, y: np.ndarray) -> float:
     Returns
     -------
     td : float.
-        The value of the quadrant count ratio.
+        The value of the tanimoto similarity measure
 
     References
     ----------
