@@ -2,11 +2,18 @@
 Module for association measures
 """
 
+import warnings
+
 import numpy as np
 from scipy import stats  # type: ignore
 
 
-def xi_corr(x: np.ndarray, y: np.ndarray) -> float:
+def _check_const(x: np.ndarray) -> bool:
+    """Checker for constant arrays."""
+    return all(np.isclose(x, x[0]))
+
+
+def chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
     """
     Function for calculating ξ correlation.
     Another variation of rank correlation.
@@ -15,6 +22,8 @@ def xi_corr(x: np.ndarray, y: np.ndarray) -> float:
     it break ties depending on order. This makes it dependent on
     data sorting, which could be useful in application like time
     series.
+
+    NOTE: This measure is assymetric: (x, y) != (y, x).
 
     Parameters
     ----------
@@ -35,6 +44,11 @@ def xi_corr(x: np.ndarray, y: np.ndarray) -> float:
     Journal of the American Statistical Association, 116(536), 2009-2022.
     """
     n = len(x)
+    if _check_const(x) or _check_const(y):
+        warnings.warn(
+            "An input array is constant; the correlation coefficient is not defined."
+        )
+        return np.nan
     x_ranked = stats.rankdata(x, method="ordinal")
     y_forward_ranked = stats.rankdata(y, method="max")
     y_backward_ranked = stats.rankdata(np.negative(y), method="max")
@@ -70,6 +84,11 @@ def concordance_corr(x: np.ndarray, y: np.ndarray) -> float:
     A concordance correlation coefficient to evaluate reproducibility.
     Biometrics. 45 (1): 255-268.
     """
+    if _check_const(x) or _check_const(y):
+        warnings.warn(
+            "An input array is constant; the correlation coefficient is not defined."
+        )
+        return np.nan
     std_x = np.std(x, ddof=0)
     std_y = np.std(y, ddof=0)
     w = std_y / std_x
@@ -114,6 +133,11 @@ def quadrant_count_ratio(
     Concordance rate of a four-quadrant plot for repeated measurements.
     BMC Medical Research Methodology, 21(1), 1-16.
     """
+    if _check_const(x) or _check_const(y):
+        warnings.warn(
+            "An input array is constant; the correlation coefficient is not defined."
+        )
+        return np.nan
     _x = np.asarray(x)
     _y = np.asarray(y)
     mean_x = np.nanmean(_x)
@@ -130,3 +154,69 @@ def quadrant_count_ratio(
     n_q3 = np.nansum((_x < mean_x - sem_x) & (_y < mean_y - sem_y))
     n_q4 = np.nansum((_x > mean_x + sem_x) & (_y < mean_y - sem_y))
     return (n_q1 + n_q3 - n_q2 - n_q4) / n
+
+
+def zhangi(x: np.ndarray, y: np.ndarray) -> float:
+    """
+    Function for calculating I correlation proposed by Q. Zhang.
+    This is a modification of Spearman and Chatterjee rank correlation coefficients.
+
+    NOTE: This measure is assymetric: (x, y) != (y, x).
+
+    Parameters
+    ----------
+    x : array_like
+        Measured values.
+    y : array_like
+        Reference values.
+
+    Returns
+    -------
+    i : float.
+        The value of the quadrant count ratio.
+
+    References
+    ----------
+    Zhang, Q., 2023.
+    On relationships between Chatterjee's and Spearman's correlation coefficients.
+    arXiv preprint arXiv:2302.10131.
+    """
+    if _check_const(x) or _check_const(y):
+        warnings.warn(
+            "An input array is constant; the correlation coefficient is not defined."
+        )
+        return np.nan
+    return max(
+        abs(stats.spearmanr(x, y, nan_policy="omit")[1]),
+        2.5**0.5 * chatterjeexi(x, y),
+    )
+
+
+def tanimoto_similarity(x: np.ndarray, y: np.ndarray) -> float:
+    """
+    Function for calculating Tanimoto distance.
+
+    Parameters
+    ----------
+    x : array_like
+        Measured values.
+    y : array_like
+        Reference values.
+
+    Returns
+    -------
+    td : float.
+        The value of the quadrant count ratio.
+
+    References
+    ----------
+    Rogers DJ, Tanimoto TT, 1960.
+    A Computer Program for Classifying Plants.
+    Science. 132 (3434): 1115-8.
+    """
+    _x = np.asarray(x)
+    _y = np.asarray(y)
+    xy = np.nanmean(_x * _y)
+    xx = np.nanmean(_x**2)
+    yy = np.nanmean(_y**2)
+    return xy / (xx + yy - xy)

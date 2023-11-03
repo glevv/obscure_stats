@@ -79,10 +79,10 @@ def hogg_kurt(x: np.ndarray) -> float:
     Journal of the American Statistical Association, 67(338):422-424.
     """
     p05, p50, p95 = np.nanquantile(x, [0.05, 0.5, 0.95])
-    masked_p95 = np.where(x > p95, x, np.nan)
-    masked_p05 = np.where(x < p05, x, np.nan)
-    masked_p50g = np.where(x > p50, x, np.nan)
-    masked_p50l = np.where(x < p50, x, np.nan)
+    masked_p95 = np.where(x >= p95, x, np.nan)
+    masked_p05 = np.where(x <= p05, x, np.nan)
+    masked_p50g = np.where(x >= p50, x, np.nan)
+    masked_p50l = np.where(x <= p50, x, np.nan)
     return (np.nanmean(masked_p95) - np.nanmean(masked_p05)) / (
         np.nanmean(masked_p50g) - np.nanmean(masked_p50l)
     )

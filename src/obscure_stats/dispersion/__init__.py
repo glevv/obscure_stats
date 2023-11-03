@@ -4,6 +4,7 @@ from .dispersion import (
     dispersion_ratio,
     efficiency,
     hoover_index,
+    kirkwood_coefficient_of_variation,
     lloyds_index,
     morisita_index,
     quartile_coef_of_dispersion,
@@ -22,4 +23,5 @@ __all__ = [
     "quartile_coef_of_dispersion",
     "sqad",
     "studentized_range",
+    "kirkwood_coefficient_of_variation",
 ]

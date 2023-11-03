@@ -28,7 +28,7 @@ def pearson_mode_skew(x: np.ndarray) -> float:
     Cambridge University Press, Cambridge.
     """
     mean = np.nanmean(x)
-    mode = stats.stats.mode(x)[0]
+    mode = stats.mode(x)[0]
     std = np.nanstd(x)
     return (mean - mode) / std
 
@@ -209,11 +209,11 @@ def forhad_shorna_rank_skew(x: np.ndarray) -> float:
     arXiv preprint arXiv:1908.06400.
     """
     mr = (np.nanmin(x) + np.nanmax(x)) * 0.5
-    arr = np.append(x, mr)
+    arr = np.r_[x, mr]
     arr_ranked = stats.rankdata(arr, method="min")
-    diff = arr_ranked - arr_ranked[-1]
-    diff = np.delete(diff, -1)
-    return np.nanmean(diff) / np.nanmean(np.abs(diff))
+    diff = arr_ranked[-1] - arr_ranked
+    diff = diff[:-1]
+    return np.nansum(diff) / np.nansum(np.abs(diff))
 
 
 def auc_skew_gamma(x: np.ndarray, dp: float = 1e-2, weighted: bool = True) -> float:

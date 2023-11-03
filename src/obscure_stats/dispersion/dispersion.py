@@ -2,6 +2,8 @@
 Module for measures of dispersion
 """
 
+import math
+
 import numpy as np
 from scipy import stats  # type: ignore
 
@@ -103,6 +105,29 @@ def coefficient_of_variation(x: np.ndarray) -> float:
     return np.nanstd(x) / np.nanmean(x)
 
 
+def kirkwood_coefficient_of_variation(x: np.ndarray) -> float:
+    """
+    Function for calculating Kirkwood's geometric coefficient of variation.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+
+    Returns
+    -------
+    kcv : float or array_like.
+        The value of the coefficient of variation.
+
+    References
+    ----------
+    Kirkwood, TBL (1979).
+    Geometric means and measures of dispersion.
+    Biometrics. 35 (4): 908-9. JSTOR 2530139.
+    """
+    return (math.exp(np.nanvar(x)) - 1) ** 0.5
+
+
 def quartile_coef_of_dispersion(x: np.ndarray) -> float:
     """
     Function for calculating Quartile Coefficient of Dispersion.
@@ -148,7 +173,9 @@ def dispersion_ratio(x: np.ndarray) -> float:
     prior to unsupervised machine learning.
     Statistics, Optimization & Information Computing.
     """
-    return np.nanmean(x) / stats.gmean(x, nan_policy="omit")
+    return np.nanmean(x) / (
+        stats.gmean(x, nan_policy="omit") + np.finfo(np.float32).eps
+    )
 
 
 def hoover_index(x: np.ndarray) -> float:

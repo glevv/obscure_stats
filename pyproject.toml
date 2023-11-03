@@ -14,7 +14,16 @@ scipy = "^1.11.3"
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.6.1"
 black = "^23.10.0"
+pytest = "^7.4.3"
+isort = "^5.12.0"
+pytest-cov = "^4.1.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
+pythonpath = "src"
