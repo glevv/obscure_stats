@@ -1,8 +1,22 @@
-@software{Obscure_Stats_2023,
-  author = {Hleb Levitski},
-  doi = {10.5281/zenodo.1234},
-  title = {{Obscure Stats}},
-  url = {https://github.com/glevv/obscure_stats},
-  version = {0.1.0},
-  year = {2023}
-}
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Obscure Stats
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Hleb
+    family-names: Levitski
+    email: gleb.levitski@tutanota.com
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.1234
+repository-code: 'https://github.com/glevv/obscure_stats'
+repository-artifact: 'https://pypi.org/project/obscure_stats'
+abstract: Collection of less-known statistical measures
+license: MIT
+version: 0.1.0
+date-released: '2023-11-01'
