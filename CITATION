@@ -1,0 +1,8 @@
+@software{Obscure_Stats_2023,
+  author = {Hleb Levitski},
+  doi = {10.5281/zenodo.1234},
+  title = {{Obscure Stats}},
+  url = {https://github.com/glevv/obscure_stats},
+  version = {0.1.0},
+  year = {2023}
+}

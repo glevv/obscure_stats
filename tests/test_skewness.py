@@ -58,7 +58,7 @@ def test_mock_aggregation_functions(
     ),
 )
 @pytest.mark.parametrize("seed", (1, 42, 99))
-def test_skew_sensibility(func, seed):
+def test_skew_sensibility(func: typing.Callable, seed: int):
     """Testing for result correctness."""
     rng = np.random.default_rng(seed)
     no_skew = np.round(rng.normal(size=100), 2)

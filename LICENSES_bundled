@@ -1,0 +1,55 @@
+NumPy:
+  name: numpy
+  version: 1.26.1
+  license: BSD 3-Clause "New" or "Revised" License
+  repository: https://github.com/numpy/numpy
+  homepage: https://numpy.org/
+  dependencyLevel: production
+
+SciPy
+  name: scipy
+  version: 1.11.3
+  license: BSD 3-Clause "New" or "Revised" License
+  repository: https://github.com/scipy/scipy
+  homepage: https://scipy.org/
+  dependencyLevel: production
+
+MyPy
+  name: mypy
+  version: 1.6.1
+  license: The MIT License
+  repository: https://github.com/python/mypy
+  homepage: https://www.mypy-lang.org/
+  dependencyLevel: development
+
+Black
+  name: black
+  version: 23.10.0
+  license: The MIT License
+  repository: https://github.com/psf/black
+  homepage: https://black.readthedocs.io/en/stable/
+  dependencyLevel: development
+
+pytest
+  name: pytest
+  version: 7.4.3
+  license: The MIT License
+  repository: https://github.com/pytest-dev/pytest
+  homepage: https://docs.pytest.org/en/latest/
+  dependencyLevel: development
+
+isort
+  name: isort
+  version: 5.12.0
+  license: The MIT License
+  repository: https://github.com/PyCQA/isort
+  homepage: https://docs.pytest.org/en/latest/
+  dependencyLevel: development
+
+pytest-cov
+  name: pytest-cov
+  version: 4.1.0
+  license: The MIT License
+  repository: https://github.com/pytest-dev/pytest-cov
+  homepage: https://pytest-cov.readthedocs.io/en/latest/
+  dependencyLevel: development
