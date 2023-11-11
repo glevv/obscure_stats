@@ -19,4 +19,4 @@ repository-artifact: 'https://pypi.org/project/obscure_stats'
 abstract: Collection of less-known statistical measures
 license: MIT
 version: 0.1.0
-date-released: '2023-11-01'
+date-released: '2023-10-21'

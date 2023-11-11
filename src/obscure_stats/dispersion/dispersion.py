@@ -2,10 +2,12 @@
 Module for measures of dispersion
 """
 
-import math
+import warnings
 
 import numpy as np
 from scipy import stats  # type: ignore
+
+EPS = 1e-6
 
 
 def efficiency(x: np.ndarray) -> float:
@@ -78,8 +80,12 @@ def coefficient_of_lvariation(x: np.ndarray) -> float:
     Journal of the Royal Statistical Society, Series B. 52 (1): 105-124.
     """
     l1 = np.nanmean(x)
-    l2 = np.nanmean(np.abs(x - l1)) * 0.5
-    return l2 / l1
+    if abs(l1) <= EPS:
+        warnings.warn("Mean is close to 0. Statistic is undefined.")
+        return np.inf
+    else:
+        l2 = np.nanmean(np.abs(x - l1)) * 0.5
+        return l2 / l1
 
 
 def coefficient_of_variation(x: np.ndarray) -> float:
@@ -102,12 +108,18 @@ def coefficient_of_variation(x: np.ndarray) -> float:
     Coefficient of Variation.
     Applied Multivariate Statistics in Geohydrology and Related Sciences. Springer.
     """
-    return np.nanstd(x) / np.nanmean(x)
+    mean = np.nanmean(x)
+    if abs(mean) <= 1e-6:
+        warnings.warn("Mean is close to 0. Statistic is undefined.")
+        return np.inf
+    else:
+        return np.nanstd(x) / mean
 
 
-def kirkwood_coefficient_of_variation(x: np.ndarray) -> float:
+def robust_coefficient_of_variation(x: np.ndarray) -> float:
     """
-    Function for calculating Kirkwood's geometric coefficient of variation.
+    Function for calculating robust coefficient of variation based on
+    median absolute deviation from the median.
 
     Parameters
     ----------
@@ -116,16 +128,22 @@ def kirkwood_coefficient_of_variation(x: np.ndarray) -> float:
 
     Returns
     -------
-    kcv : float or array_like.
-        The value of the coefficient of variation.
+    rcv : float or array_like.
+        The value of the robust coefficient of variation.
 
     References
     ----------
-    Kirkwood, TBL (1979).
-    Geometric means and measures of dispersion.
-    Biometrics. 35 (4): 908-9. JSTOR 2530139.
+    Reimann, C., Filzmoser, P., Garrett, R.G. and Dutter, R. (2008).
+    Statistical Data Analysis Explained: Applied Environmental Statistics with R.
+    John Wiley and Sons, New York.
     """
-    return (math.exp(np.nanvar(x)) - 1) ** 0.5
+    med = np.nanmedian(x)
+    if abs(med) <= EPS:
+        warnings.warn("Median is close to 0. Statistic is undefined.")
+        return np.inf
+    else:
+        med_abs_dev = np.nanmedian(np.abs(x - med))
+        return med_abs_dev / med
 
 
 def quartile_coef_of_dispersion(x: np.ndarray) -> float:
@@ -149,7 +167,11 @@ def quartile_coef_of_dispersion(x: np.ndarray) -> float:
     Computational Statistics & Data Analysis. 50 (11): 2953-2957.
     """
     q1, q3 = np.nanquantile(x, [0.25, 0.75])
-    return (q3 - q1) / (q3 + q1)
+    if abs(q3 + q1) <= EPS:
+        warnings.warn("Midhinge is close to 0. Statistic is undefined.")
+        return np.inf
+    else:
+        return (q3 - q1) / (q3 + q1)
 
 
 def dispersion_ratio(x: np.ndarray) -> float:
@@ -173,9 +195,7 @@ def dispersion_ratio(x: np.ndarray) -> float:
     prior to unsupervised machine learning.
     Statistics, Optimization & Information Computing.
     """
-    return np.nanmean(x) / (
-        stats.gmean(x, nan_policy="omit") + np.finfo(np.float32).eps
-    )
+    return np.nanmean(x) / (stats.gmean(x, nan_policy="omit") + EPS)
 
 
 def hoover_index(x: np.ndarray) -> float:

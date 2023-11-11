@@ -87,7 +87,8 @@ def test_const(func: typing.Callable):
     """Testing for constant input."""
     x = [1, 1, 1, 1, 1, 1]
     y = [-1, -2, -3, -4, -5, -6]
-    assert func(x, y) is np.nan
+    with pytest.warns(match="An input array is constant"):
+        assert func(x, y) is np.nan
 
 
 @pytest.mark.parametrize(
