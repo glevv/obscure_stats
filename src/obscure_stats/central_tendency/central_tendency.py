@@ -11,6 +11,7 @@ from scipy import stats  # type: ignore
 def midrange(x: np.ndarray) -> float:
     """
     Function for calculating midrange or midpoint, i.e. average between min and max.
+    This measure could be noisy since it is based on minimum and maximum.
 
     Parameters
     ----------
@@ -36,6 +37,7 @@ def midrange(x: np.ndarray) -> float:
 def midhinge(x: np.ndarray) -> float:
     """
     Function for calculating midhinge, i.e. average between 1st and 3rd quartile.
+    This measure is more robust then average.
 
     Parameters
     ----------
@@ -59,7 +61,8 @@ def midhinge(x: np.ndarray) -> float:
 
 def trimean(x: np.ndarray) -> float:
     """
-    Function for calculating trimean, i.e average between 3 quartiles.
+    Function for calculating trimean, i.e weighted average between 3 quartiles.
+    This measure is more robust then average.
 
     Parameters
     ----------
@@ -86,6 +89,7 @@ def contraharmonic_mean(x: np.ndarray) -> float:
     Function for calculating contraharmonic mean.
     Contraharmonic mean is a function complementary to the harmonic mean.
     The contraharmonic mean is a special case of the Lehmer mean with p=2.
+    Mostly used in signal processing (for example filters).
 
     Parameters
     ----------
@@ -109,6 +113,7 @@ def contraharmonic_mean(x: np.ndarray) -> float:
 def midmean(x: np.ndarray) -> float:
     """
     Function for calculating interquartile mean, i.e mean inside interquartile range.
+    This measure is more robust then average.
 
     Parameters
     ----------
@@ -133,6 +138,7 @@ def midmean(x: np.ndarray) -> float:
 def hodges_lehmann_sen_location(x: np.ndarray) -> float:
     """
     Function for calculating Hodges-Lehmann-Sen robust location measure (pseudomedian).
+    This measure is more robust then average.
 
     NOTE: this statistic uses cartesian product, so the time and memory complexity
     are N^2. It is best to not use it on large arrays.
@@ -160,6 +166,7 @@ def hodges_lehmann_sen_location(x: np.ndarray) -> float:
 def trimmed_harrell_davis_median(x: np.ndarray) -> float:
     """
     Function for calculating Trimmed Harrell-Davis median estimator.
+    This measure is very robust.
 
     Parameters
     ----------
@@ -190,5 +197,5 @@ def trimmed_harrell_davis_median(x: np.ndarray) -> float:
     nums[nums <= hdi[0]] = hdi[0]
     nums[nums >= hdi[1]] = hdi[1]
     cdfs = (stats.beta.cdf(nums, a_b, a_b) - hdi_cdf[0]) / (hdi_cdf[1] - hdi_cdf[0])
-    W = cdfs[1:] - cdfs[:-1]
-    return np.sum(xs[i_start:i_end] * W)
+    w = cdfs[1:] - cdfs[:-1]
+    return np.sum(xs[i_start:i_end] * w)

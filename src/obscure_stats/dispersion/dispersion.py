@@ -12,7 +12,7 @@ EPS = 1e-6
 
 def efficiency(x: np.ndarray) -> float:
     """
-    Function for calculating array efficiency.
+    Function for calculating array efficiency (squared CV)
 
     Parameters
     ----------
@@ -29,7 +29,11 @@ def efficiency(x: np.ndarray) -> float:
     Grubbs, Frank (1965).
     Statistical Measures of Accuracy for Riflemen and Missile Engineers. pp. 26-27.
     """
-    return np.nanvar(x) / np.nanmean(x) ** 2
+    mean = np.nanmean(x)
+    if abs(mean) <= EPS:
+        warnings.warn("Mean is close to 0. Statistic is undefined.")
+        return np.inf
+    return np.nanvar(x) / mean**2
 
 
 def studentized_range(x: np.ndarray) -> float:
@@ -60,7 +64,7 @@ def studentized_range(x: np.ndarray) -> float:
 
 def coefficient_of_lvariation(x: np.ndarray) -> float:
     """
-    Function for calculating linear coefficient of variation.
+    Function for calculating linear coefficient of variation (MeanAbsDev / Mean).
 
     Parameters
     ----------
@@ -90,7 +94,7 @@ def coefficient_of_lvariation(x: np.ndarray) -> float:
 
 def coefficient_of_variation(x: np.ndarray) -> float:
     """
-    Function for calculating coefficient of variation.
+    Function for calculating coefficient of variation (Std / Mean).
 
     Parameters
     ----------
@@ -109,7 +113,7 @@ def coefficient_of_variation(x: np.ndarray) -> float:
     Applied Multivariate Statistics in Geohydrology and Related Sciences. Springer.
     """
     mean = np.nanmean(x)
-    if abs(mean) <= 1e-6:
+    if abs(mean) <= EPS:
         warnings.warn("Mean is close to 0. Statistic is undefined.")
         return np.inf
     else:
@@ -119,7 +123,7 @@ def coefficient_of_variation(x: np.ndarray) -> float:
 def robust_coefficient_of_variation(x: np.ndarray) -> float:
     """
     Function for calculating robust coefficient of variation based on
-    median absolute deviation from the median.
+    median absolute deviation from the median (MedAbsDev / Median).
 
     Parameters
     ----------
@@ -148,7 +152,7 @@ def robust_coefficient_of_variation(x: np.ndarray) -> float:
 
 def quartile_coef_of_dispersion(x: np.ndarray) -> float:
     """
-    Function for calculating Quartile Coefficient of Dispersion.
+    Function for calculating Quartile Coefficient of Dispersion (IQR / Midhinge).
 
     Parameters
     ----------
@@ -176,7 +180,7 @@ def quartile_coef_of_dispersion(x: np.ndarray) -> float:
 
 def dispersion_ratio(x: np.ndarray) -> float:
     """
-    Function for calculating dispersion ratio.
+    Function for calculating dispersion ratio (Mean / GMean).
 
     Parameters
     ----------
@@ -200,7 +204,9 @@ def dispersion_ratio(x: np.ndarray) -> float:
 
 def hoover_index(x: np.ndarray) -> float:
     """
-    Function for calculating Hoover index.
+    Function for calculating Hoover index (also known as the Robin Hood index,
+    Schutz index or Pietra ratio). Mostly used as measure of income inequality.
+    A value of 0 represents total equality, and 1 represents perfect inequality.
     In general - measure of uniformity of the distribution.
 
     Parameters
@@ -218,12 +224,6 @@ def hoover_index(x: np.ndarray) -> float:
     Edgar Malone Hoover Jr. (1936).
     The Measurement of Industrial Localization.
     Review of Economics and Statistics, 18, No. 162-71.
-
-    See also
-    -------
-    Gibbs M4 Index
-    Robin Hood index
-    Schutz index
     """
     return 0.5 * np.nansum(x - np.nanmean(x)) / np.nansum(x)
 
@@ -248,7 +248,7 @@ def lloyds_index(x: np.ndarray) -> float:
     ----------
     Lloyd, M (1967).
     Mean crowding.
-    J Anim Ecol. 36 (1): 1–30.
+    J Anim Ecol. 36 (1): 1-30.
     """
     m = np.nanmean(x)
     s = np.nanvar(x)
@@ -258,7 +258,7 @@ def lloyds_index(x: np.ndarray) -> float:
 def morisita_index(x: np.ndarray) -> float:
     """
     Function for calculating Morisita's index of dispersion.
-    Morisita's index of dispersion ( Im ) is the scaled probability
+    Morisita's index of dispersion (Im) is the scaled probability
     that two points chosen at random from the whole population are in the same sample.
 
     Parameters
@@ -283,7 +283,9 @@ def morisita_index(x: np.ndarray) -> float:
 
 def sqad(x: np.ndarray) -> float:
     """
-    Function for calculating Standard quantile absolute deviation
+    Function for calculating Standard quantile absolute deviation.
+    This measure is a robust measure of dispersion, that does not need
+    normalizing constant like MAD.
 
     Parameters
     ----------
@@ -302,4 +304,4 @@ def sqad(x: np.ndarray) -> float:
     arXiv preprint arXiv:2208.13459.
     """
     med = np.nanmedian(x)
-    return np.nanquantile(np.abs(x - med), q=0.682689492137086)
+    return np.nanquantile(np.abs(x - med), q=0.682689492137086)  # constant

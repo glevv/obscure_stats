@@ -10,6 +10,7 @@ from scipy import stats  # type: ignore
 def pearson_mode_skew(x: np.ndarray) -> float:
     """
     Function for calculating Pearson's mode skew coefficient.
+    This measure could be unstable due mode instability.
 
     Parameters
     ----------
@@ -87,7 +88,8 @@ def medeen_skew(x: np.ndarray) -> float:
 def bowley_skew(x: np.ndarray) -> float:
     """
     Function for calculating Bowley's skewness coefficinet
-    based on quartiles (uncentered).
+    based on quartiles (uncentered, unscaled).
+    This measure should be more robust than moment based skewness.
 
     Parameters
     ----------
@@ -112,7 +114,8 @@ def bowley_skew(x: np.ndarray) -> float:
 def groeneveld_skew(x: np.ndarray) -> float:
     """
     Function for calculating Groeneveld's skewness coefficinet
-    based on quartiles (uncentered).
+    based on quartiles (uncentered, unscaled).
+    This measure should be more robust than moment based skewness.
 
     Parameters
     ----------
@@ -139,7 +142,8 @@ def groeneveld_skew(x: np.ndarray) -> float:
 def kelly_skew(x: np.ndarray) -> float:
     """
     Function for calculating Kelly's skewness coefficinet
-    based on deciles (uncentered).
+    based on deciles (uncentered, unscaled).
+    This measure should be more robust than moment based skewness.
 
     Parameters
     ----------
@@ -164,6 +168,7 @@ def kelly_skew(x: np.ndarray) -> float:
 def hossain_adnan_skew(x: np.ndarray) -> float:
     """
     Function for calculating Houssain and Adnan skewness coefficient.
+    This measure should be more robust than moment based skewness.
 
     Parameters
     ----------
@@ -189,6 +194,7 @@ def hossain_adnan_skew(x: np.ndarray) -> float:
 def forhad_shorna_rank_skew(x: np.ndarray) -> float:
     """
     Function for calculating Forhad-Shorna coefficient of Rank Skewness.
+    This measure should be more robust than moment based skewness.
 
     Parameters
     ----------

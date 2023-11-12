@@ -33,7 +33,9 @@ def moors_kurt(x: np.ndarray) -> float:
 
 def moors_octile_kurt(x: np.ndarray) -> float:
     """
-    Function for calculating Moors measure of kurtosis based on octiles.
+    Function for calculating Moors measure of kurtosis based on
+    octiles (uncentered, unscaled).
+    This measure should be more robust than moment based kurtosis.
 
     Parameters
     ----------
@@ -60,7 +62,8 @@ def moors_octile_kurt(x: np.ndarray) -> float:
 def hogg_kurt(x: np.ndarray) -> float:
     """
     Function for calculating Hogg's kurtosis coefficient
-    based on means of values between different percentiles (uncentered).
+    based on means of values between different percentiles (uncentered, unscaled).
+    This measure should be more robust than moment based kurtosis.
 
     Parameters
     ----------
@@ -91,7 +94,8 @@ def hogg_kurt(x: np.ndarray) -> float:
 def crow_siddiqui_kurt(x: np.ndarray) -> float:
     """
     Function for calculating Crow & Siddiqui kurtosis coefficient
-    based on quartiles and percentiles (uncentered).
+    based on quartiles and percentiles (uncentered, unscaled).
+    This measure should be more robust than moment based kurtosis.
 
     Parameters
     ----------
@@ -116,7 +120,8 @@ def crow_siddiqui_kurt(x: np.ndarray) -> float:
 def reza_ma_kurt(x: np.ndarray) -> float:
     """
     Function for calculating Reza & Ma kurtosis coefficient
-    based on hexadeciles (uncentered).
+    based on hexadeciles (uncentered, unscaled).
+    This measure should be more robust than moment based kurtosis.
 
     Parameters
     ----------

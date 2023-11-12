@@ -153,7 +153,7 @@ def b_index(x: np.ndarray) -> float:
 
     Returns
     -------
-    bind : float
+    bi : float
         The value of B index.
 
     References
@@ -182,7 +182,7 @@ def ada_index(x: np.ndarray) -> float:
 
     Returns
     -------
-    adind : float
+    adi : float
         The value of ADA index.
 
     References

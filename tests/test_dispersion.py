@@ -78,6 +78,7 @@ def test_dispersion_sensibility(func: typing.Callable, seed: int):
         coefficient_of_variation,
         robust_coefficient_of_variation,
         quartile_coef_of_dispersion,
+        efficiency,
     ),
 )
 def test_cv_corner_cases(func: typing.Callable):
