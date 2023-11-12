@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "obscure-stats"
+name = "obscure_stats"
 version = "0.1.0"
 description = "Collection of less known statistical functions"
 authors = ["Gleb Levitski"]
