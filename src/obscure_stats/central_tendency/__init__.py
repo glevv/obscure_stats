@@ -1,3 +1,5 @@
+"""Central tendency module."""
+
 from .central_tendency import (
     contraharmonic_mean,
     hodges_lehmann_sen_location,

@@ -1,3 +1,5 @@
+"""Skewness module."""
+
 from .skewness import (
     auc_skew_gamma,
     bowley_skew,

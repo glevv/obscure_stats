@@ -1,11 +1,9 @@
-"""
-Module for association measures
-"""
+"""Module for association measures."""
 
 import warnings
 
 import numpy as np
-from scipy import stats  # type: ignore
+from scipy import stats  # type: ignore[import-untyped]
 
 
 def _check_const(x: np.ndarray) -> bool:
@@ -14,8 +12,8 @@ def _check_const(x: np.ndarray) -> bool:
 
 
 def chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
-    """
-    Function for calculating ξ correlation.
+    """Calculate ξ correlation.
+
     Another variation of rank correlation which does not make any assumptions about
     underlying distributions of the variable.
 
@@ -26,8 +24,6 @@ def chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
     it break ties depending on order. This makes it dependent on
     data sorting, which could be useful in application like time
     series.
-
-    NOTE: This measure is assymetric: (x, y) != (y, x).
 
     Parameters
     ----------
@@ -46,11 +42,16 @@ def chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
     Chatterjee, S. (2021).
     A new coefficient of correlation.
     Journal of the American Statistical Association, 116(536), 2009-2022.
+
+    Notes
+    -----
+    This measure is assymetric: (x, y) != (y, x).
     """
     n = len(x)
     if _check_const(x) or _check_const(y):
         warnings.warn(
-            "An input array is constant; the correlation coefficient is not defined."
+            "An input array is constant; the correlation coefficient is not defined.",
+            stacklevel=2,
         )
         return np.nan
     x_ranked = stats.rankdata(x, method="ordinal")
@@ -59,13 +60,12 @@ def chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
     y_forward_ranked_ordered = y_forward_ranked[np.argsort(x_ranked)]
     nom = np.sum(np.abs(np.diff(y_forward_ranked_ordered)))
     denom = np.sum(y_backward_ranked * (n - y_backward_ranked)) / n**3
-    xi = 1.0 - nom / (2 * n**2 * denom)
-    return xi
+    return 1.0 - nom / (2 * n**2 * denom)
 
 
 def concordance_corr(x: np.ndarray, y: np.ndarray) -> float:
-    """
-    Function for calculating concordance correlation coefficient.
+    """Calculate concordance correlation coefficient.
+
     The main difference between Pearson's R and CCC is that CCC
     takes bias between variables into account.
 
@@ -92,7 +92,8 @@ def concordance_corr(x: np.ndarray, y: np.ndarray) -> float:
     """
     if _check_const(x) or _check_const(y):
         warnings.warn(
-            "An input array is constant; the correlation coefficient is not defined."
+            "An input array is constant; the correlation coefficient is not defined.",
+            stacklevel=2,
         )
         return np.nan
     std_x = np.std(x, ddof=0)
@@ -101,16 +102,18 @@ def concordance_corr(x: np.ndarray, y: np.ndarray) -> float:
     v = (np.mean(x) - np.mean(y)) ** 2 / (std_x * std_y) ** 0.5
     x_a = 2 / (v**2 + w + 1 / w)
     p = np.corrcoef(x, y)[0][1]
-    ccc = p * x_a
-    return ccc
+    return p * x_a
 
 
 def quadrant_count_ratio(
-    x: np.ndarray, y: np.ndarray, exclusion_zone: bool = False
+    x: np.ndarray,
+    y: np.ndarray,
+    *,
+    exclusion_zone: bool = False,
 ) -> float:
-    """
-    Function for calculating quadrant count ratio. It could be seen
-    as simplified version of Pearson's R.
+    """Calculate quadrant count ratio.
+
+    It could be seen as simplified version of Pearson's R.
 
     This variation has an option for an exclusion zone.
     It is based on the standard error of the mean and will exlucde
@@ -142,7 +145,8 @@ def quadrant_count_ratio(
     """
     if _check_const(x) or _check_const(y):
         warnings.warn(
-            "An input array is constant; the correlation coefficient is not defined."
+            "An input array is constant; the correlation coefficient is not defined.",
+            stacklevel=2,
         )
         return np.nan
     _x = np.asarray(x)
@@ -164,11 +168,9 @@ def quadrant_count_ratio(
 
 
 def zhangi(x: np.ndarray, y: np.ndarray) -> float:
-    """
-    Function for calculating I correlation proposed by Q. Zhang.
-    This is a modification of Spearman and Chatterjee rank correlation coefficients.
+    """Calculate I correlation proposed by Q. Zhang.
 
-    NOTE: This measure is assymetric: (x, y) != (y, x).
+    This is a modification of Spearman and Chatterjee rank correlation coefficients.
 
     Parameters
     ----------
@@ -187,10 +189,15 @@ def zhangi(x: np.ndarray, y: np.ndarray) -> float:
     Zhang, Q., 2023.
     On relationships between Chatterjee's and Spearman's correlation coefficients.
     arXiv preprint arXiv:2302.10131.
+
+    Notes
+    -----
+    This measure is assymetric: (x, y) != (y, x).
     """
     if _check_const(x) or _check_const(y):
         warnings.warn(
-            "An input array is constant; the correlation coefficient is not defined."
+            "An input array is constant; the correlation coefficient is not defined.",
+            stacklevel=2,
         )
         return np.nan
     return max(
@@ -200,9 +207,10 @@ def zhangi(x: np.ndarray, y: np.ndarray) -> float:
 
 
 def tanimoto_similarity(x: np.ndarray, y: np.ndarray) -> float:
-    """
-    Function for calculating Tanimoto similarity. It is very similar to Jaccard
-    or Cosine similarity but differs in how dot product is normalized.
+    """Calculate Tanimoto similarity.
+
+    It is very similar to Jaccard or Cosine similarity but differs in how
+    dot product is normalized.
 
     Parameters
     ----------

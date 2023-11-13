@@ -22,12 +22,12 @@ MyPy
   homepage: https://www.mypy-lang.org/
   dependencyLevel: development
 
-Black
-  name: black
-  version: 23.10.0
-  license: The MIT License
-  repository: https://github.com/psf/black
-  homepage: https://black.readthedocs.io/en/stable/
+Ruff
+  name: ruff
+  version: 0.1.5
+  license: The MIT license 
+  repository: https://github.com/astral-sh/ruff
+  homepage: https://docs.astral.sh/ruff/
   dependencyLevel: development
 
 pytest
@@ -35,14 +35,6 @@ pytest
   version: 7.4.3
   license: The MIT License
   repository: https://github.com/pytest-dev/pytest
-  homepage: https://docs.pytest.org/en/latest/
-  dependencyLevel: development
-
-isort
-  name: isort
-  version: 5.12.0
-  license: The MIT License
-  repository: https://github.com/PyCQA/isort
   homepage: https://docs.pytest.org/en/latest/
   dependencyLevel: development
 

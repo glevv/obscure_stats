@@ -1,15 +1,13 @@
-"""
-Module for measures of skewness
-"""
+"""Module for measures of skewness."""
 
 
 import numpy as np
-from scipy import stats  # type: ignore
+from scipy import stats  # type: ignore[import-untyped]
 
 
 def pearson_mode_skew(x: np.ndarray) -> float:
-    """
-    Function for calculating Pearson's mode skew coefficient.
+    """Calculate Pearson's mode skew coefficient.
+
     This measure could be unstable due mode instability.
 
     Parameters
@@ -35,8 +33,7 @@ def pearson_mode_skew(x: np.ndarray) -> float:
 
 
 def pearson_median_skew(x: np.ndarray) -> float:
-    """
-    Function for calculating Pearson's median skew coefficient.
+    """Calculatie Pearson's median skew coefficient.
 
     Parameters
     ----------
@@ -61,8 +58,7 @@ def pearson_median_skew(x: np.ndarray) -> float:
 
 
 def medeen_skew(x: np.ndarray) -> float:
-    """
-    Function for calculating Medeen's skewness statistic.
+    """Calculate Medeen's skewness statistic.
 
     Parameters
     ----------
@@ -86,9 +82,9 @@ def medeen_skew(x: np.ndarray) -> float:
 
 
 def bowley_skew(x: np.ndarray) -> float:
-    """
-    Function for calculating Bowley's skewness coefficinet
-    based on quartiles (uncentered, unscaled).
+    """Calculate Bowley's skewness coefficinet.
+
+    It is based on quartiles (uncentered, unscaled).
     This measure should be more robust than moment based skewness.
 
     Parameters
@@ -112,9 +108,9 @@ def bowley_skew(x: np.ndarray) -> float:
 
 
 def groeneveld_skew(x: np.ndarray) -> float:
-    """
-    Function for calculating Groeneveld's skewness coefficinet
-    based on quartiles (uncentered, unscaled).
+    """Calculate Groeneveld's skewness coefficinet.
+
+    It is based on quartiles (uncentered, unscaled).
     This measure should be more robust than moment based skewness.
 
     Parameters
@@ -140,9 +136,9 @@ def groeneveld_skew(x: np.ndarray) -> float:
 
 
 def kelly_skew(x: np.ndarray) -> float:
-    """
-    Function for calculating Kelly's skewness coefficinet
-    based on deciles (uncentered, unscaled).
+    """Calculate Kelly's skewness coefficinet.
+
+    It is based on deciles (uncentered, unscaled).
     This measure should be more robust than moment based skewness.
 
     Parameters
@@ -166,8 +162,8 @@ def kelly_skew(x: np.ndarray) -> float:
 
 
 def hossain_adnan_skew(x: np.ndarray) -> float:
-    """
-    Function for calculating Houssain and Adnan skewness coefficient.
+    """Calculate Houssain and Adnan skewness coefficient.
+
     This measure should be more robust than moment based skewness.
 
     Parameters
@@ -192,8 +188,8 @@ def hossain_adnan_skew(x: np.ndarray) -> float:
 
 
 def forhad_shorna_rank_skew(x: np.ndarray) -> float:
-    """
-    Function for calculating Forhad-Shorna coefficient of Rank Skewness.
+    """Calculate Forhad-Shorna coefficient of Rank Skewness.
+
     This measure should be more robust than moment based skewness.
 
     Parameters
@@ -222,10 +218,8 @@ def forhad_shorna_rank_skew(x: np.ndarray) -> float:
     return np.nansum(diff) / np.nansum(np.abs(diff))
 
 
-def auc_skew_gamma(x: np.ndarray, dp: float = 1e-2, weighted: bool = True) -> float:
-    """
-    Function for calculating Area under the curve of generalized Bowley skewness
-    coefficients.
+def auc_skew_gamma(x: np.ndarray, dp: float = 0.01, *, weighted: bool = True) -> float:
+    """Calculate Area under the curve of generalized Bowley skewness coefficients.
 
     Parameters
     ----------

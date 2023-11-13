@@ -1,3 +1,5 @@
+"""Association module."""
+
 from .association import (
     chatterjeexi,
     concordance_corr,

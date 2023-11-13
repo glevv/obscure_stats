@@ -1,16 +1,14 @@
-"""
-Module for measures of central tendency
-"""
+"""Module for measures of central tendency."""
 
 import math
 
 import numpy as np
-from scipy import stats  # type: ignore
+from scipy import stats  # type: ignore[import-untyped]
 
 
 def midrange(x: np.ndarray) -> float:
-    """
-    Function for calculating midrange or midpoint, i.e. average between min and max.
+    """Calculate midrange or midpoint, i.e. average between min and max.
+
     This measure could be noisy since it is based on minimum and maximum.
 
     Parameters
@@ -35,8 +33,8 @@ def midrange(x: np.ndarray) -> float:
 
 
 def midhinge(x: np.ndarray) -> float:
-    """
-    Function for calculating midhinge, i.e. average between 1st and 3rd quartile.
+    """Calculate midhinge, i.e. average between 1st and 3rd quartile.
+
     This measure is more robust then average.
 
     Parameters
@@ -60,8 +58,8 @@ def midhinge(x: np.ndarray) -> float:
 
 
 def trimean(x: np.ndarray) -> float:
-    """
-    Function for calculating trimean, i.e weighted average between 3 quartiles.
+    """Calculate trimean, i.e weighted average between 3 quartiles.
+
     This measure is more robust then average.
 
     Parameters
@@ -85,8 +83,8 @@ def trimean(x: np.ndarray) -> float:
 
 
 def contraharmonic_mean(x: np.ndarray) -> float:
-    """
-    Function for calculating contraharmonic mean.
+    """Calculate contraharmonic mean.
+
     Contraharmonic mean is a function complementary to the harmonic mean.
     The contraharmonic mean is a special case of the Lehmer mean with p=2.
     Mostly used in signal processing (for example filters).
@@ -111,8 +109,8 @@ def contraharmonic_mean(x: np.ndarray) -> float:
 
 
 def midmean(x: np.ndarray) -> float:
-    """
-    Function for calculating interquartile mean, i.e mean inside interquartile range.
+    """Calculate interquartile mean, i.e mean inside interquartile range.
+
     This measure is more robust then average.
 
     Parameters
@@ -136,12 +134,9 @@ def midmean(x: np.ndarray) -> float:
 
 
 def hodges_lehmann_sen_location(x: np.ndarray) -> float:
-    """
-    Function for calculating Hodges-Lehmann-Sen robust location measure (pseudomedian).
-    This measure is more robust then average.
+    """Calculate Hodges-Lehmann-Sen robust location measure (pseudomedian).
 
-    NOTE: this statistic uses cartesian product, so the time and memory complexity
-    are N^2. It is best to not use it on large arrays.
+    This measure is more robust then average.
 
     Parameters
     ----------
@@ -158,15 +153,22 @@ def hodges_lehmann_sen_location(x: np.ndarray) -> float:
     Hodges, J. L.; Lehmann, E. L. (1963).
     Estimation of location based on ranks.
     Annals of Mathematical Statistics. 34 (2): 598-611.
+
+    Notes
+    -----
+    This implementation uses cartesian product, so the time and memory complexity
+    are N^2. It is best to not use it on large arrays.
     """
     product = np.meshgrid(x, x, sparse=True)
     return np.median(product[0] + product[1]) * 0.5
 
 
 def trimmed_harrell_davis_median(x: np.ndarray) -> float:
-    """
-    Function for calculating Trimmed Harrell-Davis median estimator.
+    """Calculate Trimmed Harrell-Davis median estimator.
+
     This measure is very robust.
+    It uses modified Harrel-Davies quantiles to calculate median
+    in the most dense region of probability function.
 
     Parameters
     ----------

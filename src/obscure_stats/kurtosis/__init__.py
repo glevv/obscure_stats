@@ -1,3 +1,5 @@
+"""Kurtosis module."""
+
 from .kurtosis import (
     crow_siddiqui_kurt,
     hogg_kurt,

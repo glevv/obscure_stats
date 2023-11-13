@@ -1,18 +1,15 @@
-"""
-Module for measures of dispersion
-"""
+"""Module for measures of dispersion."""
 
 import warnings
 
 import numpy as np
-from scipy import stats  # type: ignore
+from scipy import stats  # type: ignore[import-untyped]
 
 EPS = 1e-6
 
 
 def efficiency(x: np.ndarray) -> float:
-    """
-    Function for calculating array efficiency (squared CV)
+    """Calculate array efficiency (squared CV).
 
     Parameters
     ----------
@@ -31,14 +28,13 @@ def efficiency(x: np.ndarray) -> float:
     """
     mean = np.nanmean(x)
     if abs(mean) <= EPS:
-        warnings.warn("Mean is close to 0. Statistic is undefined.")
+        warnings.warn("Mean is close to 0. Statistic is undefined.", stacklevel=2)
         return np.inf
     return np.nanvar(x) / mean**2
 
 
 def studentized_range(x: np.ndarray) -> float:
-    """
-    Function for calculating range normalized by standard deviation.
+    """Calculate range normalized by standard deviation.
 
     Parameters
     ----------
@@ -63,8 +59,7 @@ def studentized_range(x: np.ndarray) -> float:
 
 
 def coefficient_of_lvariation(x: np.ndarray) -> float:
-    """
-    Function for calculating linear coefficient of variation (MeanAbsDev / Mean).
+    """Calculate linear coefficient of variation (MeanAbsDev / Mean).
 
     Parameters
     ----------
@@ -85,16 +80,14 @@ def coefficient_of_lvariation(x: np.ndarray) -> float:
     """
     l1 = np.nanmean(x)
     if abs(l1) <= EPS:
-        warnings.warn("Mean is close to 0. Statistic is undefined.")
+        warnings.warn("Mean is close to 0. Statistic is undefined.", stacklevel=2)
         return np.inf
-    else:
-        l2 = np.nanmean(np.abs(x - l1)) * 0.5
-        return l2 / l1
+    l2 = np.nanmean(np.abs(x - l1)) * 0.5
+    return l2 / l1
 
 
 def coefficient_of_variation(x: np.ndarray) -> float:
-    """
-    Function for calculating coefficient of variation (Std / Mean).
+    """Calculate coefficient of variation (Std / Mean).
 
     Parameters
     ----------
@@ -114,16 +107,15 @@ def coefficient_of_variation(x: np.ndarray) -> float:
     """
     mean = np.nanmean(x)
     if abs(mean) <= EPS:
-        warnings.warn("Mean is close to 0. Statistic is undefined.")
+        warnings.warn("Mean is close to 0. Statistic is undefined.", stacklevel=2)
         return np.inf
-    else:
-        return np.nanstd(x) / mean
+    return np.nanstd(x) / mean
 
 
 def robust_coefficient_of_variation(x: np.ndarray) -> float:
-    """
-    Function for calculating robust coefficient of variation based on
-    median absolute deviation from the median (MedAbsDev / Median).
+    """Calculate robust coefficient of variation.
+
+    It is based on median absolute deviation from the median (MedAbsDev / Median).
 
     Parameters
     ----------
@@ -143,16 +135,14 @@ def robust_coefficient_of_variation(x: np.ndarray) -> float:
     """
     med = np.nanmedian(x)
     if abs(med) <= EPS:
-        warnings.warn("Median is close to 0. Statistic is undefined.")
+        warnings.warn("Median is close to 0. Statistic is undefined.", stacklevel=2)
         return np.inf
-    else:
-        med_abs_dev = np.nanmedian(np.abs(x - med))
-        return med_abs_dev / med
+    med_abs_dev = np.nanmedian(np.abs(x - med))
+    return med_abs_dev / med
 
 
-def quartile_coef_of_dispersion(x: np.ndarray) -> float:
-    """
-    Function for calculating Quartile Coefficient of Dispersion (IQR / Midhinge).
+def quartile_coefficient_of_dispersion(x: np.ndarray) -> float:
+    """Calculate quartile coefficient of dispersion (IQR / Midhinge).
 
     Parameters
     ----------
@@ -172,15 +162,13 @@ def quartile_coef_of_dispersion(x: np.ndarray) -> float:
     """
     q1, q3 = np.nanquantile(x, [0.25, 0.75])
     if abs(q3 + q1) <= EPS:
-        warnings.warn("Midhinge is close to 0. Statistic is undefined.")
+        warnings.warn("Midhinge is close to 0. Statistic is undefined.", stacklevel=2)
         return np.inf
-    else:
-        return (q3 - q1) / (q3 + q1)
+    return (q3 - q1) / (q3 + q1)
 
 
 def dispersion_ratio(x: np.ndarray) -> float:
-    """
-    Function for calculating dispersion ratio (Mean / GMean).
+    """Calculate dispersion ratio (Mean / GMean).
 
     Parameters
     ----------
@@ -203,9 +191,11 @@ def dispersion_ratio(x: np.ndarray) -> float:
 
 
 def hoover_index(x: np.ndarray) -> float:
-    """
-    Function for calculating Hoover index (also known as the Robin Hood index,
-    Schutz index or Pietra ratio). Mostly used as measure of income inequality.
+    """Calculate Hoover index.
+
+    It is also known as the Robin Hood index, Schutz index or Pietra ratio.
+
+    Mostly used as measure of income inequality.
     A value of 0 represents total equality, and 1 represents perfect inequality.
     In general - measure of uniformity of the distribution.
 
@@ -229,8 +219,8 @@ def hoover_index(x: np.ndarray) -> float:
 
 
 def lloyds_index(x: np.ndarray) -> float:
-    """
-    Function for calculating Lloyd's index of mean crowding.
+    """Calculate Lloyd's index of mean crowding.
+
     Lloyd's index of mean crowding (IMC) is the average number of other points
     contained in the sample unit that contains a randomly chosen point.
 
@@ -256,8 +246,8 @@ def lloyds_index(x: np.ndarray) -> float:
 
 
 def morisita_index(x: np.ndarray) -> float:
-    """
-    Function for calculating Morisita's index of dispersion.
+    """Calculate Morisita's index of dispersion.
+
     Morisita's index of dispersion (Im) is the scaled probability
     that two points chosen at random from the whole population are in the same sample.
 
@@ -275,15 +265,15 @@ def morisita_index(x: np.ndarray) -> float:
     ----------
     Morisita, M (1959).
     Measuring the dispersion and the analysis of distribution patterns.
-    Memoirs of the Faculty of Science, Kyushu University Series e. Biol. 2: 215–235
+    Memoirs of the Faculty of Science, Kyushu University Series e. Biol. 2: 215-235
     """
     x_sum = np.sum(x)
     return len(x) * (np.sum(np.square(x)) - x_sum) / (x_sum**2 - x_sum)
 
 
 def sqad(x: np.ndarray) -> float:
-    """
-    Function for calculating Standard quantile absolute deviation.
+    """Calculate Standard quantile absolute deviation.
+
     This measure is a robust measure of dispersion, that does not need
     normalizing constant like MAD.
 

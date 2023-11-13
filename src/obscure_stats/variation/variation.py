@@ -1,15 +1,13 @@
-"""
-Module for measures of categorical variations
-"""
+"""Module for measures of categorical variations."""
 
 
 import numpy as np
-from scipy import stats  # type: ignore
+from scipy import stats  # type: ignore[import-untyped]
 
 
 def mod_vr(x: np.ndarray) -> float:
-    """
-    Function for calculating Mode Variation Ratio.
+    """Calculate Mode Variation Ratio.
+
     This ratio could be interpreted as the probability of
     category not being the most frequent.
 
@@ -38,8 +36,8 @@ def mod_vr(x: np.ndarray) -> float:
 
 
 def range_vr(x: np.ndarray) -> float:
-    """
-    Function for calculating Range Variation Ratio.
+    """Calculate Range Variation Ratio.
+
     Ratio of frequencies of the least and the most common categories.
     This ratio is similar to range or peak-to-peak for real values.
 
@@ -67,8 +65,8 @@ def range_vr(x: np.ndarray) -> float:
 
 
 def gibbs_m1(x: np.ndarray) -> float:
-    """
-    Function for calculating Gibbs M1 Index.
+    """Calculate Gibbs M1 Index.
+
     M1 can be interpreted as one minus the likelihood that a random pair
     of samples will belong to the same category (standardized likelihood of
     a random pair falling in the same category).
@@ -92,8 +90,8 @@ def gibbs_m1(x: np.ndarray) -> float:
     The Division of Labor: Conceptualization and Related Measures".
     Social Forces, 53 (3): 468-476.
 
-    See also
-    -------
+    See Also
+    --------
     Gini's index of mutability;
     Gini Concentration Index;
     Simpson's measure of diversity;
@@ -102,15 +100,15 @@ def gibbs_m1(x: np.ndarray) -> float:
     Gibbs and Martin's index of industry diversification;
     Lieberson's index;
     Blau's index in sociology, psychology and management studies;
-    Special case of Tsallis entropy (α = 2).
+    Special case of Tsallis entropy (alpha = 2).
     """
     freq = np.unique(x, return_counts=True)[1] / len(x)
     return 1 - np.sum(np.square(freq))
 
 
 def gibbs_m2(x: np.ndarray) -> float:
-    """
-    Function for calculating Gibbs M2 Index.
+    """Calculate Gibbs M2 Index.
+
     M2 can be interpreted as the ratio of the variance of
     the multinomial distribution to the variance of a binomial distribution.
 
@@ -139,8 +137,8 @@ def gibbs_m2(x: np.ndarray) -> float:
 
 
 def b_index(x: np.ndarray) -> float:
-    """
-    Function for calculating B Index.
+    """Calculate B Index.
+
     Normalized to 0-1 range geometric mean of probabilities of all categories.
 
     Low values of BIn correspond to small amount of variation
@@ -168,8 +166,8 @@ def b_index(x: np.ndarray) -> float:
 
 
 def ada_index(x: np.ndarray) -> float:
-    """
-    Function for calculating Average Deviation Analogue.
+    """Calculate Average Deviation Analogue.
+
     Normalized to 0-1 range categorical analog of the mean deviation.
 
     Low values of AdaIn correspond to small amount of variation
@@ -199,8 +197,8 @@ def ada_index(x: np.ndarray) -> float:
 
 
 def extropy(x: np.ndarray) -> float:
-    """
-    Function for calculating Information Extropy (bits).
+    """Calculate Information Extropy (bits).
+
     Measure complementary to entropy.
 
     Low values of extropy correspond to high amount of variation
@@ -223,17 +221,14 @@ def extropy(x: np.ndarray) -> float:
     Statistical Science, 30(1), 40-58.
     """
     freq = np.unique(x, return_counts=True)[1] / len(x)
-    p = 1 - freq + 1e-7
+    p = 1.0 - freq + 1e-7
     return np.sum(p * np.log2(p))
 
 
 def coefficient_of_unalikeability(x: np.ndarray) -> float:
-    """
-    Function for calculating coefficient of unalikeability.
-    It ranges from 0 to 1. The higher the value, the more unalike the data are.
+    """Calculate coefficient of unalikeability.
 
-    NOTE: this statisstic uses cartesian product, so the time and memory complexity
-    are N^2. It is best to not use it on large arrays.
+    It ranges from 0 to 1. The higher the value, the more unalike the data are.
 
     Parameters
     ----------
@@ -250,6 +245,11 @@ def coefficient_of_unalikeability(x: np.ndarray) -> float:
     Kader, Gary & Perry, Mike. (2007).
     Variability for Categorical Variables.
     Journal of Statistics Education. 15.
+
+    Notes
+    -----
+    This implementation uses cartesian product, so the time and memory complexity
+    are N^2. It is best to not use it on large arrays.
     """
     product = np.meshgrid(x, x, sparse=True)
     n = len(x)

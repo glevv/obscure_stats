@@ -13,10 +13,9 @@ scipy = "^1.11.3"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.6.1"
-black = "^23.10.0"
 pytest = "^7.4.3"
-isort = "^5.12.0"
 pytest-cov = "^4.1.0"
+ruff = "^0.1.5"
 
 [build-system]
 requires = ["poetry-core"]
@@ -27,3 +26,44 @@ addopts = [
     "--import-mode=importlib",
 ]
 pythonpath = "src"
+
+[tool.ruff]
+select = ["ALL"]
+fixable = ["ALL"]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+line-length = 88
+indent-width = 4
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"

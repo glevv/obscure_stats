@@ -1,3 +1,5 @@
+"""Variation module."""
+
 from .variation import (
     ada_index,
     b_index,
