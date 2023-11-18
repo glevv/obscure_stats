@@ -10,6 +10,12 @@ from scipy import stats  # type: ignore[import-untyped]
 
 def _check_arrays(x: np.ndarray, y: np.ndarray) -> bool:
     """Check arrays."""
+    if len(x) != len(y):
+        warnings.warn(
+            "Lenghts of the inputs do not match.",
+            stacklevel=2,
+        )
+        return True
     if all(np.isclose(x, x[0])):
         warnings.warn(
             "An input array x is constant; the correlation coefficient is not defined.",
@@ -185,6 +191,41 @@ def concordance_rate(
     return (n_q1 + n_q3 - n_q2 - n_q4) / n
 
 
+def symmetric_chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
+    """Calculate symmetric xi correlation.
+
+    Another variation of rank correlation which does not make any assumptions about
+    underlying distributions of the variable.
+
+    It ranges from 0 (variables are completely independent) to 1
+    (one is a measurable function of the other).
+
+    This implementation does not break ties at random, instead
+    it break ties depending on order. This makes it dependent on
+    data sorting, which could be useful in application like time
+    series.
+
+    Parameters
+    ----------
+    x : array_like
+        Measured values.
+    y : array_like
+        Target values.
+
+    Returns
+    -------
+    xi : float.
+        The value of the xi correlation coefficient.
+
+    References
+    ----------
+    Chatterjee, S. (2021).
+    A new coefficient of correlation.
+    Journal of the American Statistical Association, 116(536), 2009-2022.
+    """
+    return max(chatterjeexi(x, y), chatterjeexi(y, x))
+
+
 def zhangi(x: np.ndarray, y: np.ndarray) -> float:
     """Calculate I correlation proposed by Q. Zhang.
 
@@ -216,7 +257,7 @@ def zhangi(x: np.ndarray, y: np.ndarray) -> float:
         return np.nan
     x, y = _prep_arrays(x, y)
     return max(
-        abs(stats.spearmanr(x, y, nan_policy="omit")[1]),
+        abs(stats.spearmanr(x, y, nan_policy="omit")[0]),
         2.5**0.5 * chatterjeexi(x, y),
     )
 

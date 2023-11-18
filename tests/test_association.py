@@ -8,6 +8,7 @@ from obscure_stats.association import (
     chatterjeexi,
     concordance_corrcoef,
     concordance_rate,
+    symmetric_chatterjeexi,
     tanimoto_similarity,
     zhangi,
 )
@@ -21,6 +22,7 @@ from obscure_stats.association import (
         concordance_corrcoef,
         concordance_rate,
         tanimoto_similarity,
+        symmetric_chatterjeexi,
     ],
 )
 @pytest.mark.parametrize(
@@ -51,11 +53,11 @@ def test_mock_association_functions(
         tanimoto_similarity,
     ],
 )
-def test_signed_corr_sensibility(func: typing.Callable) -> None:
+def test_signed_corr_sensibility(
+    func: typing.Callable, y_array_float: np.ndarray
+) -> None:
     """Testing for result correctness."""
-    x = np.arange(11)
-    y = -x
-    if func(x, y) > 0:
+    if func(y_array_float, -y_array_float) > 0:
         msg = "Corr coeff should be negative."
         raise ValueError(msg)
 
@@ -65,14 +67,15 @@ def test_signed_corr_sensibility(func: typing.Callable) -> None:
     [
         zhangi,
         chatterjeexi,
+        symmetric_chatterjeexi,
     ],
 )
-def test_unsigned_corr_sensibility(func: typing.Callable) -> None:
+def test_unsigned_corr_sensibility(
+    func: typing.Callable, y_array_float: np.ndarray
+) -> None:
     """Testing for result correctness."""
-    x = np.arange(11)
-    y = -x
-    w = np.r_[2, np.ones(shape=(10,))]
-    if func(x, y) < func(x, w):
+    w = np.r_[2, np.ones(shape=(len(y_array_float) - 1))]
+    if func(y_array_float, -y_array_float) < func(y_array_float, w):
         msg = "Corr coeff higher in the first case."
         raise ValueError(msg)
 
@@ -84,14 +87,14 @@ def test_unsigned_corr_sensibility(func: typing.Callable) -> None:
         zhangi,
         chatterjeexi,
         concordance_rate,
+        symmetric_chatterjeexi,
     ],
 )
-def test_const(func: typing.Callable) -> None:
+def test_const(func: typing.Callable, y_array_float: np.ndarray) -> None:
     """Testing for constant input."""
-    x = [1, 1, 1, 1, 1, 1]
-    y = [-1, -2, -3, -4, -5, -6]
+    x = np.ones(shape=(len(y_array_float)))
     with pytest.warns(match="is constant"):
-        if func(x, y) is not np.nan:
+        if func(x, y_array_float) is not np.nan:
             msg = "Corr coef should be 0 with constant input."
             raise ValueError(msg)
 
@@ -102,13 +105,16 @@ def test_const(func: typing.Callable) -> None:
         concordance_corrcoef,
         concordance_rate,
         tanimoto_similarity,
+        symmetric_chatterjeexi,
     ],
 )
-def test_invariance(func: typing.Callable) -> None:
+def test_invariance(
+    func: typing.Callable, x_array_float: np.ndarray, y_array_float: np.ndarray
+) -> None:
     """Testing for invariance."""
-    x = [1, 2, 3, 4, 5, 5]
-    y = [-1, -2, -2, -4, -5, -6]
-    if func(x, y) != func(y, x):
+    if pytest.approx(func(x_array_float, y_array_float)) != pytest.approx(
+        func(y_array_float, x_array_float)
+    ):
         msg = "Corr coef should symmetrical."
         raise ValueError(msg)
 
@@ -121,6 +127,7 @@ def test_invariance(func: typing.Callable) -> None:
         concordance_corrcoef,
         concordance_rate,
         tanimoto_similarity,
+        symmetric_chatterjeexi,
     ],
 )
 def test_notfinite_association(
