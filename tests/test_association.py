@@ -1,14 +1,13 @@
 """Collection of tests of association."""
 
 import typing
-from functools import partial
 
 import numpy as np
 import pytest
 from obscure_stats.association import (
     chatterjeexi,
-    concordance_corr,
-    quadrant_count_ratio,
+    concordance_corrcoef,
+    concordance_rate,
     tanimoto_similarity,
     zhangi,
 )
@@ -19,9 +18,8 @@ from obscure_stats.association import (
     [
         zhangi,
         chatterjeexi,
-        concordance_corr,
-        quadrant_count_ratio,
-        partial(quadrant_count_ratio, exclusion_zone=True),
+        concordance_corrcoef,
+        concordance_rate,
         tanimoto_similarity,
     ],
 )
@@ -48,9 +46,8 @@ def test_mock_association_functions(
 @pytest.mark.parametrize(
     "func",
     [
-        concordance_corr,
-        quadrant_count_ratio,
-        partial(quadrant_count_ratio, exclusion_zone=True),
+        concordance_corrcoef,
+        concordance_rate,
         tanimoto_similarity,
     ],
 )
@@ -83,18 +80,17 @@ def test_unsigned_corr_sensibility(func: typing.Callable) -> None:
 @pytest.mark.parametrize(
     "func",
     [
-        concordance_corr,
+        concordance_corrcoef,
         zhangi,
         chatterjeexi,
-        quadrant_count_ratio,
-        partial(quadrant_count_ratio, exclusion_zone=True),
+        concordance_rate,
     ],
 )
 def test_const(func: typing.Callable) -> None:
     """Testing for constant input."""
     x = [1, 1, 1, 1, 1, 1]
     y = [-1, -2, -3, -4, -5, -6]
-    with pytest.warns(match="An input array is constant"):
+    with pytest.warns(match="is constant"):
         if func(x, y) is not np.nan:
             msg = "Corr coef should be 0 with constant input."
             raise ValueError(msg)
@@ -103,9 +99,8 @@ def test_const(func: typing.Callable) -> None:
 @pytest.mark.parametrize(
     "func",
     [
-        concordance_corr,
-        quadrant_count_ratio,
-        partial(quadrant_count_ratio, exclusion_zone=True),
+        concordance_corrcoef,
+        concordance_rate,
         tanimoto_similarity,
     ],
 )
@@ -116,3 +111,30 @@ def test_invariance(func: typing.Callable) -> None:
     if func(x, y) != func(y, x):
         msg = "Corr coef should symmetrical."
         raise ValueError(msg)
+
+
+@pytest.mark.parametrize(
+    "func",
+    [
+        zhangi,
+        chatterjeexi,
+        concordance_corrcoef,
+        concordance_rate,
+        tanimoto_similarity,
+    ],
+)
+def test_notfinite_association(
+    func: typing.Callable,
+    x_array_nan: np.ndarray,
+    x_array_int: np.ndarray,
+    y_array_inf: np.ndarray,
+    y_array_int: np.ndarray,
+) -> None:
+    """Test for correct nan behaviour."""
+    if np.isnan(func(x_array_nan, y_array_int)):
+        msg = "Corr coef should support nans."
+        raise ValueError(msg)
+    with pytest.warns(match="contains inf"):
+        if not np.isnan(func(x_array_int, y_array_inf)):
+            msg = "Corr coef should support infs."
+            raise ValueError(msg)

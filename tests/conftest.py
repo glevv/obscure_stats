@@ -31,6 +31,14 @@ def x_array_float(x_list_float: np.ndarray) -> np.ndarray:
 
 
 @pytest.fixture(scope="session")
+def x_array_nan(x_array_float: np.ndarray) -> np.ndarray:
+    """Array of float with nan."""
+    temp = x_array_float.copy()
+    temp[0] = np.nan
+    return temp
+
+
+@pytest.fixture(scope="session")
 def y_list_float() -> list[float]:
     """List of floats."""
     return [1.0, 9.0, 7.0, 0.0, 1.0, 0.0, 1.0]
@@ -55,6 +63,14 @@ def y_array_float(y_list_float: list[float]) -> np.ndarray:
 
 
 @pytest.fixture(scope="session")
+def y_array_inf(y_array_float: np.ndarray) -> np.ndarray:
+    """Array of float with nan."""
+    temp = y_array_float.copy()
+    temp[1] = np.inf
+    return temp
+
+
+@pytest.fixture(scope="session")
 def c_list_obj() -> list[str]:
     """List of objects."""
     return ["a", "b", "r", "a", "c", "a", "d", "a", "b", "r", "a"]
@@ -64,3 +80,11 @@ def c_list_obj() -> list[str]:
 def c_array_obj(c_list_obj: list[str]) -> np.ndarray:
     """Array of objects."""
     return np.asarray(c_list_obj, dtype="object")
+
+
+@pytest.fixture(scope="session")
+def c_array_nan(c_array_obj: np.ndarray) -> np.ndarray:
+    """Array of objects."""
+    temp = c_array_obj.copy()
+    temp[1] = None
+    return temp

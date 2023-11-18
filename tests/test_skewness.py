@@ -12,8 +12,10 @@ from obscure_stats.skewness import (
     hossain_adnan_skew,
     kelly_skew,
     medeen_skew,
+    pearson_halfmode_skew,
     pearson_median_skew,
     pearson_mode_skew,
+    wauc_skew_gamma,
 )
 
 
@@ -21,6 +23,7 @@ from obscure_stats.skewness import (
     "func",
     [
         auc_skew_gamma,
+        wauc_skew_gamma,
         bowley_skew,
         forhad_shorna_rank_skew,
         groeneveld_skew,
@@ -29,6 +32,7 @@ from obscure_stats.skewness import (
         medeen_skew,
         pearson_median_skew,
         pearson_mode_skew,
+        pearson_halfmode_skew,
     ],
 )
 @pytest.mark.parametrize(
@@ -49,6 +53,7 @@ def test_mock_aggregation_functions(
     "func",
     [
         auc_skew_gamma,
+        wauc_skew_gamma,
         bowley_skew,
         forhad_shorna_rank_skew,
         groeneveld_skew,
@@ -57,6 +62,7 @@ def test_mock_aggregation_functions(
         medeen_skew,
         pearson_median_skew,
         pearson_mode_skew,
+        pearson_halfmode_skew,
     ],
 )
 @pytest.mark.parametrize("seed", [1, 42, 99])
@@ -185,4 +191,30 @@ def test_rank_skew() -> None:
     )
     if forhad_shorna_rank_skew(x) != pytest.approx(0.93809, rel=1e-4):
         msg = "Results from the test and paper do not match."
+        raise ValueError(msg)
+
+
+@pytest.mark.parametrize(
+    "func",
+    [
+        auc_skew_gamma,
+        wauc_skew_gamma,
+        bowley_skew,
+        forhad_shorna_rank_skew,
+        groeneveld_skew,
+        hossain_adnan_skew,
+        kelly_skew,
+        medeen_skew,
+        pearson_median_skew,
+        pearson_mode_skew,
+        pearson_halfmode_skew,
+    ],
+)
+def test_statistic_with_nans(
+    func: typing.Callable,
+    x_array_nan: np.ndarray,
+) -> None:
+    """Test for different data types."""
+    if np.isnan(func(x_array_nan)):
+        msg = "Statistics should support nans."
         raise ValueError(msg)

@@ -1,17 +1,20 @@
 """Collection of tests of central tendecies."""
 
+from __future__ import annotations
+
 import typing
 
 import numpy as np
 import pytest
 from obscure_stats.central_tendency import (
     contraharmonic_mean,
+    half_sample_mode,
     hodges_lehmann_sen_location,
     midhinge,
     midmean,
     midrange,
+    standard_trimmed_harrell_davis_quantile,
     trimean,
-    trimmed_harrell_davis_median,
 )
 
 
@@ -24,7 +27,8 @@ from obscure_stats.central_tendency import (
         midrange,
         trimean,
         hodges_lehmann_sen_location,
-        trimmed_harrell_davis_median,
+        standard_trimmed_harrell_davis_quantile,
+        half_sample_mode,
     ],
 )
 @pytest.mark.parametrize(
@@ -46,10 +50,27 @@ def test_thdm() -> None:
     x = np.asarray(
         (-0.565, -0.106, -0.095, 0.363, 0.404, 0.633, 1.371, 1.512, 2.018, 100_000),
     )
-    result = trimmed_harrell_davis_median(x)
+    result = standard_trimmed_harrell_davis_quantile(x)
     if result != pytest.approx(0.6268, rel=1e-4):
         msg = "Results from the test and paper do not match."
         raise ValueError(msg)
+
+
+def test_edge_cases() -> None:
+    """Simple tets case for edge cases."""
+    x = np.asarray([1])
+    result = standard_trimmed_harrell_davis_quantile(x)
+    if result != pytest.approx(1.0, rel=1e-4):
+        msg = "Result does not match expected output."
+        raise ValueError(msg)
+
+
+def test_q_in_sthdq(x_array_float: np.ndarray) -> None:
+    """Simple tets case for correctnes of q."""
+    with pytest.raises(ValueError, match="Parameter q should be in range"):
+        standard_trimmed_harrell_davis_quantile(x_array_float, q=1)
+    with pytest.raises(ValueError, match="Parameter q should be in range"):
+        standard_trimmed_harrell_davis_quantile(x_array_float, q=0)
 
 
 def test_hls() -> None:
@@ -59,8 +80,47 @@ def test_hls() -> None:
     if result != pytest.approx(3.5):
         msg = "Results from the test and paper do not match."
         raise ValueError(msg)
-    x = np.asarray((10**100, 10**100, 2, 2, 7, 4, 1, 6))
-    result = hodges_lehmann_sen_location(x)
-    if result != pytest.approx(5.75):
+
+
+def test_hsm() -> None:
+    """Simple tets case for correctness of Half Sample Mode."""
+    x = np.asarray((1, 2, 2, 2, 7, 4, 1, 6))
+    result = half_sample_mode(x)
+    if result != pytest.approx(2.0):
         msg = "Results from the test and paper do not match."
+        raise ValueError(msg)
+    result = half_sample_mode(x[:3])
+    if result != pytest.approx(2):
+        msg = "Results from the test and paper do not match."
+        raise ValueError(msg)
+    result = half_sample_mode(x[1:4])
+    if result != pytest.approx(2):
+        msg = "Results from the test and paper do not match."
+        raise ValueError(msg)
+    result = half_sample_mode(x[2:5])
+    if result != pytest.approx(2):
+        msg = "Results from the test and paper do not match."
+        raise ValueError(msg)
+
+
+@pytest.mark.parametrize(
+    "func",
+    [
+        contraharmonic_mean,
+        midhinge,
+        midmean,
+        midrange,
+        trimean,
+        hodges_lehmann_sen_location,
+        standard_trimmed_harrell_davis_quantile,
+        half_sample_mode,
+    ],
+)
+def test_statistic_with_nans(
+    func: typing.Callable,
+    x_array_nan: np.ndarray,
+) -> None:
+    """Test for different data types."""
+    if np.isnan(func(x_array_nan)):
+        msg = "Statistics should support nans."
         raise ValueError(msg)

@@ -1,6 +1,8 @@
 """Module for measures of categorical variations."""
 
 
+from collections import Counter
+
 import numpy as np
 from scipy import stats  # type: ignore[import-untyped]
 
@@ -30,7 +32,7 @@ def mod_vr(x: np.ndarray) -> float:
     Indices of Qualitative Variation and Political Measurement.
     The Western Political Quarterly. 26 (2): 325-343.
     """
-    cnts = np.unique(x, return_counts=True)[1]
+    cnts = np.asarray(list(Counter(x).values()))
     n = len(x)
     return 1 - np.max(cnts) / n
 
@@ -60,7 +62,7 @@ def range_vr(x: np.ndarray) -> float:
     Indices of Qualitative Variation and Political Measurement.
     The Western Political Quarterly. 26 (2): 325-343.
     """
-    cnts = np.unique(x, return_counts=True)[1]
+    cnts = np.asarray(list(Counter(x).values()))
     return np.min(cnts) / np.max(cnts)
 
 
@@ -102,7 +104,7 @@ def gibbs_m1(x: np.ndarray) -> float:
     Blau's index in sociology, psychology and management studies;
     Special case of Tsallis entropy (alpha = 2).
     """
-    freq = np.unique(x, return_counts=True)[1] / len(x)
+    freq = np.asarray(list(Counter(x).values())) / len(x)
     return 1 - np.sum(np.square(freq))
 
 
@@ -131,7 +133,7 @@ def gibbs_m2(x: np.ndarray) -> float:
     The Division of Labor: Conceptualization and Related Measures".
     Social Forces, 53 (3): 468-476.
     """
-    freq = np.unique(x, return_counts=True)[1] / len(x)
+    freq = np.asarray(list(Counter(x).values())) / len(x)
     k = len(freq)
     return (k / (k - 1)) * (1 - np.sum(np.square(freq)))
 
@@ -161,7 +163,7 @@ def b_index(x: np.ndarray) -> float:
     The Western Political Quarterly. 26 (2): 325-343.
     """
     n = len(x)
-    freq = np.unique(x, return_counts=True)[1] / n
+    freq = np.asarray(list(Counter(x).values())) / n
     return 1 - np.sqrt(1 - np.square(stats.gmean(freq * len(freq) / n)))
 
 
@@ -190,7 +192,7 @@ def ada_index(x: np.ndarray) -> float:
     The Western Political Quarterly. 26 (2): 325-343.
     """
     n = len(x)
-    freq = np.unique(x, return_counts=True)[1] / n
+    freq = np.asarray(list(Counter(x).values())) / n
     k = len(freq)
     mean = n / k
     return 1 - (np.sum(np.abs(freq - mean)) / (2 * mean * max(k - 1, 1)))
@@ -220,37 +222,6 @@ def extropy(x: np.ndarray) -> float:
     Extropy: Complementary dual of entropy.
     Statistical Science, 30(1), 40-58.
     """
-    freq = np.unique(x, return_counts=True)[1] / len(x)
+    freq = np.asarray(list(Counter(x).values())) / len(x)
     p = 1.0 - freq + 1e-7
     return np.sum(p * np.log2(p))
-
-
-def coefficient_of_unalikeability(x: np.ndarray) -> float:
-    """Calculate coefficient of unalikeability.
-
-    It ranges from 0 to 1. The higher the value, the more unalike the data are.
-
-    Parameters
-    ----------
-    x : array_like
-        Input array.
-
-    Returns
-    -------
-    cu : float
-        The value of coefficient of unalikeability.
-
-    References
-    ----------
-    Kader, Gary & Perry, Mike. (2007).
-    Variability for Categorical Variables.
-    Journal of Statistics Education. 15.
-
-    Notes
-    -----
-    This implementation uses cartesian product, so the time and memory complexity
-    are N^2. It is best to not use it on large arrays.
-    """
-    product = np.meshgrid(x, x, sparse=True)
-    n = len(x)
-    return ((product[0] == product[1]).sum() - n) / (n**2 - n)

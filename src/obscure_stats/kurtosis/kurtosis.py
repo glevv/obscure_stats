@@ -24,7 +24,7 @@ def moors_kurt(x: np.ndarray) -> float:
     The meaning of kurtosis: Darlington reexamined.
     The American Statistician, 40 (4): 283-284,
     """
-    return np.nanvar(np.square(stats.zscore(x))) + 1
+    return np.nanvar(np.square(stats.zscore(x, nan_policy="omit"))) + 1
 
 
 def moors_octile_kurt(x: np.ndarray) -> float:

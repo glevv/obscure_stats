@@ -1,8 +1,11 @@
 """Module for measures of skewness."""
 
+from __future__ import annotations
 
 import numpy as np
 from scipy import stats  # type: ignore[import-untyped]
+
+from obscure_stats.central_tendency import half_sample_mode
 
 
 def pearson_mode_skew(x: np.ndarray) -> float:
@@ -28,6 +31,34 @@ def pearson_mode_skew(x: np.ndarray) -> float:
     """
     mean = np.nanmean(x)
     mode = stats.mode(x)[0]
+    std = np.nanstd(x)
+    return (mean - mode) / std
+
+
+def pearson_halfmode_skew(x: np.ndarray) -> float:
+    """Calculate Pearson's mode skew coefficient with half sample mode.
+
+    This measure should be more stable version than regular
+    Pearson's mode skew coefficien.
+
+    Parameters
+    ----------
+    x : array_like
+        Array containing numbers whose Pearson's mode skew coefficient is desired.
+
+    Returns
+    -------
+    phmods : float or array_like.
+        The value of Pearson's half mode skew coefficient.
+
+    References
+    ----------
+    Pearson, E. S. and Hartley, H. O. (1966).
+    Biometrika Tables for Statisticians, vols. I and II.
+    Cambridge University Press, Cambridge.
+    """
+    mean = np.nanmean(x)
+    mode = half_sample_mode(x)
     std = np.nanstd(x)
     return (mean - mode) / std
 
@@ -78,7 +109,7 @@ def medeen_skew(x: np.ndarray) -> float:
     """
     median = np.nanmedian(x)
     mean = np.nanmean(x)
-    return (mean - median) / np.mean(np.abs(x - median))
+    return (mean - median) / np.nanmean(np.abs(x - median))
 
 
 def bowley_skew(x: np.ndarray) -> float:
@@ -212,13 +243,26 @@ def forhad_shorna_rank_skew(x: np.ndarray) -> float:
     """
     mr = (np.nanmin(x) + np.nanmax(x)) * 0.5
     arr = np.r_[x, mr]
-    arr_ranked = stats.rankdata(arr, method="min")
+    arr_ranked = stats.rankdata(arr, method="min", nan_policy="omit")
     diff = arr_ranked[-1] - arr_ranked
     diff = diff[:-1]
     return np.nansum(diff) / np.nansum(np.abs(diff))
 
 
-def auc_skew_gamma(x: np.ndarray, dp: float = 0.01, *, weighted: bool = True) -> float:
+def _auc_skew_gamma(x: np.ndarray, dp: float, w: np.ndarray | float) -> float:
+    """Calculate AUC skew."""
+    n = int(1 / dp)
+    half_n = n // 2
+    qs = np.nanquantile(x, np.r_[np.linspace(0, 1, n), 0.5])
+    med = qs[-1]
+    qs = qs[:-1]
+    qs_low = qs[:half_n]
+    qs_high = qs[-half_n:]
+    skews = (qs_low + qs_high - 2 * med) / (qs_high - qs_low) * w
+    return np.trapz(skews, dx=dp)
+
+
+def auc_skew_gamma(x: np.ndarray, dp: float = 0.01) -> float:
     """Calculate Area under the curve of generalized Bowley skewness coefficients.
 
     Parameters
@@ -227,9 +271,35 @@ def auc_skew_gamma(x: np.ndarray, dp: float = 0.01, *, weighted: bool = True) ->
         Array containing numbers whose AUC Bowley skewness is desired.
     dp : float, default = 0.01
         Step used in calculating area under the curve (integrating).
-    weighted : bool, default = True
-        Whether to use reweightning or not. This will assign bigger weight to the
-        Bowley skewness coefficients calculated on percentiles far from the median.
+
+    Returns
+    -------
+    aucbs : float or array_like.
+        The value of AUC Bowley skewness.
+
+    References
+    ----------
+    Arachchige, C. N., & Prendergast, L. A. (2019).
+    Mean skewness measures.
+    arXiv preprint arXiv:1912.06996.
+    """
+    w = 1.0
+    return _auc_skew_gamma(x, dp, w)
+
+
+def wauc_skew_gamma(x: np.ndarray, dp: float = 0.01) -> float:
+    """
+    Calculate Weighted Area under the curve of generalized Bowley skewness coefficients.
+
+    This version use reweightning. It will assign bigger weights to the
+    Bowley skewness coefficients calculated on percentiles far from the median.
+
+    Parameters
+    ----------
+    x : array_like
+        Array containing numbers whose AUC Bowley skewness is desired.
+    dp : float, default = 0.01
+        Step used in calculating area under the curve (integrating).
 
     Returns
     -------
@@ -244,11 +314,5 @@ def auc_skew_gamma(x: np.ndarray, dp: float = 0.01, *, weighted: bool = True) ->
     """
     n = int(1 / dp)
     half_n = n // 2
-    w = (np.arange(half_n) / half_n)[::-1] if weighted else 1
-    qs = np.nanquantile(x, np.r_[np.linspace(0, 1, n), 0.5])
-    med = qs[-1]
-    qs = qs[:-1]
-    qs_low = qs[:half_n]
-    qs_high = qs[-half_n:]
-    skews = (qs_low + qs_high - 2 * med) / (qs_high - qs_low) * w
-    return np.trapz(skews, dx=dp)
+    w = (np.arange(half_n) / half_n)[::-1]
+    return _auc_skew_gamma(x, dp, w)

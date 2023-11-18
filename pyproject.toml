@@ -30,6 +30,7 @@ pythonpath = "src"
 [tool.ruff]
 select = ["ALL"]
 fixable = ["ALL"]
+ignore = ["COM812", "ISC001"]
 # Exclude a variety of commonly ignored directories.
 exclude = [
     ".bzr",

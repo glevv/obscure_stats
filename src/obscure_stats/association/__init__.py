@@ -2,15 +2,15 @@
 
 from .association import (
     chatterjeexi,
-    concordance_corr,
-    quadrant_count_ratio,
+    concordance_corrcoef,
+    concordance_rate,
     tanimoto_similarity,
     zhangi,
 )
 
 __all__ = [
-    "concordance_corr",
-    "quadrant_count_ratio",
+    "concordance_corrcoef",
+    "concordance_rate",
     "chatterjeexi",
     "zhangi",
     "tanimoto_similarity",

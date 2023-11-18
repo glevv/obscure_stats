@@ -159,12 +159,13 @@ def hodges_lehmann_sen_location(x: np.ndarray) -> float:
     This implementation uses cartesian product, so the time and memory complexity
     are N^2. It is best to not use it on large arrays.
     """
-    product = np.meshgrid(x, x, sparse=True)
-    return np.median(product[0] + product[1]) * 0.5
+    walsh_sums = np.asarray(x).reshape(-1, 1) + np.asarray(x).reshape(1, -1)
+    mask = np.triu_indices(len(x), 1)  # we need only upper trianle without diagonal
+    return np.nanmedian(walsh_sums[mask]) * 0.5
 
 
-def trimmed_harrell_davis_median(x: np.ndarray) -> float:
-    """Calculate Trimmed Harrell-Davis median estimator.
+def standard_trimmed_harrell_davis_quantile(x: np.ndarray, q: float = 0.5) -> float:
+    """Calculate Standard Trimmed Harrell-Davis median estimator.
 
     This measure is very robust.
     It uses modified Harrel-Davies quantiles to calculate median
@@ -174,11 +175,13 @@ def trimmed_harrell_davis_median(x: np.ndarray) -> float:
     ----------
     x : array_like
         Input array.
+    q : float
+        Quantile value in range (0, 1).
 
     Returns
     -------
-    thdm : float
-        The value of Trimmed Harrell-Davis median.
+    thdq : float
+        The value of Trimmed Harrell-Davis quantile.
 
     References
     ----------
@@ -187,17 +190,71 @@ def trimmed_harrell_davis_median(x: np.ndarray) -> float:
     the highest density interval of the given width.
     Communications in Statistics - Simulation and Computation, pp. 1-11.
     """
+    if len(x) <= 1:
+        return x[0]
+    if q <= 0 or q >= 1:
+        msg = "Parameter q should be in range (0, 1)."
+        raise ValueError(msg)
     xs = np.sort(x)
     n = len(x)
     n_calculated = 1 / n**0.5  # heuristic suggested by the author
-    a_b = (n + 1) * 0.5
-    hdi = (0.5 - n_calculated * 0.5, 0.5 + n_calculated * 0.5)
-    hdi_cdf = stats.beta.cdf(hdi, a_b, a_b)
+    a = (n + 1) * q
+    b = (n + 1) * (1.0 - q)
+    hdi = (0.5 - n_calculated * q, 0.5 + n_calculated * (1.0 - q))
+    hdi_cdf = stats.beta.cdf(hdi, a, b)
     i_start = int(math.floor(hdi[0] * n))
     i_end = int(math.ceil(hdi[1] * n))
     nums = np.arange(i_start, i_end + 1) / n
     nums[nums <= hdi[0]] = hdi[0]
     nums[nums >= hdi[1]] = hdi[1]
-    cdfs = (stats.beta.cdf(nums, a_b, a_b) - hdi_cdf[0]) / (hdi_cdf[1] - hdi_cdf[0])
+    cdfs = (stats.beta.cdf(nums, a, b) - hdi_cdf[0]) / (hdi_cdf[1] - hdi_cdf[0])
     w = cdfs[1:] - cdfs[:-1]
     return np.sum(xs[i_start:i_end] * w)
+
+
+def half_sample_mode(x: np.ndarray) -> float:
+    """Calculate half sample mode.
+
+    This estimator is more stable than regular mode estimation,
+    especially for floating point values.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+
+    Returns
+    -------
+    hsm : float
+        The value of Half Sample Mode.
+
+    References
+    ----------
+    Bickel, D. R., & Frühwirth, R. (2006).
+    On a fast, robust estimator of the mode:
+    Comparisons to other robust estimators with applications.
+    Computational Statistics & Data Analysis, 50(12), 3500-3530.
+    """
+    y = np.asarray(x)
+    y = y[np.isfinite(y)]
+    y = np.sort(y)
+    _corner_cases = (4, 3)  # for 4 samples and 3 samples
+    while (ny := len(y)) >= _corner_cases[0]:
+        half_y = ny // 2
+        w_min = y[-1] - y[0]
+        for i in range(ny - half_y):
+            w = y[i + half_y - 1] - y[i]
+            if w <= w_min:
+                w_min = w
+                j = i
+        if w == 0:
+            return y[j]
+        y = y[j : (j + half_y - 1)]
+    if len(y) == _corner_cases[1]:
+        z = 2 * y[1] - y[0] - y[2]
+        if z < 0:
+            return np.mean(y[0:1])
+        if z > 0:
+            return np.mean(y[1:2])
+        return y[1]
+    return np.mean(y)

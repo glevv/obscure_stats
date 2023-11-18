@@ -92,3 +92,29 @@ def test_cv_corner_cases(func: typing.Callable) -> None:
         if func(x) is not np.inf:
             msg = "Dispersion should be inf."
             raise ValueError(msg)
+
+
+@pytest.mark.parametrize(
+    "func",
+    [
+        coefficient_of_lvariation,
+        coefficient_of_variation,
+        robust_coefficient_of_variation,
+        dispersion_ratio,
+        efficiency,
+        hoover_index,
+        lloyds_index,
+        morisita_index,
+        quartile_coefficient_of_dispersion,
+        sqad,
+        studentized_range,
+    ],
+)
+def test_statistic_with_nans(
+    func: typing.Callable,
+    x_array_nan: np.ndarray,
+) -> None:
+    """Test for different data types."""
+    if np.isnan(func(x_array_nan)):
+        msg = "Statistics should support nans."
+        raise ValueError(msg)

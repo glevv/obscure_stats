@@ -56,3 +56,23 @@ def test_kurt_sensibility(func: typing.Callable, seed: int) -> None:
     if func(platy) > func(lepto):
         msg = "Kurtosis in the first case should be lower."
         raise ValueError(msg)
+
+
+@pytest.mark.parametrize(
+    "func",
+    [
+        moors_kurt,
+        moors_octile_kurt,
+        hogg_kurt,
+        crow_siddiqui_kurt,
+        reza_ma_kurt,
+    ],
+)
+def test_statistic_with_nans(
+    func: typing.Callable,
+    x_array_nan: np.ndarray,
+) -> None:
+    """Test for different data types."""
+    if np.isnan(func(x_array_nan)):
+        msg = "Statistics should support nans."
+        raise ValueError(msg)

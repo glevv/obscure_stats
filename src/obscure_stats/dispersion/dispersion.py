@@ -267,8 +267,8 @@ def morisita_index(x: np.ndarray) -> float:
     Measuring the dispersion and the analysis of distribution patterns.
     Memoirs of the Faculty of Science, Kyushu University Series e. Biol. 2: 215-235
     """
-    x_sum = np.sum(x)
-    return len(x) * (np.sum(np.square(x)) - x_sum) / (x_sum**2 - x_sum)
+    x_sum = np.nansum(x)
+    return len(x) * (np.nansum(np.square(x)) - x_sum) / (x_sum**2 - x_sum)
 
 
 def sqad(x: np.ndarray) -> float:

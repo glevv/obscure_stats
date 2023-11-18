@@ -2,12 +2,13 @@
 
 from .central_tendency import (
     contraharmonic_mean,
+    half_sample_mode,
     hodges_lehmann_sen_location,
     midhinge,
     midmean,
     midrange,
+    standard_trimmed_harrell_davis_quantile,
     trimean,
-    trimmed_harrell_davis_median,
 )
 
 __all__ = [
@@ -17,5 +18,6 @@ __all__ = [
     "midrange",
     "trimean",
     "hodges_lehmann_sen_location",
-    "trimmed_harrell_davis_median",
+    "standard_trimmed_harrell_davis_quantile",
+    "half_sample_mode",
 ]

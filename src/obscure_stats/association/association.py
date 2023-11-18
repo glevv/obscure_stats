@@ -1,18 +1,57 @@
 """Module for association measures."""
 
+from __future__ import annotations
+
 import warnings
 
 import numpy as np
 from scipy import stats  # type: ignore[import-untyped]
 
 
-def _check_const(x: np.ndarray) -> bool:
-    """Checker for constant arrays."""
-    return all(np.isclose(x, x[0]))
+def _check_arrays(x: np.ndarray, y: np.ndarray) -> bool:
+    """Check arrays."""
+    if all(np.isclose(x, x[0])):
+        warnings.warn(
+            "An input array x is constant; the correlation coefficient is not defined.",
+            stacklevel=2,
+        )
+        return True
+    if all(np.isclose(y, y[0])):
+        warnings.warn(
+            "An input array y is constant; the correlation coefficient is not defined.",
+            stacklevel=2,
+        )
+        return True
+    if any(np.isinf(x)):
+        warnings.warn(
+            "An input array x contains inf, please check the array.",
+            stacklevel=2,
+        )
+        return True
+    if any(np.isinf(y)):
+        warnings.warn(
+            "An input array y contains inf, please check the array.",
+            stacklevel=2,
+        )
+        return True
+    return False
+
+
+def _prep_arrays(x: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Prepare data for downstream task."""
+    notnan = ~(np.isnan(x) | np.isnan(y))
+    _x = np.asarray(x)
+    _y = np.asarray(y)
+    _x = _x[notnan]
+    _y = _y[notnan]
+    if len(_x) <= 1 or len(_y) <= 1:
+        msg = "There are too many missing values in the array."
+        raise ValueError(msg)
+    return _x, _y
 
 
 def chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
-    """Calculate ξ correlation.
+    """Calculate xi correlation.
 
     Another variation of rank correlation which does not make any assumptions about
     underlying distributions of the variable.
@@ -47,23 +86,20 @@ def chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
     -----
     This measure is assymetric: (x, y) != (y, x).
     """
-    n = len(x)
-    if _check_const(x) or _check_const(y):
-        warnings.warn(
-            "An input array is constant; the correlation coefficient is not defined.",
-            stacklevel=2,
-        )
+    if _check_arrays(x, y):
         return np.nan
+    x, y = _prep_arrays(x, y)
+    n = len(x)
     x_ranked = stats.rankdata(x, method="ordinal")
     y_forward_ranked = stats.rankdata(y, method="max")
-    y_backward_ranked = stats.rankdata(np.negative(y), method="max")
+    y_backward_ranked = stats.rankdata(-y, method="max")
     y_forward_ranked_ordered = y_forward_ranked[np.argsort(x_ranked)]
     nom = np.sum(np.abs(np.diff(y_forward_ranked_ordered)))
     denom = np.sum(y_backward_ranked * (n - y_backward_ranked)) / n**3
     return 1.0 - nom / (2 * n**2 * denom)
 
 
-def concordance_corr(x: np.ndarray, y: np.ndarray) -> float:
+def concordance_corrcoef(x: np.ndarray, y: np.ndarray) -> float:
     """Calculate concordance correlation coefficient.
 
     The main difference between Pearson's R and CCC is that CCC
@@ -90,12 +126,9 @@ def concordance_corr(x: np.ndarray, y: np.ndarray) -> float:
     A concordance correlation coefficient to evaluate reproducibility.
     Biometrics. 45 (1): 255-268.
     """
-    if _check_const(x) or _check_const(y):
-        warnings.warn(
-            "An input array is constant; the correlation coefficient is not defined.",
-            stacklevel=2,
-        )
+    if _check_arrays(x, y):
         return np.nan
+    x, y = _prep_arrays(x, y)
     std_x = np.std(x, ddof=0)
     std_y = np.std(y, ddof=0)
     w = std_y / std_x
@@ -105,17 +138,17 @@ def concordance_corr(x: np.ndarray, y: np.ndarray) -> float:
     return p * x_a
 
 
-def quadrant_count_ratio(
+def concordance_rate(
     x: np.ndarray,
     y: np.ndarray,
-    *,
-    exclusion_zone: bool = False,
 ) -> float:
-    """Calculate quadrant count ratio.
+    """Calculate conventional concordance rate.
 
+    Also known as quadrant count ratio.
     It could be seen as simplified version of Pearson's R.
 
-    This variation has an option for an exclusion zone.
+    It differs from quadrant count ratio by adding and exclusion zone
+    variation has an option for an exclusion zone.
     It is based on the standard error of the mean and will exlucde
     points that are in the range of mean+-sem.
 
@@ -125,12 +158,10 @@ def quadrant_count_ratio(
         Measured values.
     y : array_like
         Reference values.
-    exclusion_zone : bool
-        Whether to use eclusion zone or not.
 
     Returns
     -------
-    qcr : float.
+    ccr : float.
         The value of the quadrant count ratio.
 
     References
@@ -138,39 +169,26 @@ def quadrant_count_ratio(
     Holmes, Peter (Autumn 2001).
     Correlation: From Picture to Formula.
     Teaching Statistics. 23 (3): 67-71.
-
-    Hiraishi, M., Tanioka, K., & Shimokawa, T. (2021).
-    Concordance rate of a four-quadrant plot for repeated measurements.
-    BMC Medical Research Methodology, 21(1), 1-16.
     """
-    if _check_const(x) or _check_const(y):
-        warnings.warn(
-            "An input array is constant; the correlation coefficient is not defined.",
-            stacklevel=2,
-        )
+    if _check_arrays(x, y):
         return np.nan
-    _x = np.asarray(x)
-    _y = np.asarray(y)
-    mean_x = np.nanmean(_x)
-    mean_y = np.nanmean(_y)
+    x, y = _prep_arrays(x, y)
     n = len(x)
-    if exclusion_zone:
-        sem_x = np.std(_x, ddof=0) / n**0.5
-        sem_y = np.std(_y, ddof=0) / n**0.5
-    else:
-        sem_x = 0
-        sem_y = 0
-    n_q1 = np.nansum((_x > mean_x + sem_x) & (_y > mean_y + sem_y))
-    n_q2 = np.nansum((_x < mean_x - sem_x) & (_y > mean_y + sem_y))
-    n_q3 = np.nansum((_x < mean_x - sem_x) & (_y < mean_y - sem_y))
-    n_q4 = np.nansum((_x > mean_x + sem_x) & (_y < mean_y - sem_y))
+    mean_x = np.sum(x) / n
+    mean_y = np.sum(y) / n
+    sem_x = np.std(x, ddof=0) / n**0.5
+    sem_y = np.std(y, ddof=0) / n**0.5
+    n_q1 = np.sum((x > mean_x + sem_x) & (y > mean_y + sem_y))
+    n_q2 = np.sum((x < mean_x - sem_x) & (y > mean_y + sem_y))
+    n_q3 = np.sum((x < mean_x - sem_x) & (y < mean_y - sem_y))
+    n_q4 = np.sum((x > mean_x + sem_x) & (y < mean_y - sem_y))
     return (n_q1 + n_q3 - n_q2 - n_q4) / n
 
 
 def zhangi(x: np.ndarray, y: np.ndarray) -> float:
     """Calculate I correlation proposed by Q. Zhang.
 
-    This is a modification of Spearman and Chatterjee rank correlation coefficients.
+    This coefficient combines Spearman and Chatterjee rank correlation coefficients.
 
     Parameters
     ----------
@@ -194,12 +212,9 @@ def zhangi(x: np.ndarray, y: np.ndarray) -> float:
     -----
     This measure is assymetric: (x, y) != (y, x).
     """
-    if _check_const(x) or _check_const(y):
-        warnings.warn(
-            "An input array is constant; the correlation coefficient is not defined.",
-            stacklevel=2,
-        )
+    if _check_arrays(x, y):
         return np.nan
+    x, y = _prep_arrays(x, y)
     return max(
         abs(stats.spearmanr(x, y, nan_policy="omit")[1]),
         2.5**0.5 * chatterjeexi(x, y),
@@ -230,9 +245,10 @@ def tanimoto_similarity(x: np.ndarray, y: np.ndarray) -> float:
     A Computer Program for Classifying Plants.
     Science. 132 (3434): 1115-8.
     """
-    _x = np.asarray(x)
-    _y = np.asarray(y)
-    xy = np.nanmean(_x * _y)
-    xx = np.nanmean(_x**2)
-    yy = np.nanmean(_y**2)
+    if _check_arrays(x, y):
+        return np.nan
+    x, y = _prep_arrays(x, y)
+    xy = np.mean(x * y)
+    xx = np.mean(x**2)
+    yy = np.mean(y**2)
     return xy / (xx + yy - xy)
