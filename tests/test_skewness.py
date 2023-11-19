@@ -216,5 +216,5 @@ def test_statistic_with_nans(
 ) -> None:
     """Test for different data types."""
     if np.isnan(func(x_array_nan)):
-        msg = "Statistics should support nans."
+        msg = "Statistic should not return nans."
         raise ValueError(msg)

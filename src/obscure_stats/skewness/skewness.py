@@ -25,7 +25,7 @@ def pearson_mode_skew(x: np.ndarray) -> float:
 
     References
     ----------
-    Pearson, E. S. and Hartley, H. O. (1966).
+    Pearson, E. S.; Hartley, H. O. (1966).
     Biometrika Tables for Statisticians, vols. I and II.
     Cambridge University Press, Cambridge.
     """
@@ -53,7 +53,7 @@ def pearson_halfmode_skew(x: np.ndarray) -> float:
 
     References
     ----------
-    Pearson, E. S. and Hartley, H. O. (1966).
+    Pearson, E. S.; Hartley, H. O. (1966).
     Biometrika Tables for Statisticians, vols. I and II.
     Cambridge University Press, Cambridge.
     """
@@ -78,7 +78,7 @@ def pearson_median_skew(x: np.ndarray) -> float:
 
     References
     ----------
-    Pearson, E.S. and Hartley, H.O. (1966).
+    Pearson, E.S.; Hartley, H.O. (1966).
     Biometrika Tables for Statisticians, vols. I and II.
     Cambridge University Press, Cambridge.
     """
@@ -156,7 +156,7 @@ def groeneveld_skew(x: np.ndarray) -> float:
 
     References
     ----------
-    Groeneveld, R.A.; Meeden, G. (1984).
+    Groeneveld, R. A.; Meeden, G. (1984).
     Measuring Skewness and Kurtosis.
     The Statistician. 33 (4): 391-399.
     """
@@ -184,7 +184,7 @@ def kelly_skew(x: np.ndarray) -> float:
 
     References
     ----------
-    David, F. N. and Johnson, N. L., (1956).
+    David, F. N.; Johnson, N. L. (1956).
     Some tests of significance with ordered variables.
     J. R. Stat. Soc. Ser. B Stat. Methodol. 18, 1-31.
     """
@@ -210,7 +210,7 @@ def hossain_adnan_skew(x: np.ndarray) -> float:
 
     References
     ----------
-    Hossain, M.F. and Adnan, M.A.S.A (2007).
+    Hossain, M. F.; Adnan, M. A. S. A (2007).
     A New Approach to Determine the Asymmetry of a Distribution.
     Journal of Applied St atistical Science, Vol.15, pp. 127-134.
     """
@@ -236,7 +236,7 @@ def forhad_shorna_rank_skew(x: np.ndarray) -> float:
 
     References
     ----------
-    Shorna, U. S., & Hossain, M. (2019).
+    Shorna, U. S.; Hossain, M. (2019).
     A New Approach to Determine the Coefficient of Skewness and
     An Alternative Form of Boxplot.
     arXiv preprint arXiv:1908.06400.
@@ -279,7 +279,7 @@ def auc_skew_gamma(x: np.ndarray, dp: float = 0.01) -> float:
 
     References
     ----------
-    Arachchige, C. N., & Prendergast, L. A. (2019).
+    Arachchige, C. N.; & Prendergast, L. A. (2019).
     Mean skewness measures.
     arXiv preprint arXiv:1912.06996.
     """
@@ -308,7 +308,7 @@ def wauc_skew_gamma(x: np.ndarray, dp: float = 0.01) -> float:
 
     References
     ----------
-    Arachchige, C. N., & Prendergast, L. A. (2019).
+    Arachchige, C. N.; & Prendergast, L. A. (2019).
     Mean skewness measures.
     arXiv preprint arXiv:1912.06996.
     """

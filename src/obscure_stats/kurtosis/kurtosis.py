@@ -105,7 +105,7 @@ def crow_siddiqui_kurt(x: np.ndarray) -> float:
 
     References
     ----------
-    Crow, E. L. and Siddiqui, M. (1967).
+    Crow, E. L.; Siddiqui, M. (1967).
     Robust estimation of location.
     Journal of the American Statistical Association, 62(318):353-389.
     """
@@ -131,7 +131,7 @@ def reza_ma_kurt(x: np.ndarray) -> float:
 
     References
     ----------
-    Reza, M.S., & Ma, J. (2016).
+    Reza, M. S.; Ma, J. (2016).
     ICA and PCA integrated feature extraction for classification.
     2016 IEEE 13th International Conference on Signal Processing (ICSP), 1083-1088.
     """

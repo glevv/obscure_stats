@@ -9,34 +9,37 @@ from scipy import stats  # type: ignore[import-untyped]
 
 
 def _check_arrays(x: np.ndarray, y: np.ndarray) -> bool:
-    """Check arrays."""
+    """Check arrays.
+
+    - Lenghts of the arrays;
+    - Constant input;
+    - Contains inf.
+    """
     if len(x) != len(y):
         warnings.warn(
-            "Lenghts of the inputs do not match.",
+            "Lenghts of the inputs do not match, please check the arrays.",
             stacklevel=2,
         )
         return True
-    if all(np.isclose(x, x[0])):
+    if all(np.isclose(x, x[0], equal_nan=False)) or all(
+        np.isclose(y, y[0], equal_nan=False)
+    ):
         warnings.warn(
-            "An input array x is constant; the correlation coefficient is not defined.",
+            "One of the input arrays is constant;"
+            " the correlation coefficient is not defined.",
             stacklevel=2,
         )
         return True
-    if all(np.isclose(y, y[0])):
+    if any(np.isinf(x)) or any(np.isinf(y)):
         warnings.warn(
-            "An input array y is constant; the correlation coefficient is not defined.",
+            "One of the input arrays contains inf, please check the array.",
             stacklevel=2,
         )
         return True
-    if any(np.isinf(x)):
+    if (np.isnan(x).sum() >= len(x) - 1) or (np.isnan(y).sum() >= len(x) - 1):
         warnings.warn(
-            "An input array x contains inf, please check the array.",
-            stacklevel=2,
-        )
-        return True
-    if any(np.isinf(y)):
-        warnings.warn(
-            "An input array y contains inf, please check the array.",
+            "One of the input arrays has too many missing values,"
+            " please check the arrays.",
             stacklevel=2,
         )
         return True
@@ -50,9 +53,6 @@ def _prep_arrays(x: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     _y = np.asarray(y)
     _x = _x[notnan]
     _y = _y[notnan]
-    if len(_x) <= 1 or len(_y) <= 1:
-        msg = "There are too many missing values in the array."
-        raise ValueError(msg)
     return _x, _y
 
 
@@ -128,7 +128,7 @@ def concordance_corrcoef(x: np.ndarray, y: np.ndarray) -> float:
 
     References
     ----------
-    Lawrence I-Kuei Lin (1989).
+    Lin, L. I. (1989).
     A concordance correlation coefficient to evaluate reproducibility.
     Biometrics. 45 (1): 255-268.
     """
@@ -172,7 +172,7 @@ def concordance_rate(
 
     References
     ----------
-    Holmes, Peter (Autumn 2001).
+    Holmes, P. (2001).
     Correlation: From Picture to Formula.
     Teaching Statistics. 23 (3): 67-71.
     """
@@ -245,7 +245,7 @@ def zhangi(x: np.ndarray, y: np.ndarray) -> float:
 
     References
     ----------
-    Zhang, Q., 2023.
+    Zhang, Q. (2023).
     On relationships between Chatterjee's and Spearman's correlation coefficients.
     arXiv preprint arXiv:2302.10131.
 
@@ -282,7 +282,7 @@ def tanimoto_similarity(x: np.ndarray, y: np.ndarray) -> float:
 
     References
     ----------
-    Rogers DJ, Tanimoto TT, 1960.
+    Rogers, D. J.; Tanimoto, T. T. (1960).
     A Computer Program for Classifying Plants.
     Science. 132 (3434): 1115-8.
     """

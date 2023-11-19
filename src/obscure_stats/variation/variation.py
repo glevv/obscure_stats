@@ -13,8 +13,8 @@ def mod_vr(x: np.ndarray) -> float:
     This ratio could be interpreted as the probability of
     category not being the most frequent.
 
-    Low values of ModVR correspond to small amount of variation
-    and high values to larger amounts of variation.
+    Low values of Mode VR correspond to lower variation and
+    high values to higher variation.
 
     Parameters
     ----------
@@ -28,7 +28,7 @@ def mod_vr(x: np.ndarray) -> float:
 
     References
     ----------
-    Wilcox, Allen R. (June 1973).
+    Wilcox, A. R. (1973).
     Indices of Qualitative Variation and Political Measurement.
     The Western Political Quarterly. 26 (2): 325-343.
     """
@@ -43,8 +43,8 @@ def range_vr(x: np.ndarray) -> float:
     Ratio of frequencies of the least and the most common categories.
     This ratio is similar to range or peak-to-peak for real values.
 
-    Low values of RanVR correspond to small amount of variation
-    and high values to larger amounts of variation.
+    Low values of Range VR correspond to lower variation and
+    high values to higher variation.
 
     Parameters
     ----------
@@ -58,7 +58,7 @@ def range_vr(x: np.ndarray) -> float:
 
     References
     ----------
-    Wilcox, Allen R. (June 1973).
+    Wilcox, A. R. (1973).
     Indices of Qualitative Variation and Political Measurement.
     The Western Political Quarterly. 26 (2): 325-343.
     """
@@ -73,8 +73,8 @@ def gibbs_m1(x: np.ndarray) -> float:
     of samples will belong to the same category (standardized likelihood of
     a random pair falling in the same category).
 
-    Low values of G1 correspond to small amount of variation
-    and high values to larger amounts of variation.
+    Low values of Gibbs M1 correspond to lower variation and
+    high values to higher variation.
 
     Parameters
     ----------
@@ -88,8 +88,8 @@ def gibbs_m1(x: np.ndarray) -> float:
 
     References
     ----------
-    Gibbs, Jack P., Poston Jr, Dudley L. (March 1975).
-    The Division of Labor: Conceptualization and Related Measures".
+    Gibbs, J. P.; Poston Jr, D. L. (1975).
+    The Division of Labor: Conceptualization and Related Measures.
     Social Forces, 53 (3): 468-476.
 
     See Also
@@ -114,8 +114,8 @@ def gibbs_m2(x: np.ndarray) -> float:
     M2 can be interpreted as the ratio of the variance of
     the multinomial distribution to the variance of a binomial distribution.
 
-    Low values of G2 correspond to small amount of variation
-    and high values to larger amounts of variation.
+    Low values of Gibbs M2 correspond to lower variation and
+    high values to higher variation.
 
     Parameters
     ----------
@@ -129,8 +129,8 @@ def gibbs_m2(x: np.ndarray) -> float:
 
     References
     ----------
-    Gibbs, Jack P., Poston Jr, Dudley L. (March 1975).
-    The Division of Labor: Conceptualization and Related Measures".
+    Gibbs, J. P.; Poston Jr, D. L. (1975).
+    The Division of Labor: Conceptualization and Related Measures.
     Social Forces, 53 (3): 468-476.
     """
     freq = np.asarray(list(Counter(x).values())) / len(x)
@@ -143,8 +143,8 @@ def b_index(x: np.ndarray) -> float:
 
     Normalized to 0-1 range geometric mean of probabilities of all categories.
 
-    Low values of BIn correspond to small amount of variation
-    and high values to larger amounts of variation.
+    Low values of B Index correspond to lower variation and
+    high values to higher variation.
 
     Parameters
     ----------
@@ -158,7 +158,7 @@ def b_index(x: np.ndarray) -> float:
 
     References
     ----------
-    Wilcox, Allen R. (June 1973).
+    Wilcox, A. R. (1973).
     Indices of Qualitative Variation and Political Measurement.
     The Western Political Quarterly. 26 (2): 325-343.
     """
@@ -172,8 +172,8 @@ def ada_index(x: np.ndarray) -> float:
 
     Normalized to 0-1 range categorical analog of the mean deviation.
 
-    Low values of AdaIn correspond to small amount of variation
-    and high values to larger amounts of variation.
+    Low values of Ada Index correspond to lower variation and
+    high values to higher variation.
 
     Parameters
     ----------
@@ -187,7 +187,7 @@ def ada_index(x: np.ndarray) -> float:
 
     References
     ----------
-    Wilcox, Allen R. (June 1973).
+    Wilcox, A. R. (1973).
     Indices of Qualitative Variation and Political Measurement.
     The Western Political Quarterly. 26 (2): 325-343.
     """
@@ -199,12 +199,12 @@ def ada_index(x: np.ndarray) -> float:
 
 
 def extropy(x: np.ndarray) -> float:
-    """Calculate Information Extropy (bits).
+    """Calculate Negative Information Extropy (bits).
 
-    Measure complementary to entropy.
+    This measure is complementary to entropy.
 
-    Low values of extropy correspond to high amount of variation
-    and high values to smaller amounts of variation.
+    Low values of extropy correspond to lower variation and
+    high values to higher variation.
 
     Parameters
     ----------
@@ -218,10 +218,10 @@ def extropy(x: np.ndarray) -> float:
 
     References
     ----------
-    Lad, F., Sanfilippo, G., & Agro, G. (2015).
+    Lad, F.; Sanfilippo, G.; Agro, G. (2015).
     Extropy: Complementary dual of entropy.
     Statistical Science, 30(1), 40-58.
     """
     freq = np.asarray(list(Counter(x).values())) / len(x)
     p = 1.0 - freq + 1e-7
-    return np.sum(p * np.log2(p))
+    return -np.sum(p * np.log2(p))

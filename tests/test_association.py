@@ -74,7 +74,8 @@ def test_unsigned_corr_sensibility(
     func: typing.Callable, y_array_float: np.ndarray
 ) -> None:
     """Testing for result correctness."""
-    w = np.r_[2, np.ones(shape=(len(y_array_float) - 1))]
+    w = np.ones(shape=len(y_array_float))
+    w[0] = 2
     if func(y_array_float, -y_array_float) < func(y_array_float, w):
         msg = "Corr coeff higher in the first case."
         raise ValueError(msg)
@@ -92,7 +93,7 @@ def test_unsigned_corr_sensibility(
 )
 def test_const(func: typing.Callable, y_array_float: np.ndarray) -> None:
     """Testing for constant input."""
-    x = np.ones(shape=(len(y_array_float)))
+    x = np.ones(shape=(len(y_array_float),))
     with pytest.warns(match="is constant"):
         if func(x, y_array_float) is not np.nan:
             msg = "Corr coef should be 0 with constant input."
@@ -141,7 +142,30 @@ def test_notfinite_association(
     if np.isnan(func(x_array_nan, y_array_int)):
         msg = "Corr coef should support nans."
         raise ValueError(msg)
+    with pytest.warns(match="too many missing values"):
+        func(x_array_nan[:2], x_array_int[:2])
     with pytest.warns(match="contains inf"):
         if not np.isnan(func(x_array_int, y_array_inf)):
             msg = "Corr coef should support infs."
             raise ValueError(msg)
+
+
+@pytest.mark.parametrize(
+    "func",
+    [
+        chatterjeexi,
+        concordance_corrcoef,
+        concordance_rate,
+        symmetric_chatterjeexi,
+        tanimoto_similarity,
+        zhangi,
+    ],
+)
+def test_unequal_arrays(
+    func: typing.Callable,
+    x_array_int: np.ndarray,
+    y_array_int: np.ndarray,
+) -> None:
+    """Test for unequal arrays."""
+    with pytest.warns(match="Lenghts of the inputs do not match"):
+        func(x_array_int[:4], y_array_int[:3])

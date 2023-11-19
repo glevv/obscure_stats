@@ -6,6 +6,7 @@ from .dispersion import (
     dispersion_ratio,
     efficiency,
     hoover_index,
+    jains_fairness_index,
     lloyds_index,
     morisita_index,
     quartile_coefficient_of_dispersion,
@@ -26,4 +27,5 @@ __all__ = [
     "sqad",
     "studentized_range",
     "robust_coefficient_of_variation",
+    "jains_fairness_index",
 ]

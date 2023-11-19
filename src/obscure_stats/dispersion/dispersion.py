@@ -23,7 +23,7 @@ def efficiency(x: np.ndarray) -> float:
 
     References
     ----------
-    Grubbs, Frank (1965).
+    Grubbs, F. E. (1965).
     Statistical Measures of Accuracy for Riflemen and Missile Engineers. pp. 26-27.
     """
     mean = np.nanmean(x)
@@ -73,7 +73,7 @@ def coefficient_of_lvariation(x: np.ndarray) -> float:
 
     References
     ----------
-    Hosking, J.R.M. (1990).
+    Hosking, J. R. M. (1990).
     L-moments: analysis and estimation of distributions
     using linear combinations of order statistics.
     Journal of the Royal Statistical Society, Series B. 52 (1): 105-124.
@@ -101,7 +101,7 @@ def coefficient_of_variation(x: np.ndarray) -> float:
 
     References
     ----------
-    Brown, C.E. (1998).
+    Brown, C. E. (1998).
     Coefficient of Variation.
     Applied Multivariate Statistics in Geohydrology and Related Sciences. Springer.
     """
@@ -129,7 +129,7 @@ def robust_coefficient_of_variation(x: np.ndarray) -> float:
 
     References
     ----------
-    Reimann, C., Filzmoser, P., Garrett, R.G. and Dutter, R. (2008).
+    Reimann, C.; Filzmoser; P.; Garrett, R. G.; Dutter, R. (2008).
     Statistical Data Analysis Explained: Applied Environmental Statistics with R.
     John Wiley and Sons, New York.
     """
@@ -182,10 +182,10 @@ def dispersion_ratio(x: np.ndarray) -> float:
 
     References
     ----------
-    Soobramoney, J., Chifurira, R., & Zewotir, T. (2022)
+    Soobramoney, J.; Chifurira, R.; Zewotir, T. (2022)
     Selecting key features of online behaviour on South African informative websites
     prior to unsupervised machine learning.
-    Statistics, Optimization & Information Computing.
+    Statistics, Optimization & Information Computing, 11(2), 519-530.
     """
     return np.nanmean(x) / (stats.gmean(x, nan_policy="omit") + EPS)
 
@@ -211,7 +211,7 @@ def hoover_index(x: np.ndarray) -> float:
 
     References
     ----------
-    Edgar Malone Hoover Jr. (1936).
+    Hoover Jr, E. M. (1936).
     The Measurement of Industrial Localization.
     Review of Economics and Statistics, 18, No. 162-71.
     """
@@ -236,7 +236,7 @@ def lloyds_index(x: np.ndarray) -> float:
 
     References
     ----------
-    Lloyd, M (1967).
+    Lloyd, M. (1967).
     Mean crowding.
     J Anim Ecol. 36 (1): 1-30.
     """
@@ -263,7 +263,7 @@ def morisita_index(x: np.ndarray) -> float:
 
     References
     ----------
-    Morisita, M (1959).
+    Morisita, M. (1959).
     Measuring the dispersion and the analysis of distribution patterns.
     Memoirs of the Faculty of Science, Kyushu University Series e. Biol. 2: 215-235
     """
@@ -275,7 +275,7 @@ def sqad(x: np.ndarray) -> float:
     """Calculate Standard quantile absolute deviation.
 
     This measure is a robust measure of dispersion, that does not need
-    normalizing constant like MAD.
+    normalizing constant like MAD and has higher gaussian efficiency.
 
     Parameters
     ----------
@@ -294,4 +294,37 @@ def sqad(x: np.ndarray) -> float:
     arXiv preprint arXiv:2208.13459.
     """
     med = np.nanmedian(x)
-    return np.nanquantile(np.abs(x - med), q=0.682689492137086)  # constant
+    # constant value to maximize efficiency for normal distribution
+    return np.nanquantile(np.abs(x - med), q=0.682689492137086)
+
+
+def jains_fairness_index(x: np.ndarray) -> float:
+    """Calculate Jain's Fairness Index.
+
+    Jain's Fairness Index is a fairness measures commonly used in network engineering.
+    The result ranges from 1/n (worst case) to 1 (best case),
+    and it is maximum when all users receive the same allocation.
+    In general - measure of uniformity of the distribution.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+
+    Returns
+    -------
+    jfi : float or array_like.
+        The value of the coefficient of variation.
+
+    References
+    ----------
+    Jain, R.; Chiu, D. M.; Hawe, W. (1984).
+    A Quantitative Measure of Fairness and Discrimination
+    for Resource Allocation in Shared Computer Systems.
+    DEC Research Report TR-301.
+    """
+    cv = coefficient_of_variation(x)
+    if cv is np.inf:
+        warnings.warn("CV is inf, Jain's Index is not defined.", stacklevel=2)
+        return np.inf
+    return 1.0 / (1.0 + cv**2)

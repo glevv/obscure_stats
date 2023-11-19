@@ -101,7 +101,7 @@ def contraharmonic_mean(x: np.ndarray) -> float:
 
     References
     ----------
-    P. S. Bullen (1987).
+    Bullen, P. S. (1987).
     Handbook of means and their inequalities.
     Springer.
     """
@@ -125,9 +125,9 @@ def midmean(x: np.ndarray) -> float:
 
     References
     ----------
-    Salkind, N. (2008).
+    Salkind, N. J. (2008).
     Encyclopedia of Research Design.
-    SAGE.
+    SAGE Publications, Inc.
     """
     q1, q3 = np.nanquantile(x, [0.25, 0.75])
     return np.nanmean(np.where((x >= q1) & (x <= q3), x, np.nan))
@@ -153,6 +153,11 @@ def hodges_lehmann_sen_location(x: np.ndarray) -> float:
     Hodges, J. L.; Lehmann, E. L. (1963).
     Estimation of location based on ranks.
     Annals of Mathematical Statistics. 34 (2): 598-611.
+
+    Sen, P. K. (1963).
+    On the Estimation of Relative Potency in Dilution (-Direct)
+    Assays by Distribution-Free Methods.
+    Biometrics 19, no. 4: 532-552.
 
     Notes
     -----
@@ -185,7 +190,7 @@ def standard_trimmed_harrell_davis_quantile(x: np.ndarray, q: float = 0.5) -> fl
 
     References
     ----------
-    Akinshin, A. 2022.
+    Akinshin, A. (2022).
     Trimmed Harrell-Davis quantile estimator based on
     the highest density interval of the given width.
     Communications in Statistics - Simulation and Computation, pp. 1-11.
@@ -230,7 +235,7 @@ def half_sample_mode(x: np.ndarray) -> float:
 
     References
     ----------
-    Bickel, D. R., & Frühwirth, R. (2006).
+    Bickel, D. R.; Frühwirth, R. (2006).
     On a fast, robust estimator of the mode:
     Comparisons to other robust estimators with applications.
     Computational Statistics & Data Analysis, 50(12), 3500-3530.

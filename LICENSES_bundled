@@ -4,7 +4,7 @@ NumPy:
   license: BSD 3-Clause "New" or "Revised" License
   repository: https://github.com/numpy/numpy
   homepage: https://numpy.org/
-  dependencyLevel: production
+  dependency: production
 
 SciPy
   name: scipy
@@ -12,7 +12,7 @@ SciPy
   license: BSD 3-Clause "New" or "Revised" License
   repository: https://github.com/scipy/scipy
   homepage: https://scipy.org/
-  dependencyLevel: production
+  dependency: production
 
 MyPy
   name: mypy
@@ -20,7 +20,7 @@ MyPy
   license: The MIT License
   repository: https://github.com/python/mypy
   homepage: https://www.mypy-lang.org/
-  dependencyLevel: development
+  dependency: dev
 
 Ruff
   name: ruff
@@ -28,20 +28,20 @@ Ruff
   license: The MIT license 
   repository: https://github.com/astral-sh/ruff
   homepage: https://docs.astral.sh/ruff/
-  dependencyLevel: development
+  dependency: dev
 
-pytest
+Pytest
   name: pytest
   version: 7.4.3
   license: The MIT License
   repository: https://github.com/pytest-dev/pytest
   homepage: https://docs.pytest.org/en/latest/
-  dependencyLevel: development
+  dependency: dev
 
-pytest-cov
+Pytest-cov
   name: pytest-cov
   version: 4.1.0
   license: The MIT License
   repository: https://github.com/pytest-dev/pytest-cov
   homepage: https://pytest-cov.readthedocs.io/en/latest/
-  dependencyLevel: development
+  dependency: dev
