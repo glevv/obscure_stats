@@ -2,6 +2,7 @@
 
 from .skewness import (
     auc_skew_gamma,
+    bickel_mode_skew,
     bowley_skew,
     forhad_shorna_rank_skew,
     groeneveld_skew,
@@ -26,4 +27,5 @@ __all__ = [
     "pearson_median_skew",
     "pearson_mode_skew",
     "pearson_halfmode_skew",
+    "bickel_mode_skew",
 ]

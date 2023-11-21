@@ -16,7 +16,7 @@ def pearson_mode_skew(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose Pearson's mode skew coefficient is desired.
+        Input array.
 
     Returns
     -------
@@ -44,7 +44,7 @@ def pearson_halfmode_skew(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose Pearson's mode skew coefficient is desired.
+        Input array.
 
     Returns
     -------
@@ -63,13 +63,36 @@ def pearson_halfmode_skew(x: np.ndarray) -> float:
     return (mean - mode) / std
 
 
+def bickel_mode_skew(x: np.ndarray) -> float:
+    """Calculate Robust mode skew with half sample mode.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+
+    Returns
+    -------
+    phmods : float or array_like.
+        The value of Bickel's mode skew coefficient.
+
+    References
+    ----------
+    Bickel, D. R. (2002).
+    Robust estimators of the mode and skewness of continuous data.
+    Computational Statistics & Data Analysis, Elsevier, 39(2), 153-163.
+    """
+    mode = half_sample_mode(x)
+    return np.nanmean(np.sign(x - mode))
+
+
 def pearson_median_skew(x: np.ndarray) -> float:
     """Calculatie Pearson's median skew coefficient.
 
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose Pearson's median skew coefficient is desired.
+        Input array.
 
     Returns
     -------
@@ -94,7 +117,7 @@ def medeen_skew(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose Medeen's skewness statistic is desired.
+        Input array.
 
     Returns
     -------
@@ -121,7 +144,7 @@ def bowley_skew(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose Bowley's skewness coefficinet is desired.
+        Input array.
 
     Returns
     -------
@@ -147,7 +170,7 @@ def groeneveld_skew(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose Groeneveld's skewness coefficinet is desired.
+        Input array.
 
     Returns
     -------
@@ -175,7 +198,7 @@ def kelly_skew(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose Kelly's skewness coefficinet is desired.
+        Input array.
 
     Returns
     -------
@@ -200,8 +223,7 @@ def hossain_adnan_skew(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose Houssain and Adnan skewness coefficient
-        is desired.
+        Input array.
 
     Returns
     -------
@@ -226,8 +248,7 @@ def forhad_shorna_rank_skew(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose Forhad-Shorna coefficient of Rank Skewness
-        is desired.
+        Input array.
 
     Returns
     -------
@@ -268,7 +289,7 @@ def auc_skew_gamma(x: np.ndarray, dp: float = 0.01) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose AUC Bowley skewness is desired.
+        Input array.
     dp : float, default = 0.01
         Step used in calculating area under the curve (integrating).
 
@@ -297,7 +318,7 @@ def wauc_skew_gamma(x: np.ndarray, dp: float = 0.01) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose AUC Bowley skewness is desired.
+        Input array.
     dp : float, default = 0.01
         Step used in calculating area under the curve (integrating).
 

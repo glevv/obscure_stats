@@ -9,8 +9,6 @@ from obscure_stats.dispersion import (
     coefficient_of_variation,
     dispersion_ratio,
     efficiency,
-    hoover_index,
-    jains_fairness_index,
     lloyds_index,
     morisita_index,
     quartile_coefficient_of_dispersion,
@@ -28,13 +26,11 @@ from obscure_stats.dispersion import (
         robust_coefficient_of_variation,
         dispersion_ratio,
         efficiency,
-        hoover_index,
         lloyds_index,
         morisita_index,
         quartile_coefficient_of_dispersion,
         sqad,
         studentized_range,
-        jains_fairness_index,
     ],
 )
 @pytest.mark.parametrize(
@@ -59,7 +55,6 @@ def test_mock_aggregation_functions(
         robust_coefficient_of_variation,
         dispersion_ratio,
         efficiency,
-        hoover_index,
         lloyds_index,
         morisita_index,
         quartile_coefficient_of_dispersion,
@@ -85,7 +80,6 @@ def test_dispersion_sensibility(func: typing.Callable, seed: int) -> None:
         robust_coefficient_of_variation,
         quartile_coefficient_of_dispersion,
         efficiency,
-        jains_fairness_index,
     ],
 )
 def test_cv_corner_cases(func: typing.Callable) -> None:
@@ -105,13 +99,11 @@ def test_cv_corner_cases(func: typing.Callable) -> None:
         robust_coefficient_of_variation,
         dispersion_ratio,
         efficiency,
-        hoover_index,
         lloyds_index,
         morisita_index,
         quartile_coefficient_of_dispersion,
         sqad,
         studentized_range,
-        jains_fairness_index,
     ],
 )
 def test_statistic_with_nans(

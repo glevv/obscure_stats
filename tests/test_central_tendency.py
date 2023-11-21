@@ -45,22 +45,18 @@ def test_mock_aggregation_functions(
     func(data)
 
 
-def test_thdm() -> None:
+def test_thdm(thdme_test_data: np.ndarray) -> None:
     """Simple tets case for correctness of Trimmed Harrel Davis median."""
-    x = np.asarray(
-        (-0.565, -0.106, -0.095, 0.363, 0.404, 0.633, 1.371, 1.512, 2.018, 100_000),
-    )
-    result = standard_trimmed_harrell_davis_quantile(x)
+    result = standard_trimmed_harrell_davis_quantile(thdme_test_data)
     if result != pytest.approx(0.6268, rel=1e-4):
         msg = "Results from the test and paper do not match."
         raise ValueError(msg)
 
 
-def test_edge_cases() -> None:
+def test_edge_cases(x_array_float: np.ndarray) -> None:
     """Simple tets case for edge cases."""
-    x = np.asarray([1])
-    result = standard_trimmed_harrell_davis_quantile(x)
-    if result != pytest.approx(1.0, rel=1e-4):
+    result = standard_trimmed_harrell_davis_quantile(x_array_float[:1])
+    if result != pytest.approx(x_array_float[0], rel=1e-4):
         msg = "Result does not match expected output."
         raise ValueError(msg)
 
@@ -73,31 +69,33 @@ def test_q_in_sthdq(x_array_float: np.ndarray) -> None:
         standard_trimmed_harrell_davis_quantile(x_array_float, q=0)
 
 
-def test_hls() -> None:
+def test_hls(hls_test_data: np.ndarray, hls_test_data_big: list[int]) -> None:
     """Simple tets case for correctness of Hodges-Lehmann-Sen."""
-    x = np.asarray((1, 5, 2, 2, 7, 4, 1, 6))
-    result = hodges_lehmann_sen_location(x)
+    result = hodges_lehmann_sen_location(hls_test_data)
     if result != pytest.approx(3.5):
         msg = "Results from the test and paper do not match."
         raise ValueError(msg)
+    result = hodges_lehmann_sen_location(hls_test_data_big)  # type: ignore[arg-type]
+    if result != pytest.approx(5.75):
+        msg = "Results from the test and paper do not match."
+        raise ValueError(msg)
 
 
-def test_hsm() -> None:
+def test_hsm(hsm_test_data: np.ndarray) -> None:
     """Simple tets case for correctness of Half Sample Mode."""
-    x = np.asarray((1, 2, 2, 2, 7, 4, 1, 6))
-    result = half_sample_mode(x)
+    result = half_sample_mode(hsm_test_data)
     if result != pytest.approx(2.0):
         msg = "Results from the test and paper do not match."
         raise ValueError(msg)
-    result = half_sample_mode(x[:3])
+    result = half_sample_mode(hsm_test_data[:3])
     if result != pytest.approx(2):
         msg = "Results from the test and paper do not match."
         raise ValueError(msg)
-    result = half_sample_mode(x[1:4])
+    result = half_sample_mode(hsm_test_data[1:4])
     if result != pytest.approx(2):
         msg = "Results from the test and paper do not match."
         raise ValueError(msg)
-    result = half_sample_mode(x[2:5])
+    result = half_sample_mode(hsm_test_data[2:5])
     if result != pytest.approx(2):
         msg = "Results from the test and paper do not match."
         raise ValueError(msg)

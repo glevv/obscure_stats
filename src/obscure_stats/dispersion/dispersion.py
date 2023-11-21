@@ -190,34 +190,6 @@ def dispersion_ratio(x: np.ndarray) -> float:
     return np.nanmean(x) / (stats.gmean(x, nan_policy="omit") + EPS)
 
 
-def hoover_index(x: np.ndarray) -> float:
-    """Calculate Hoover index.
-
-    It is also known as the Robin Hood index, Schutz index or Pietra ratio.
-
-    Mostly used as measure of income inequality.
-    A value of 0 represents total equality, and 1 represents perfect inequality.
-    In general - measure of uniformity of the distribution.
-
-    Parameters
-    ----------
-    x : array_like
-        Input array.
-
-    Returns
-    -------
-    hi : float or array_like.
-        The value of the Hoover index.
-
-    References
-    ----------
-    Hoover Jr, E. M. (1936).
-    The Measurement of Industrial Localization.
-    Review of Economics and Statistics, 18, No. 162-71.
-    """
-    return 0.5 * np.nansum(x - np.nanmean(x)) / np.nansum(x)
-
-
 def lloyds_index(x: np.ndarray) -> float:
     """Calculate Lloyd's index of mean crowding.
 
@@ -296,35 +268,3 @@ def sqad(x: np.ndarray) -> float:
     med = np.nanmedian(x)
     # constant value to maximize efficiency for normal distribution
     return np.nanquantile(np.abs(x - med), q=0.682689492137086)
-
-
-def jains_fairness_index(x: np.ndarray) -> float:
-    """Calculate Jain's Fairness Index.
-
-    Jain's Fairness Index is a fairness measures commonly used in network engineering.
-    The result ranges from 1/n (worst case) to 1 (best case),
-    and it is maximum when all users receive the same allocation.
-    In general - measure of uniformity of the distribution.
-
-    Parameters
-    ----------
-    x : array_like
-        Input array.
-
-    Returns
-    -------
-    jfi : float or array_like.
-        The value of the coefficient of variation.
-
-    References
-    ----------
-    Jain, R.; Chiu, D. M.; Hawe, W. (1984).
-    A Quantitative Measure of Fairness and Discrimination
-    for Resource Allocation in Shared Computer Systems.
-    DEC Research Report TR-301.
-    """
-    cv = coefficient_of_variation(x)
-    if cv is np.inf:
-        warnings.warn("CV is inf, Jain's Index is not defined.", stacklevel=2)
-        return np.inf
-    return 1.0 / (1.0 + cv**2)

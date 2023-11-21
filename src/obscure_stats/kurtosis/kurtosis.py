@@ -11,7 +11,7 @@ def moors_kurt(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose Moor's kurtosis is desired.
+        Input array.
 
     Returns
     -------
@@ -35,7 +35,7 @@ def moors_octile_kurt(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose Moor's octile kurtosis is desired.
+        Input array.
 
     Returns
     -------
@@ -64,7 +64,7 @@ def hogg_kurt(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose Hogg's kurtosis coefficient is desired.s
+        Input array.
 
     Returns
     -------
@@ -96,7 +96,7 @@ def crow_siddiqui_kurt(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose Crow & Siddiqui kurtosis coefficient is desired.
+        Input array.
 
     Returns
     -------
@@ -122,7 +122,7 @@ def reza_ma_kurt(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose Reza & Ma kurtosis coefficient is desired.
+        Input array.
 
     Returns
     -------

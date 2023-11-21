@@ -14,7 +14,7 @@ def midrange(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose midrange is desired.
+        Input array.
 
     Returns
     -------
@@ -40,7 +40,7 @@ def midhinge(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose midhinge is desired.
+        Input array.
 
     Returns
     -------
@@ -65,7 +65,7 @@ def trimean(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose trimean is desired.
+        Input array.
 
     Returns
     -------
@@ -92,7 +92,7 @@ def contraharmonic_mean(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose contraharmonic mean is desired.
+        Input array.
 
     Returns
     -------
@@ -116,7 +116,7 @@ def midmean(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose interquartile mean is desired.
+        Input array.
 
     Returns
     -------
@@ -164,9 +164,11 @@ def hodges_lehmann_sen_location(x: np.ndarray) -> float:
     This implementation uses cartesian product, so the time and memory complexity
     are N^2. It is best to not use it on large arrays.
     """
-    walsh_sums = np.asarray(x).reshape(-1, 1) + np.asarray(x).reshape(1, -1)
-    mask = np.triu_indices(len(x), 1)  # we need only upper trianle without diagonal
-    return np.nanmedian(walsh_sums[mask]) * 0.5
+    # In the original paper authors suggest use only upper triangular
+    # of the cartesian product, but in this implementation we use
+    # whole matrix, which is equvalent.
+    product = np.meshgrid(x, x, sparse=True)
+    return np.nanmedian(product[0] + product[1]) * 0.5
 
 
 def standard_trimmed_harrell_davis_quantile(x: np.ndarray, q: float = 0.5) -> float:

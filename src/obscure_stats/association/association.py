@@ -267,6 +267,7 @@ def tanimoto_similarity(x: np.ndarray, y: np.ndarray) -> float:
 
     It is very similar to Jaccard or Cosine similarity but differs in how
     dot product is normalized.
+    This version is designed for numeric values, instead of sets.
 
     Parameters
     ----------

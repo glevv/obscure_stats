@@ -19,7 +19,7 @@ def mod_vr(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose mode variation ratio is desired.
+        Input array.
 
     Returns
     -------
@@ -49,7 +49,7 @@ def range_vr(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose range variation ratio is desired.
+        Input array.
 
     Returns
     -------
@@ -79,7 +79,7 @@ def gibbs_m1(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose Gibbs M1 index is desired.
+        Input array.
 
     Returns
     -------
@@ -120,7 +120,7 @@ def gibbs_m2(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose Gibbs M2 index is desired.
+        Input array.
 
     Returns
     -------
@@ -149,7 +149,7 @@ def b_index(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose B index is desired.
+        Input array.
 
     Returns
     -------
@@ -178,7 +178,7 @@ def ada_index(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose ADA index is desired.
+        Input array.
 
     Returns
     -------
@@ -209,7 +209,7 @@ def extropy(x: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Array containing numbers whose extropy is desired.
+        Input array.
 
     Returns
     -------
