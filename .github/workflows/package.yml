@@ -14,6 +14,9 @@ jobs:
       matrix:
         python-version: [ "3.11", "3.12" ]
         os: ["ubuntu-latest", "macos-latest", "windows-latest"]
+    defaults:
+      run:
+        shell: bash
 
     steps:
       - name: Check out repository
@@ -44,7 +47,7 @@ jobs:
 
       - name: Activate env
         run: |
-          source .venv/bin/activate
+          source $VENV
 
       - name: Run ruff
         run: |
