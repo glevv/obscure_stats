@@ -15,11 +15,11 @@
 - Collection of measures of central tendency - `obscure_stats/central_tendency`:
     * Contraharmonic Mean;
     * Half-Sample Mode;
-    * Hodges-Lehmann-Sen location;
+    * Hodges-Lehmann-Sen Location;
     * Midhinge;
     * Midmean;
     * Midrange;
-    * Standard Trimmed Harrell-Davis quantile;
+    * Standard Trimmed Harrell-Davis Quantile;
     * Trimean.
 - Collection of measures of dispersion - `obscure_stats/dispersion`:
     * Coefficient of Variation;
