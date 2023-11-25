@@ -154,9 +154,9 @@ def concordance_rate(
     It could be seen as simplified version of Pearson's R.
 
     It differs from quadrant count ratio by adding and exclusion zone
-    variation has an option for an exclusion zone.
-    It is based on the standard error of the mean and will exlucde
-    points that are in the range of mean+-sem.
+    variation has an option for an exclusion zone. It is based on the
+    standard error of the mean and will exlucde points that are in the
+    range of mean+-sem.
 
     Parameters
     ----------

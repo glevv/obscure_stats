@@ -8,31 +8,6 @@ from scipy import stats  # type: ignore[import-untyped]
 EPS = 1e-6
 
 
-def efficiency(x: np.ndarray) -> float:
-    """Calculate array efficiency (squared CV).
-
-    Parameters
-    ----------
-    x : array_like
-        Input array.
-
-    Returns
-    -------
-    eff : float or array_like.
-        The value of the efficiency.
-
-    References
-    ----------
-    Grubbs, F. E. (1965).
-    Statistical Measures of Accuracy for Riflemen and Missile Engineers. pp. 26-27.
-    """
-    mean = np.nanmean(x)
-    if abs(mean) <= EPS:
-        warnings.warn("Mean is close to 0. Statistic is undefined.", stacklevel=2)
-        return np.inf
-    return np.nanvar(x) / mean**2
-
-
 def studentized_range(x: np.ndarray) -> float:
     """Calculate range normalized by standard deviation.
 
@@ -59,7 +34,10 @@ def studentized_range(x: np.ndarray) -> float:
 
 
 def coefficient_of_lvariation(x: np.ndarray) -> float:
-    """Calculate linear coefficient of variation (MeanAbsDev / Mean).
+    """Calculate linear coefficient of variation.
+
+    L-CV is the L-scale (half of mean absolute deviation) divided
+    by L-mean (the same as regular mean).
 
     Parameters
     ----------
@@ -87,7 +65,7 @@ def coefficient_of_lvariation(x: np.ndarray) -> float:
 
 
 def coefficient_of_variation(x: np.ndarray) -> float:
-    """Calculate coefficient of variation (Std / Mean).
+    """Calculate coefficient of variation (Standard deviation / Mean).
 
     Parameters
     ----------
@@ -115,7 +93,8 @@ def coefficient_of_variation(x: np.ndarray) -> float:
 def robust_coefficient_of_variation(x: np.ndarray) -> float:
     """Calculate robust coefficient of variation.
 
-    It is based on median absolute deviation from the median (MedAbsDev / Median).
+    It is based on median absolute deviation from the median, i.e. median
+    absolute deviation from the median divided by the median.
 
     Parameters
     ----------
@@ -170,6 +149,11 @@ def quartile_coefficient_of_dispersion(x: np.ndarray) -> float:
 def dispersion_ratio(x: np.ndarray) -> float:
     """Calculate dispersion ratio (Mean / GMean).
 
+    The closer a dispersion ratio is to 1, the lower the dispersion
+    between the observations within an array.
+    In this function geometric mean computed by excluding zeros and
+    missing data points.
+
     Parameters
     ----------
     x : array_like
@@ -187,7 +171,9 @@ def dispersion_ratio(x: np.ndarray) -> float:
     prior to unsupervised machine learning.
     Statistics, Optimization & Information Computing, 11(2), 519-530.
     """
-    return np.nanmean(x) / (stats.gmean(x, nan_policy="omit") + EPS)
+    _x = np.asarray(x)
+    _x = np.where(_x == 0, np.nan, _x)
+    return np.nanmean(x) / stats.gmean(_x, nan_policy="omit")
 
 
 def lloyds_index(x: np.ndarray) -> float:
@@ -246,8 +232,8 @@ def morisita_index(x: np.ndarray) -> float:
 def sqad(x: np.ndarray) -> float:
     """Calculate Standard quantile absolute deviation.
 
-    This measure is a robust measure of dispersion, that does not need
-    normalizing constant like MAD and has higher gaussian efficiency.
+    This measure is a robust measure of dispersion, that has higher
+    gaussian efficiency, but lower breaking point.
 
     Parameters
     ----------
@@ -266,5 +252,8 @@ def sqad(x: np.ndarray) -> float:
     arXiv preprint arXiv:2208.13459.
     """
     med = np.nanmedian(x)
-    # constant value to maximize efficiency for normal distribution
-    return np.nanquantile(np.abs(x - med), q=0.682689492137086)
+    n = len(x)
+    # finite sample correction
+    k = 1.0 + 0.762 / n + 0.967 / n**2
+    # constant value that maximizes efficiency for normal distribution
+    return k * np.nanquantile(np.abs(x - med), q=0.682689492137086)

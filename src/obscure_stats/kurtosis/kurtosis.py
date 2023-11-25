@@ -8,6 +8,11 @@ from scipy import stats  # type: ignore[import-untyped]
 def moors_kurt(x: np.ndarray) -> float:
     """Calculate Moor's vision of kurtosis, based on Z score.
 
+    The kurtosis can now be seen as a measure of the dispersion of
+    squared Z around its expectation.
+    Alternatively it can be seen to be a measure of the dispersion
+    of Z around +1 and -1.
+
     Parameters
     ----------
     x : array_like

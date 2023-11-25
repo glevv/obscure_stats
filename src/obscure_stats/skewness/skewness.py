@@ -138,7 +138,9 @@ def medeen_skew(x: np.ndarray) -> float:
 def bowley_skew(x: np.ndarray) -> float:
     """Calculate Bowley's skewness coefficinet.
 
-    It is based on quartiles (uncentered, unscaled).
+    Also known as Yule-Kendall skewness coefficient.
+    It is based on quartiles (uncentered, unscaled) and compares the distance
+    between the median and each of the two quartiles.
     This measure should be more robust than moment based skewness.
 
     Parameters
