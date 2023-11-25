@@ -5,7 +5,7 @@ import typing
 import numpy as np
 import pytest
 from obscure_stats.variation import (
-    ada_index,
+    avdev,
     b_index,
     extropy,
     gibbs_m1,
@@ -18,7 +18,7 @@ from obscure_stats.variation import (
 @pytest.mark.parametrize(
     "func",
     [
-        ada_index,
+        avdev,
         b_index,
         extropy,
         gibbs_m1,
@@ -41,7 +41,7 @@ def test_mock_variation_functions(
 @pytest.mark.parametrize(
     "func",
     [
-        ada_index,
+        avdev,
         b_index,
         gibbs_m1,
         gibbs_m2,
@@ -66,7 +66,7 @@ def test_var_sensibility_higher_better(func: typing.Callable, seed: int) -> None
 @pytest.mark.parametrize(
     "func",
     [
-        ada_index,
+        avdev,
         b_index,
         extropy,
         gibbs_m1,

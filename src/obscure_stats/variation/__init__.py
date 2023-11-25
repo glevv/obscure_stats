@@ -1,7 +1,7 @@
 """Variation module."""
 
 from .variation import (
-    ada_index,
+    avdev,
     b_index,
     extropy,
     gibbs_m1,
@@ -11,7 +11,7 @@ from .variation import (
 )
 
 __all__ = [
-    "ada_index",
+    "avdev",
     "b_index",
     "extropy",
     "gibbs_m1",

@@ -2,9 +2,15 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
+
+env:
+  PYTHONUNBUFFERED: "1"
+  PYTHONHASHSEED: "1"
 
 jobs:
   build:
@@ -22,7 +28,7 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: '3.11'
 
       - name: Install Poetry
         uses: snok/install-poetry@v1
