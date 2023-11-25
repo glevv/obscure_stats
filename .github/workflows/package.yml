@@ -56,7 +56,7 @@ jobs:
 
       - name: Run tests
         run: |
-          poetry run pytest --cov tests/
+          poetry run pytest --cov=obscure_stats --cov-report term --cov-report xml:coverage.xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4-beta
