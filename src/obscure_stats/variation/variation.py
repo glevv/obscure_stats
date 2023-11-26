@@ -167,12 +167,12 @@ def b_index(x: np.ndarray) -> float:
     return 1 - np.sqrt(1 - np.square(stats.gmean(freq * len(freq) / n)))
 
 
-def ada_index(x: np.ndarray) -> float:
+def avdev(x: np.ndarray) -> float:
     """Calculate Average Deviation Analogue.
 
     Normalized to 0-1 range categorical analog of the mean deviation.
 
-    Low values of Ada Index correspond to lower variation and
+    Low values of AVDev correspond to lower variation and
     high values to higher variation.
 
     Parameters
@@ -182,8 +182,8 @@ def ada_index(x: np.ndarray) -> float:
 
     Returns
     -------
-    adi : float
-        The value of ADA index.
+    avd : float
+        The value of AVDev.
 
     References
     ----------

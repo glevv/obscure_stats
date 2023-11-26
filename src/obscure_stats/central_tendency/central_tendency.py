@@ -175,8 +175,8 @@ def standard_trimmed_harrell_davis_quantile(x: np.ndarray, q: float = 0.5) -> fl
     """Calculate Standard Trimmed Harrell-Davis median estimator.
 
     This measure is very robust.
-    It uses modified Harrel-Davies quantiles to calculate median
-    in the most dense region of probability function.
+    It calculates weighted Harrel-Davies quantiles on only sqrt(N) samples,
+    located in the region with the most probability mass.
 
     Parameters
     ----------
