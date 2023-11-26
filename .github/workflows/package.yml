@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: True
       matrix:
-        python-version: [3.9, 3.10, 3.11, 3.12]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
     defaults:
       run:
         shell: bash
