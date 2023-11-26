@@ -13,7 +13,6 @@ from obscure_stats.skewness import (
     hossain_adnan_skew,
     kelly_skew,
     medeen_skew,
-    pearson_halfmode_skew,
     pearson_median_skew,
     pearson_mode_skew,
     wauc_skew_gamma,
@@ -33,7 +32,6 @@ from obscure_stats.skewness import (
         medeen_skew,
         pearson_median_skew,
         pearson_mode_skew,
-        pearson_halfmode_skew,
         bickel_mode_skew,
     ],
 )
@@ -64,7 +62,6 @@ def test_mock_aggregation_functions(
         medeen_skew,
         pearson_median_skew,
         pearson_mode_skew,
-        pearson_halfmode_skew,
         bickel_mode_skew,
     ],
 )
@@ -101,7 +98,6 @@ def test_rank_skew(rank_skewness_test_data: np.ndarray) -> None:
         medeen_skew,
         pearson_median_skew,
         pearson_mode_skew,
-        pearson_halfmode_skew,
         bickel_mode_skew,
     ],
 )

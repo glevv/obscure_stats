@@ -57,8 +57,8 @@ jobs:
 
       - name: Run ruff
         run: |
-          poetry run ruff check .
-          poetry run ruff format . --check
+          poetry run ruff check --output-format=github .
+          poetry run ruff format . --diff
 
       - name: Run mypy
         run: |

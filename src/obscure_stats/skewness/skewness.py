@@ -35,36 +35,11 @@ def pearson_mode_skew(x: np.ndarray) -> float:
     return (mean - mode) / std
 
 
-def pearson_halfmode_skew(x: np.ndarray) -> float:
-    """Calculate Pearson's mode skew coefficient with half sample mode.
-
-    This measure should be more stable version than regular
-    Pearson's mode skew coefficien.
-
-    Parameters
-    ----------
-    x : array_like
-        Input array.
-
-    Returns
-    -------
-    phmods : float or array_like.
-        The value of Pearson's half mode skew coefficient.
-
-    References
-    ----------
-    Pearson, E. S.; Hartley, H. O. (1966).
-    Biometrika Tables for Statisticians, vols. I and II.
-    Cambridge University Press, Cambridge.
-    """
-    mean = np.nanmean(x)
-    mode = half_sample_mode(x)
-    std = np.nanstd(x)
-    return (mean - mode) / std
-
-
 def bickel_mode_skew(x: np.ndarray) -> float:
-    """Calculate Robust mode skew with half sample mode.
+    """Calculate Robust Mode skew with half sample mode.
+
+    This measure should be more stable than Pearson mode
+    skewness coefficient.
 
     Parameters
     ----------
