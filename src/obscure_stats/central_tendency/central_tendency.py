@@ -196,6 +196,10 @@ def standard_trimmed_harrell_davis_quantile(x: np.ndarray, q: float = 0.5) -> fl
     Trimmed Harrell-Davis quantile estimator based on
     the highest density interval of the given width.
     Communications in Statistics - Simulation and Computation, pp. 1-11.
+
+    See Also
+    --------
+    scipy.stats.mstats.hdquantiles - Harrell-Davis quantile estimates.
     """
     if len(x) <= 1:
         return x[0]
@@ -207,7 +211,7 @@ def standard_trimmed_harrell_davis_quantile(x: np.ndarray, q: float = 0.5) -> fl
     n_calculated = 1 / n**0.5  # heuristic suggested by the author
     a = (n + 1) * q
     b = (n + 1) * (1.0 - q)
-    hdi = (0.5 - n_calculated * q, 0.5 + n_calculated * (1.0 - q))
+    hdi = (max(0, q - n_calculated * 0.5), min(1, q + n_calculated * 0.5))
     hdi_cdf = stats.beta.cdf(hdi, a, b)
     i_start = int(math.floor(hdi[0] * n))
     i_end = int(math.ceil(hdi[1] * n))
@@ -241,6 +245,10 @@ def half_sample_mode(x: np.ndarray) -> float:
     On a fast, robust estimator of the mode:
     Comparisons to other robust estimators with applications.
     Computational Statistics & Data Analysis, 50(12), 3500-3530.
+
+    See Also
+    --------
+    scipy.stats.mode - Mode estimator.
     """
     y = np.asarray(x)
     y = y[np.isfinite(y)]

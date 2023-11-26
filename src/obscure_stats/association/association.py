@@ -175,6 +175,10 @@ def concordance_rate(
     Holmes, P. (2001).
     Correlation: From Picture to Formula.
     Teaching Statistics. 23 (3): 67-71.
+
+    See Also
+    --------
+    Quadrant count ratio.
     """
     if _check_arrays(x, y):
         return np.nan
@@ -222,6 +226,10 @@ def symmetric_chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
     Chatterjee, S. (2021).
     A new coefficient of correlation.
     Journal of the American Statistical Association, 116(536), 2009-2022.
+
+    See Also
+    --------
+    obscure_stats.associaton.chatterjeexi - Chatterjee Xi coefficient.
     """
     return max(chatterjeexi(x, y), chatterjeexi(y, x))
 
@@ -252,6 +260,11 @@ def zhangi(x: np.ndarray, y: np.ndarray) -> float:
     Notes
     -----
     This measure is assymetric: (x, y) != (y, x).
+
+    See Also
+    --------
+    scipy.stats.spearmanr - Spearman R coefficient.
+    obscure_stats.associaton.chatterjeexi - Chatterjee Xi coefficient.
     """
     if _check_arrays(x, y):
         return np.nan
@@ -286,6 +299,11 @@ def tanimoto_similarity(x: np.ndarray, y: np.ndarray) -> float:
     Rogers, D. J.; Tanimoto, T. T. (1960).
     A Computer Program for Classifying Plants.
     Science. 132 (3434): 1115-8.
+
+    See Also
+    --------
+    Jaccard similarity
+    Cosine similarity
     """
     if _check_arrays(x, y):
         return np.nan

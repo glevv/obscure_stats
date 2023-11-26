@@ -51,6 +51,12 @@ def test_thdm(thdme_test_data: np.ndarray) -> None:
     if result != pytest.approx(0.6268, rel=1e-4):
         msg = "Results from the test and paper do not match."
         raise ValueError(msg)
+    if result > standard_trimmed_harrell_davis_quantile(thdme_test_data, q=0.99):
+        msg = "Results from the test and paper do not match."
+        raise ValueError(msg)
+    if result < standard_trimmed_harrell_davis_quantile(thdme_test_data, q=0.01):
+        msg = "Results from the test and paper do not match."
+        raise ValueError(msg)
 
 
 def test_edge_cases(x_array_float: np.ndarray) -> None:
