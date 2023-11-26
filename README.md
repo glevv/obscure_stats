@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| CI/CD |[![CI - Test](https://github.com/glevv/obscure_stats/actions/workflows/package.yml/badge.svg)](https://github.com/glevv/obscure_stats/actions/workflows/package.yml) [![Coverage](https://codecov.io/github/glevv/obscure_stats/coverage.svg?branch=main)](https://codecov.io/gh/glevv/obscure_stats)
+| CI/CD |[![CI](https://github.com/glevv/obscure_stats/actions/workflows/package.yml/badge.svg)](https://github.com/glevv/obscure_stats/actions/workflows/package.yml) [![CD](https://github.com/glevv/obscure_stats/actions/workflows/publish.yml/badge.svg)](https://github.com/glevv/obscure_stats/actions/workflows/publish.yml) [![Coverage](https://codecov.io/github/glevv/obscure_stats/coverage.svg?branch=main)](https://codecov.io/gh/glevv/obscure_stats)
 | Package | [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/obscure_stats?logo=Python)](https://pypi.org/project/obscure_stats/) [![PyPI](https://img.shields.io/pypi/v/obscure_stats?logo=PyPI)](https://pypi.org/project/obscure_stats/) |
 | Meta | [![Poetry](https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json)](https://python-poetry.org/) [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff) [![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/) [![License - MIT](https://img.shields.io/badge/license-MIT-9400d3.svg)](https://spdx.org/licenses/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10206933.svg)](https://doi.org/10.5281/zenodo.10206933)
 
@@ -41,7 +41,7 @@
     * Kelly Skewness Coefficient;
     * Medeen Skewness Coefficient;
     * Pearson Median Skewness Coefficient;
-    * Pearson Mode Skewness Coefficient (original and halfmode modification).
+    * Pearson Mode Skewness Coefficient.
 - Collection of measures of kurtosis - `obscure_stats/kurtosis`:
     * Crow-Siddiqui Kurtosis;
     * Hogg Kurtosis;
