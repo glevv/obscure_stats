@@ -17,6 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: True
+      matrix:
+        python-version: [3.9, 3.10, 3.11, 3.12]
     defaults:
       run:
         shell: bash
@@ -24,11 +26,12 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
-      - name: Set up python
+
+      - name: Set up Python ${{ matrix.python-version }}
         id: setup-python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: ${{ matrix.python-version }}
 
       - name: Install Poetry
         uses: snok/install-poetry@v1
@@ -67,8 +70,11 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
+        if: matrix.python-version == '3.11'
         with:
           flags: smart-tests
           verbose: true
+          file: ./coverage.xml
+          fail_ci_if_error: true
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

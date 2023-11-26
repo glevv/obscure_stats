@@ -1,14 +1,14 @@
 [tool.poetry]
 name = "obscure_stats"
-version = "0.1.1"
+version = "0.1.2"
 description = "Collection of less known statistical functions"
 authors = ["Gleb Levitski"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.13"
-numpy = "^1.26.1"
-scipy = "^1.11.3"
+python = ">=3.9,<3.13"
+numpy = "^1.23.5"
+scipy = "^1.9.1"
 
 
 [tool.poetry.group.dev.dependencies]
