@@ -13,7 +13,7 @@ authors:
     email: gleb.levitski@tutanota.com
 identifiers:
   - type: doi
-    value: 10.5281/zenodo.10206934
+    value: 10.5281/zenodo.10206933
 repository-code: 'https://github.com/glevv/obscure_stats'
 repository-artifact: 'https://pypi.org/project/obscure_stats'
 abstract: Collection of less-known statistical measures
