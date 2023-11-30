@@ -8,7 +8,7 @@
 
 ## Highlights:
 
-`obscure_stats` is a Python package that includes a lot of useful but less known statistical functions and builds on top of `numpy` and `scipy`.
+`obscure_stats` is a small Python package that includes a lot of useful but lesser-known statistical functions and builds on top of `numpy` and `scipy`.
 
 ## Current API list
 

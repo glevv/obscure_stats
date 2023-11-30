@@ -1,1 +1,1 @@
-"""Collection of less-known statistical measures."""
+"""Collection of lesser-known statistical functions."""
