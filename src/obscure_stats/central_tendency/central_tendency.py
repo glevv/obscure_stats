@@ -201,12 +201,13 @@ def standard_trimmed_harrell_davis_quantile(x: np.ndarray, q: float = 0.5) -> fl
     --------
     scipy.stats.mstats.hdquantiles - Harrell-Davis quantile estimates.
     """
-    if len(x) <= 1:
-        return x[0]
     if q <= 0 or q >= 1:
         msg = "Parameter q should be in range (0, 1)."
         raise ValueError(msg)
     xs = np.sort(x)
+    xs = xs[np.isfinite(xs)]
+    if len(xs) <= 1:
+        return xs[0]
     n = len(x)
     n_calculated = 1 / n**0.5  # heuristic suggested by the author
     a = (n + 1) * q
@@ -250,9 +251,8 @@ def half_sample_mode(x: np.ndarray) -> float:
     --------
     scipy.stats.mode - Mode estimator.
     """
-    y = np.asarray(x)
+    y = np.sort(x)
     y = y[np.isfinite(y)]
-    y = np.sort(y)
     _corner_cases = (4, 3)  # for 4 samples and 3 samples
     while (ny := len(y)) >= _corner_cases[0]:
         half_y = ny // 2

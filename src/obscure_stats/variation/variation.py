@@ -170,7 +170,7 @@ def b_index(x: np.ndarray) -> float:
 def avdev(x: np.ndarray) -> float:
     """Calculate Average Deviation Analogue.
 
-    Normalized to 0-1 range categorical analog of the mean deviation.
+    Normalized to 0-1 range categorical analogue of the mean deviation.
 
     Low values of AVDev correspond to lower variation and
     high values to higher variation.
@@ -202,8 +202,10 @@ def extropy(x: np.ndarray) -> float:
     """Calculate Negative Information Extropy (bits).
 
     This measure is complementary to entropy.
+    This implementation inverses the sign of extropy to align it with
+    all other measures.
 
-    Low values of extropy correspond to lower variation and
+    Low values of negative extropy correspond to lower variation and
     high values to higher variation.
 
     Parameters

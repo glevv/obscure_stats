@@ -14,18 +14,20 @@ from obscure_stats.variation import (
     range_vr,
 )
 
+all_functions = [
+    avdev,
+    b_index,
+    extropy,
+    gibbs_m1,
+    gibbs_m2,
+    mod_vr,
+    range_vr,
+]
+
 
 @pytest.mark.parametrize(
     "func",
-    [
-        avdev,
-        b_index,
-        extropy,
-        gibbs_m1,
-        gibbs_m2,
-        mod_vr,
-        range_vr,
-    ],
+    all_functions,
 )
 @pytest.mark.parametrize("data", ["c_list_obj", "c_array_obj"])
 def test_mock_variation_functions(
@@ -40,15 +42,7 @@ def test_mock_variation_functions(
 
 @pytest.mark.parametrize(
     "func",
-    [
-        avdev,
-        b_index,
-        gibbs_m1,
-        gibbs_m2,
-        mod_vr,
-        range_vr,
-        extropy,
-    ],
+    all_functions,
 )
 @pytest.mark.parametrize("seed", [1, 42, 99])
 def test_var_sensibility_higher_better(func: typing.Callable, seed: int) -> None:
@@ -65,15 +59,7 @@ def test_var_sensibility_higher_better(func: typing.Callable, seed: int) -> None
 
 @pytest.mark.parametrize(
     "func",
-    [
-        avdev,
-        b_index,
-        extropy,
-        gibbs_m1,
-        gibbs_m2,
-        mod_vr,
-        range_vr,
-    ],
+    all_functions,
 )
 def test_statistic_with_nans(
     func: typing.Callable,

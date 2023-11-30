@@ -229,11 +229,11 @@ def morisita_index(x: np.ndarray) -> float:
     return len(x) * (np.nansum(np.square(x)) - x_sum) / (x_sum**2 - x_sum)
 
 
-def sqad(x: np.ndarray) -> float:
+def standard_quantile_absolute_deviation(x: np.ndarray) -> float:
     """Calculate Standard quantile absolute deviation.
 
     This measure is a robust measure of dispersion, that has higher
-    gaussian efficiency, but lower breaking point.
+    gaussian efficiency, but lower breaking point than MAD.
 
     Parameters
     ----------

@@ -13,17 +13,19 @@ from obscure_stats.association import (
     zhangi,
 )
 
+all_functions = [
+    zhangi,
+    chatterjeexi,
+    concordance_corrcoef,
+    concordance_rate,
+    tanimoto_similarity,
+    symmetric_chatterjeexi,
+]
+
 
 @pytest.mark.parametrize(
     "func",
-    [
-        zhangi,
-        chatterjeexi,
-        concordance_corrcoef,
-        concordance_rate,
-        tanimoto_similarity,
-        symmetric_chatterjeexi,
-    ],
+    all_functions,
 )
 @pytest.mark.parametrize(
     "x_array",
@@ -122,14 +124,7 @@ def test_invariance(
 
 @pytest.mark.parametrize(
     "func",
-    [
-        zhangi,
-        chatterjeexi,
-        concordance_corrcoef,
-        concordance_rate,
-        tanimoto_similarity,
-        symmetric_chatterjeexi,
-    ],
+    all_functions,
 )
 def test_notfinite_association(
     func: typing.Callable,
@@ -152,14 +147,7 @@ def test_notfinite_association(
 
 @pytest.mark.parametrize(
     "func",
-    [
-        chatterjeexi,
-        concordance_corrcoef,
-        concordance_rate,
-        symmetric_chatterjeexi,
-        tanimoto_similarity,
-        zhangi,
-    ],
+    all_functions,
 )
 def test_unequal_arrays(
     func: typing.Callable,
