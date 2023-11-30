@@ -8,7 +8,7 @@ from .dispersion import (
     morisita_index,
     quartile_coefficient_of_dispersion,
     robust_coefficient_of_variation,
-    sqad,
+    standard_quantile_absolute_deviation,
     studentized_range,
 )
 
@@ -19,7 +19,7 @@ __all__ = [
     "lloyds_index",
     "morisita_index",
     "quartile_coefficient_of_dispersion",
-    "sqad",
+    "standard_quantile_absolute_deviation",
     "studentized_range",
     "robust_coefficient_of_variation",
 ]

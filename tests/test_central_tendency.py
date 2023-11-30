@@ -17,19 +17,21 @@ from obscure_stats.central_tendency import (
     trimean,
 )
 
+all_functions = [
+    contraharmonic_mean,
+    midhinge,
+    midmean,
+    midrange,
+    trimean,
+    hodges_lehmann_sen_location,
+    standard_trimmed_harrell_davis_quantile,
+    half_sample_mode,
+]
+
 
 @pytest.mark.parametrize(
     "func",
-    [
-        contraharmonic_mean,
-        midhinge,
-        midmean,
-        midrange,
-        trimean,
-        hodges_lehmann_sen_location,
-        standard_trimmed_harrell_davis_quantile,
-        half_sample_mode,
-    ],
+    all_functions,
 )
 @pytest.mark.parametrize(
     "data",
@@ -109,16 +111,7 @@ def test_hsm(hsm_test_data: np.ndarray) -> None:
 
 @pytest.mark.parametrize(
     "func",
-    [
-        contraharmonic_mean,
-        midhinge,
-        midmean,
-        midrange,
-        trimean,
-        hodges_lehmann_sen_location,
-        standard_trimmed_harrell_davis_quantile,
-        half_sample_mode,
-    ],
+    all_functions,
 )
 def test_statistic_with_nans(
     func: typing.Callable,

@@ -67,6 +67,23 @@
 
 `pip install obscure_stats`
 
+## Usage Example
+
+```python
+>>> from obscure_stats.central_tendency import standard_trimmed_harrell_davis_quantile
+>>> from obscure_stats.dispersion import standard_quantile_absolute_deviation
+
+>>> data = [1.83, 1.01, 100.12, 1.20, 0.99, 0.87, 1.13, 100.01, 0.75, 1.03]
+>>> central_tendency = standard_trimmed_harrell_davis_quantile(data)
+>>> dispersion = standard_quantile_absolute_deviation(data)
+>>> print(f"Robust measure of central tendency = {central_tendency:.2f}, Robust measure of dispersion = {dispersion:.2f}")
+```
+
+```
+Out[1]:
+Robust measure of central tendency = 1.09, Robust measure of dispersion = 0.42
+```
+
 ## License
 
 The content of this repository is licensed under a [MIT license](https://github.com/glevv/obscure_stats/blob/main/LICENSE).

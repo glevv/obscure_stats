@@ -18,22 +18,24 @@ from obscure_stats.skewness import (
     wauc_skew_gamma,
 )
 
+all_functions = [
+    auc_skew_gamma,
+    wauc_skew_gamma,
+    bowley_skew,
+    forhad_shorna_rank_skew,
+    groeneveld_skew,
+    hossain_adnan_skew,
+    kelly_skew,
+    medeen_skew,
+    pearson_median_skew,
+    pearson_mode_skew,
+    bickel_mode_skew,
+]
+
 
 @pytest.mark.parametrize(
     "func",
-    [
-        auc_skew_gamma,
-        wauc_skew_gamma,
-        bowley_skew,
-        forhad_shorna_rank_skew,
-        groeneveld_skew,
-        hossain_adnan_skew,
-        kelly_skew,
-        medeen_skew,
-        pearson_median_skew,
-        pearson_mode_skew,
-        bickel_mode_skew,
-    ],
+    all_functions,
 )
 @pytest.mark.parametrize(
     "data",
@@ -51,19 +53,7 @@ def test_mock_aggregation_functions(
 
 @pytest.mark.parametrize(
     "func",
-    [
-        auc_skew_gamma,
-        wauc_skew_gamma,
-        bowley_skew,
-        forhad_shorna_rank_skew,
-        groeneveld_skew,
-        hossain_adnan_skew,
-        kelly_skew,
-        medeen_skew,
-        pearson_median_skew,
-        pearson_mode_skew,
-        bickel_mode_skew,
-    ],
+    all_functions,
 )
 @pytest.mark.parametrize("seed", [1, 42, 99])
 def test_skew_sensibility(func: typing.Callable, seed: int) -> None:
@@ -87,19 +77,7 @@ def test_rank_skew(rank_skewness_test_data: np.ndarray) -> None:
 
 @pytest.mark.parametrize(
     "func",
-    [
-        auc_skew_gamma,
-        wauc_skew_gamma,
-        bowley_skew,
-        forhad_shorna_rank_skew,
-        groeneveld_skew,
-        hossain_adnan_skew,
-        kelly_skew,
-        medeen_skew,
-        pearson_median_skew,
-        pearson_mode_skew,
-        bickel_mode_skew,
-    ],
+    all_functions,
 )
 def test_statistic_with_nans(
     func: typing.Callable,

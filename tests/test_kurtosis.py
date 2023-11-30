@@ -12,16 +12,18 @@ from obscure_stats.kurtosis import (
     reza_ma_kurt,
 )
 
+all_functions = [
+    moors_kurt,
+    moors_octile_kurt,
+    hogg_kurt,
+    crow_siddiqui_kurt,
+    reza_ma_kurt,
+]
+
 
 @pytest.mark.parametrize(
     "func",
-    [
-        moors_kurt,
-        moors_octile_kurt,
-        hogg_kurt,
-        crow_siddiqui_kurt,
-        reza_ma_kurt,
-    ],
+    all_functions,
 )
 @pytest.mark.parametrize(
     "data",
@@ -39,13 +41,7 @@ def test_mock_aggregation_functions(
 
 @pytest.mark.parametrize(
     "func",
-    [
-        moors_kurt,
-        moors_octile_kurt,
-        hogg_kurt,
-        crow_siddiqui_kurt,
-        reza_ma_kurt,
-    ],
+    all_functions,
 )
 @pytest.mark.parametrize("seed", [1, 42, 99])
 def test_kurt_sensibility(func: typing.Callable, seed: int) -> None:
@@ -60,13 +56,7 @@ def test_kurt_sensibility(func: typing.Callable, seed: int) -> None:
 
 @pytest.mark.parametrize(
     "func",
-    [
-        moors_kurt,
-        moors_octile_kurt,
-        hogg_kurt,
-        crow_siddiqui_kurt,
-        reza_ma_kurt,
-    ],
+    all_functions,
 )
 def test_statistic_with_nans(
     func: typing.Callable,

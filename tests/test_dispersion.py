@@ -12,24 +12,26 @@ from obscure_stats.dispersion import (
     morisita_index,
     quartile_coefficient_of_dispersion,
     robust_coefficient_of_variation,
-    sqad,
+    standard_quantile_absolute_deviation,
     studentized_range,
 )
+
+all_functions = [
+    coefficient_of_lvariation,
+    coefficient_of_variation,
+    robust_coefficient_of_variation,
+    dispersion_ratio,
+    lloyds_index,
+    morisita_index,
+    quartile_coefficient_of_dispersion,
+    standard_quantile_absolute_deviation,
+    studentized_range,
+]
 
 
 @pytest.mark.parametrize(
     "func",
-    [
-        coefficient_of_lvariation,
-        coefficient_of_variation,
-        robust_coefficient_of_variation,
-        dispersion_ratio,
-        lloyds_index,
-        morisita_index,
-        quartile_coefficient_of_dispersion,
-        sqad,
-        studentized_range,
-    ],
+    all_functions,
 )
 @pytest.mark.parametrize(
     "data",
@@ -55,7 +57,7 @@ def test_mock_aggregation_functions(
         lloyds_index,
         morisita_index,
         quartile_coefficient_of_dispersion,
-        sqad,
+        standard_quantile_absolute_deviation,
     ],
 )
 @pytest.mark.parametrize("seed", [1, 42, 99])
@@ -89,17 +91,7 @@ def test_cv_corner_cases(func: typing.Callable) -> None:
 
 @pytest.mark.parametrize(
     "func",
-    [
-        coefficient_of_lvariation,
-        coefficient_of_variation,
-        robust_coefficient_of_variation,
-        dispersion_ratio,
-        lloyds_index,
-        morisita_index,
-        quartile_coefficient_of_dispersion,
-        sqad,
-        studentized_range,
-    ],
+    all_functions,
 )
 def test_statistic_with_nans(
     func: typing.Callable,

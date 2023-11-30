@@ -16,7 +16,7 @@ identifiers:
     value: 10.5281/zenodo.10206933
 repository-code: 'https://github.com/glevv/obscure_stats'
 repository-artifact: 'https://pypi.org/project/obscure_stats'
-abstract: Collection of less-known statistical measures
+abstract: Collection of lesser-known statistical measures
 license: MIT
-version: 0.1.3
+version: 0.1.4
 date-released: '2023-10-21'
