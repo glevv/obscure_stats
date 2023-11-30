@@ -89,6 +89,10 @@ def pearson_median_skew(x: np.ndarray) -> float:
 def medeen_skew(x: np.ndarray) -> float:
     """Calculate Medeen's skewness statistic.
 
+    This measure is similar to Pearson median skewness coefficient
+    but uses different normalization (mean absolute deviation from the
+    median).
+
     Parameters
     ----------
     x : array_like
@@ -142,6 +146,8 @@ def groeneveld_skew(x: np.ndarray) -> float:
     """Calculate Groeneveld's skewness coefficinet.
 
     It is based on quartiles (uncentered, unscaled).
+    It is similar to Bowley skewness coefficient, but tries to
+    reweight distance bwetwen median and quartiles separately.
     This measure should be more robust than moment based skewness.
 
     Parameters
@@ -163,13 +169,15 @@ def groeneveld_skew(x: np.ndarray) -> float:
     q1, q2, q3 = np.nanquantile(x, [0.25, 0.5, 0.75])
     rs = (q3 + q1 - 2 * q2) / (q2 - q1)
     ls = (q3 + q1 - 2 * q2) / (q3 - q2)
-    return rs if np.all(np.abs(rs) > np.abs(ls), axis=0) else ls
+    return rs if abs(rs) > abs(ls) else ls
 
 
 def kelly_skew(x: np.ndarray) -> float:
     """Calculate Kelly's skewness coefficinet.
 
     It is based on deciles (uncentered, unscaled).
+    Similar to Bowley skewness coefficient, but instead of
+    quartiles, deciles are used.
     This measure should be more robust than moment based skewness.
 
     Parameters
@@ -195,6 +203,8 @@ def kelly_skew(x: np.ndarray) -> float:
 def hossain_adnan_skew(x: np.ndarray) -> float:
     """Calculate Houssain and Adnan skewness coefficient.
 
+    It is based on differences from the median, and is somewhar similar
+    to Bickel mode skewness.
     This measure should be more robust than moment based skewness.
 
     Parameters
@@ -220,6 +230,8 @@ def hossain_adnan_skew(x: np.ndarray) -> float:
 def forhad_shorna_rank_skew(x: np.ndarray) -> float:
     """Calculate Forhad-Shorna coefficient of Rank Skewness.
 
+    This measure is similar to Houssain and Adnan skewness coefficient,
+    but uses differences in ranks instead of absolute differences.
     This measure should be more robust than moment based skewness.
 
     Parameters
@@ -262,6 +274,9 @@ def _auc_skew_gamma(x: np.ndarray, dp: float, w: np.ndarray | float) -> float:
 
 def auc_skew_gamma(x: np.ndarray, dp: float = 0.01) -> float:
     """Calculate Area under the curve of generalized Bowley skewness coefficients.
+
+    This measure tries to combine multiple generalized Bowley skewness coefficients
+    into one value.
 
     Parameters
     ----------

@@ -95,7 +95,9 @@ def hogg_kurt(x: np.ndarray) -> float:
 def crow_siddiqui_kurt(x: np.ndarray) -> float:
     """Calculate Crow & Siddiqui kurtosis coefficient.
 
-    It is based on quartiles and percentiles (uncentered, unscaled).
+    It is based on quartiles and percentiles (uncentered, unscaled) and
+    tries to compare two different measures of dispersion of the same
+    sample.
     This measure should be more robust than moment based kurtosis.
 
     Parameters
@@ -121,7 +123,8 @@ def crow_siddiqui_kurt(x: np.ndarray) -> float:
 def reza_ma_kurt(x: np.ndarray) -> float:
     """Calculatie Reza & Ma kurtosis coefficient.
 
-    It is based on hexadeciles (uncentered, unscaled).
+    It is based on hexadeciles (uncentered, unscaled) and is very
+    similar to Moor's octile kurtosis.
     This measure should be more robust than moment based kurtosis.
 
     Parameters
