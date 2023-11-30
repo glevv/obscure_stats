@@ -206,9 +206,9 @@ def standard_trimmed_harrell_davis_quantile(x: np.ndarray, q: float = 0.5) -> fl
         raise ValueError(msg)
     xs = np.sort(x)
     xs = xs[np.isfinite(xs)]
-    if len(xs) <= 1:
-        return xs[0]
     n = len(xs)
+    if n <= 1:
+        return xs[0]
     n_calculated = 1 / n**0.5  # heuristic suggested by the author
     a = (n + 1) * q
     b = (n + 1) * (1.0 - q)
