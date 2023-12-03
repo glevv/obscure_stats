@@ -57,7 +57,7 @@ def _prep_arrays(x: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
 
 
 def chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
-    """Calculate xi correlation.
+    """Calculate Xi correlation coefficient.
 
     Another variation of rank correlation which does not make any assumptions about
     underlying distributions of the variable.
@@ -167,7 +167,7 @@ def concordance_rate(
 
     Returns
     -------
-    ccr : float.
+    cr : float.
         The value of the quadrant count ratio.
 
     References
@@ -196,7 +196,7 @@ def concordance_rate(
 
 
 def symmetric_chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
-    """Calculate symmetric xi correlation.
+    """Calculate symmetric Xi correlation coefficient.
 
     Another variation of rank correlation which does not make any assumptions about
     underlying distributions of the variable.
@@ -218,7 +218,7 @@ def symmetric_chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
 
     Returns
     -------
-    xi : float.
+    sxi : float.
         The value of the xi correlation coefficient.
 
     References
@@ -235,9 +235,10 @@ def symmetric_chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
 
 
 def zhangi(x: np.ndarray, y: np.ndarray) -> float:
-    """Calculate I correlation proposed by Q. Zhang.
+    """Calculate I correlation coefficient proposed by Q. Zhang.
 
-    This coefficient combines Spearman and Chatterjee rank correlation coefficients.
+    This coefficient combines Spearman and Chatterjee rank correlation coefficients
+    to get higher sensetivity to complex nonlinear relationships between variables.
 
     Parameters
     ----------
@@ -248,7 +249,7 @@ def zhangi(x: np.ndarray, y: np.ndarray) -> float:
 
     Returns
     -------
-    i : float.
+    zi : float.
         The value of the Zhang I.
 
     References
@@ -291,7 +292,7 @@ def tanimoto_similarity(x: np.ndarray, y: np.ndarray) -> float:
 
     Returns
     -------
-    td : float.
+    ts : float.
         The value of the tanimoto similarity measure
 
     References
