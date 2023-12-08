@@ -12,6 +12,7 @@ from obscure_stats.dispersion import (
     morisita_index,
     quartile_coefficient_of_dispersion,
     robust_coefficient_of_variation,
+    shamos_estimator,
     standard_quantile_absolute_deviation,
     studentized_range,
 )
@@ -26,6 +27,7 @@ all_functions = [
     quartile_coefficient_of_dispersion,
     standard_quantile_absolute_deviation,
     studentized_range,
+    shamos_estimator,
 ]
 
 
@@ -58,6 +60,7 @@ def test_mock_aggregation_functions(
         morisita_index,
         quartile_coefficient_of_dispersion,
         standard_quantile_absolute_deviation,
+        shamos_estimator,
     ],
 )
 @pytest.mark.parametrize("seed", [1, 42, 99])
