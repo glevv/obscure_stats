@@ -257,3 +257,40 @@ def standard_quantile_absolute_deviation(x: np.ndarray) -> float:
     k = 1.0 + 0.762 / n + 0.967 / n**2
     # constant value that maximizes efficiency for normal distribution
     return k * np.nanquantile(np.abs(x - med), q=0.682689492137086)
+
+
+def shamos_estimator(x: np.ndarray) -> float:
+    """Calculate Shamos robust estimator of dispersion.
+
+    This measure is complementary to Hodges-Lehmann-Sen estimator.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+
+    Returns
+    -------
+    se : float
+        The value of Hodges-Lehmann-Sen estimator.
+
+    References
+    ----------
+    Shamos, M. I. (1976).
+    Geometry and statistics: Problems at the interface (p. 0032).
+    Carnegie-Mellon University. Department of Computer Science.
+
+    Notes
+    -----
+    This implementation uses cartesian product, so the time and memory complexity
+    are N^2. It is best to not use it on large arrays.
+
+    See Also
+    --------
+    obscure_stats.central_tendency.hodges_lehmann_sen_location - Hodges-Lehmann-Sen loc.
+    """
+    # In the original paper authors suggest use only upper triangular
+    # of the cartesian product, but in this implementation we use
+    # whole matrix, which is equvalent.
+    product = np.meshgrid(x, x, sparse=True)
+    return np.nanmedian(np.abs(product[0] - product[1]))

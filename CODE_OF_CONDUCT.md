@@ -1,1 +1,1 @@
-This projects adopts Python Code of Conduct, [please read it here](https://www.python.org/psf/conduct/).
+This projects adopts Python Software Foundation Code of Conduct, [please read it here](https://www.python.org/psf/conduct/).
