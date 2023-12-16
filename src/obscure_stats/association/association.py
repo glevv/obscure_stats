@@ -95,14 +95,15 @@ def chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
+    # heavily inspired by https://github.com/czbiohub-sf/xicor/issues/17#issue-965635013
     n = len(x)
-    x_ranked = stats.rankdata(x, method="ordinal")
-    y_forward_ranked = stats.rankdata(y, method="max")
-    y_backward_ranked = stats.rankdata(-y, method="max")
-    y_forward_ranked_ordered = y_forward_ranked[np.argsort(x_ranked)]
-    nom = np.sum(np.abs(np.diff(y_forward_ranked_ordered)))
-    denom = np.sum(y_backward_ranked * (n - y_backward_ranked)) / n**3
-    return 1.0 - nom / (2 * n**2 * denom)
+    y_forward_ordered = y[np.argsort(x)]
+    _, y_unique_indexes, y_counts = np.unique(
+        y_forward_ordered, return_inverse=True, return_counts=True
+    )
+    right = np.cumsum(y_counts)[y_unique_indexes]
+    left = np.cumsum(y_counts[::-1])[len(y_counts) - y_unique_indexes - 1]
+    return 1.0 - 0.5 * np.sum(np.abs(np.diff(right))) / np.mean(left * (n - left))
 
 
 def concordance_corrcoef(x: np.ndarray, y: np.ndarray) -> float:
@@ -231,7 +232,29 @@ def symmetric_chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
     --------
     obscure_stats.associaton.chatterjeexi - Chatterjee Xi coefficient.
     """
-    return max(chatterjeexi(x, y), chatterjeexi(y, x))
+    if _check_arrays(x, y):
+        return np.nan
+    x, y = _prep_arrays(x, y)
+    n = len(x)
+    # y ~ f(x)
+    y_forward_ordered = y[np.argsort(x)]
+    _, y_unique_indexes, y_counts = np.unique(
+        y_forward_ordered, return_inverse=True, return_counts=True
+    )
+    right_xy = np.cumsum(y_counts)[y_unique_indexes]
+    left_xy = np.cumsum(y_counts[::-1])[len(y_counts) - y_unique_indexes - 1]
+    # x ~ f(y)
+    x_forward_ordered = x[np.argsort(y)]
+    _, x_unique_indexes, x_counts = np.unique(
+        x_forward_ordered, return_inverse=True, return_counts=True
+    )
+    right_yx = np.cumsum(x_counts)[x_unique_indexes]
+    left_yx = np.cumsum(x_counts[::-1])[len(x_counts) - x_unique_indexes - 1]
+    # choose the highest from the two
+    return 1.0 - min(
+        0.5 * np.sum(np.abs(np.diff(right_xy))) / np.mean(left_xy * (n - left_xy)),
+        0.5 * np.sum(np.abs(np.diff(right_yx))) / np.mean(left_yx * (n - left_yx)),
+    )
 
 
 def zhangi(x: np.ndarray, y: np.ndarray) -> float:

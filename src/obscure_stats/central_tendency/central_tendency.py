@@ -18,7 +18,7 @@ def midrange(x: np.ndarray) -> float:
 
     Returns
     -------
-    mr : float or array_like.
+    mr : float
         The value of the midrange.
 
     References
@@ -44,7 +44,7 @@ def midhinge(x: np.ndarray) -> float:
 
     Returns
     -------
-    mh : float or array_like.
+    mh : float
         The value of the midhinge.
 
     References
@@ -69,7 +69,7 @@ def trimean(x: np.ndarray) -> float:
 
     Returns
     -------
-    tm : float or array_like.
+    tm : float
         The value of the trimean.
 
     References
@@ -96,7 +96,7 @@ def contraharmonic_mean(x: np.ndarray) -> float:
 
     Returns
     -------
-    chm : float or array_like.
+    chm : float
         The value of the contraharmonic mean.
 
     References
@@ -120,7 +120,7 @@ def midmean(x: np.ndarray) -> float:
 
     Returns
     -------
-    iqm : float or array_like.
+    iqm : float
         The value of the interquartile mean.
 
     References

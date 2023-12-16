@@ -10,10 +10,10 @@ from .association import (
 )
 
 __all__ = [
+    "chatterjeexi",
     "concordance_corrcoef",
     "concordance_rate",
-    "chatterjeexi",
-    "zhangi",
-    "tanimoto_similarity",
     "symmetric_chatterjeexi",
+    "tanimoto_similarity",
+    "zhangi",
 ]

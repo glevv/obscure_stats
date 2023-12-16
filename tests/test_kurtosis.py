@@ -7,16 +7,18 @@ import pytest
 from obscure_stats.kurtosis import (
     crow_siddiqui_kurt,
     hogg_kurt,
+    l_kurt,
     moors_kurt,
     moors_octile_kurt,
     reza_ma_kurt,
 )
 
 all_functions = [
+    crow_siddiqui_kurt,
+    hogg_kurt,
+    l_kurt,
     moors_kurt,
     moors_octile_kurt,
-    hogg_kurt,
-    crow_siddiqui_kurt,
     reza_ma_kurt,
 ]
 
@@ -49,8 +51,12 @@ def test_kurt_sensibility(func: typing.Callable, seed: int) -> None:
     rng = np.random.default_rng(seed)
     platy = np.round(rng.uniform(size=100), 2)
     lepto = np.round(rng.exponential(size=100), 2)
-    if func(platy) > func(lepto):
-        msg = "Kurtosis in the first case should be lower."
+    platy_res = func(platy)
+    lepto_res = func(lepto)
+    if platy_res > lepto_res:
+        msg = (
+            f"Kurtosis in the first case should be lower, got {platy_res} > {lepto_res}"
+        )
         raise ValueError(msg)
 
 

@@ -3,9 +3,44 @@
 from __future__ import annotations
 
 import numpy as np
-from scipy import stats  # type: ignore[import-untyped]
+from scipy import special, stats  # type: ignore[import-untyped]
 
 from obscure_stats.central_tendency import half_sample_mode
+
+
+def l_skew(x: np.ndarray) -> float:
+    """Calculate standardized linear skewness.
+
+    This measure is a 3rd linear moment, which is an
+    alternative to conventional moments.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+
+    Returns
+    -------
+    lsk : float.
+        The value of L-Skewness.
+
+    References
+    ----------
+    Hosking, J. R. M. (1990).
+    L-moments: analysis and estimation of distributions
+    using linear combinations of order statistics.
+    Journal of the Royal Statistical Society, Series B. 52 (1): 105-124.
+    """
+    n = len(x)
+    _x = np.sort(x)
+    common = 1 / special.comb(n - 1, (0, 1, 2)) / n
+    betas = [
+        common[i] * np.nansum(special.comb(np.arange(i, n), i) * _x[i:])
+        for i in range(3)
+    ]
+    l3 = 6 * betas[2] - 6 * betas[1] + betas[0]
+    l2 = 2 * betas[1] - betas[0]
+    return l3 / l2
 
 
 def pearson_mode_skew(x: np.ndarray) -> float:
@@ -20,7 +55,7 @@ def pearson_mode_skew(x: np.ndarray) -> float:
 
     Returns
     -------
-    pmods : float or array_like.
+    pmods : float
         The value of Pearson's mode skew coefficient.
 
     References
@@ -48,7 +83,7 @@ def bickel_mode_skew(x: np.ndarray) -> float:
 
     Returns
     -------
-    phmods : float or array_like.
+    phmods : float
         The value of Bickel's mode skew coefficient.
 
     References
@@ -71,7 +106,7 @@ def pearson_median_skew(x: np.ndarray) -> float:
 
     Returns
     -------
-    pmeds : float or array_like.
+    pmeds : float
         The value of Pearson's median skew coefficient.
 
     References
@@ -100,7 +135,7 @@ def medeen_skew(x: np.ndarray) -> float:
 
     Returns
     -------
-    mss : float or array_like.
+    mss : float
         The value of Medeen's skewness statistic.
 
     References
@@ -129,7 +164,7 @@ def bowley_skew(x: np.ndarray) -> float:
 
     Returns
     -------
-    bsk : float or array_like.
+    bsk : float
         The value of Bowley's skewness coefficinet.
 
     References
@@ -157,7 +192,7 @@ def groeneveld_skew(x: np.ndarray) -> float:
 
     Returns
     -------
-    bsk : float or array_like.
+    bsk : float
         The value of Groeneveld's skewness coefficinet.
 
     References
@@ -187,7 +222,7 @@ def kelly_skew(x: np.ndarray) -> float:
 
     Returns
     -------
-    ksc : float or array_like.
+    ksc : float
         The value of Kelly's skewness coefficinet.
 
     References
@@ -214,7 +249,7 @@ def hossain_adnan_skew(x: np.ndarray) -> float:
 
     Returns
     -------
-    has : float or array_like.
+    has : float
         The value of Houssain and Adnan skewness coefficient.
 
     References
@@ -241,7 +276,7 @@ def forhad_shorna_rank_skew(x: np.ndarray) -> float:
 
     Returns
     -------
-    fsrs : float or array_like.
+    fsrs : float
         The value of Forhad-Shorna coefficient of Rank Skewness.
 
     References
@@ -287,7 +322,7 @@ def auc_skew_gamma(x: np.ndarray, dp: float = 0.01) -> float:
 
     Returns
     -------
-    aucbs : float or array_like.
+    aucbs : float
         The value of AUC Bowley skewness.
 
     References
@@ -316,7 +351,7 @@ def wauc_skew_gamma(x: np.ndarray, dp: float = 0.01) -> float:
 
     Returns
     -------
-    aucbs : float or array_like.
+    aucbs : float
         The value of AUC Bowley skewness.
 
     References

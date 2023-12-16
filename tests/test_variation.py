@@ -50,10 +50,10 @@ def test_var_sensibility_higher_better(func: typing.Callable, seed: int) -> None
     rng = np.random.default_rng(seed)
     low_var = rng.choice(["a", "b", "c", "d"], p=[0.25, 0.25, 0.25, 0.25], size=100)
     high_var = rng.choice(["a", "b", "c", "d"], p=[0.75, 0.15, 0.05, 0.05], size=100)
-    low_res = func(low_var)
-    high_res = func(high_var)
-    if low_res < high_res:
-        msg = f"Statistic value should be higher, got {low_res} < {high_res}"
+    low_var_res = func(low_var)
+    high_var_res = func(high_var)
+    if low_var_res < high_var_res:
+        msg = f"Statistic value should be higher, got {low_var_res} < {high_var_res}"
         raise ValueError(msg)
 
 

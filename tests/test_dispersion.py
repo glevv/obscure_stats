@@ -6,6 +6,7 @@ import numpy as np
 import pytest
 from obscure_stats.dispersion import (
     coefficient_of_lvariation,
+    coefficient_of_range,
     coefficient_of_variation,
     dispersion_ratio,
     lloyds_index,
@@ -19,15 +20,16 @@ from obscure_stats.dispersion import (
 
 all_functions = [
     coefficient_of_lvariation,
+    coefficient_of_range,
     coefficient_of_variation,
-    robust_coefficient_of_variation,
     dispersion_ratio,
     lloyds_index,
     morisita_index,
     quartile_coefficient_of_dispersion,
+    robust_coefficient_of_variation,
+    shamos_estimator,
     standard_quantile_absolute_deviation,
     studentized_range,
-    shamos_estimator,
 ]
 
 
@@ -61,6 +63,7 @@ def test_mock_aggregation_functions(
         quartile_coefficient_of_dispersion,
         standard_quantile_absolute_deviation,
         shamos_estimator,
+        coefficient_of_range,
     ],
 )
 @pytest.mark.parametrize("seed", [1, 42, 99])
@@ -69,8 +72,13 @@ def test_dispersion_sensibility(func: typing.Callable, seed: int) -> None:
     rng = np.random.default_rng(seed)
     low_disp = np.round(rng.exponential(scale=1, size=100) + 1, 2)
     high_disp = np.round(rng.exponential(scale=10, size=100) + 1, 2)
-    if func(low_disp) > func(high_disp):
-        msg = "Dispersion in the first case should be lower."
+    low_disp_res = func(low_disp)
+    high_disp_res = func(high_disp)
+    if low_disp_res > high_disp_res:
+        msg = (
+            f"Dispersion in the first case should be lower, "
+            f"got {low_disp_res} > {high_disp_res}"
+        )
         raise ValueError(msg)
 
 
@@ -81,6 +89,7 @@ def test_dispersion_sensibility(func: typing.Callable, seed: int) -> None:
         coefficient_of_variation,
         robust_coefficient_of_variation,
         quartile_coefficient_of_dispersion,
+        coefficient_of_range,
     ],
 )
 def test_cv_corner_cases(func: typing.Callable) -> None:

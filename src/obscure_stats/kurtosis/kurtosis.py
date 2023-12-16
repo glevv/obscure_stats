@@ -2,7 +2,42 @@
 
 
 import numpy as np
-from scipy import stats  # type: ignore[import-untyped]
+from scipy import special, stats  # type: ignore[import-untyped]
+
+
+def l_kurt(x: np.ndarray) -> float:
+    """Calculate standardized linear kurtosis.
+
+    This measure is a 4th linear moment, which is an
+    alternative to conventional moments.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+
+    Returns
+    -------
+    lkr : float
+        The value of L-Kurtosis.
+
+    References
+    ----------
+    Hosking, J. R. M. (1990).
+    L-moments: analysis and estimation of distributions
+    using linear combinations of order statistics.
+    Journal of the Royal Statistical Society, Series B. 52 (1): 105-124.
+    """
+    n = len(x)
+    _x = np.sort(x)
+    common = 1 / special.comb(n - 1, (0, 1, 2, 4)) / n
+    betas = [
+        common[i] * np.nansum(special.comb(np.arange(i, n), i) * _x[i:])
+        for i in range(4)
+    ]
+    l4 = 20 * betas[3] - 30 * betas[2] + 12 * betas[1] - betas[0]
+    l2 = 2 * betas[1] - betas[0]
+    return l4 / l2
 
 
 def moors_kurt(x: np.ndarray) -> float:
@@ -20,7 +55,7 @@ def moors_kurt(x: np.ndarray) -> float:
 
     Returns
     -------
-    mk : float or array_like.
+    mk : float
         The value of Moor's kurtosis.
 
     References
@@ -44,7 +79,7 @@ def moors_octile_kurt(x: np.ndarray) -> float:
 
     Returns
     -------
-    mok : float or array_like.
+    mok : float
         The value of Moor's octile kurtosis.
 
     References
@@ -73,7 +108,7 @@ def hogg_kurt(x: np.ndarray) -> float:
 
     Returns
     -------
-    hgc : float or array_like.
+    hgc : float
         The value of Hogg's kurtosis coefficient.
 
     References
@@ -107,7 +142,7 @@ def crow_siddiqui_kurt(x: np.ndarray) -> float:
 
     Returns
     -------
-    csk : float or array_like.
+    csk : float
         The value of Crow & Siddiqui kurtosis coefficient.
 
     References
@@ -134,7 +169,7 @@ def reza_ma_kurt(x: np.ndarray) -> float:
 
     Returns
     -------
-    rmk : float or array_like.
+    rmk : float
         The value of Reza & Ma kurtosis coefficient.
 
     References

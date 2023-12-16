@@ -14,12 +14,12 @@ from obscure_stats.association import (
 )
 
 all_functions = [
-    zhangi,
     chatterjeexi,
     concordance_corrcoef,
     concordance_rate,
-    tanimoto_similarity,
     symmetric_chatterjeexi,
+    tanimoto_similarity,
+    zhangi,
 ]
 
 

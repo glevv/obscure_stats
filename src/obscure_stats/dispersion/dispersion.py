@@ -3,7 +3,7 @@
 import warnings
 
 import numpy as np
-from scipy import stats  # type: ignore[import-untyped]
+from scipy import special, stats  # type: ignore[import-untyped]
 
 EPS = 1e-6
 
@@ -18,7 +18,7 @@ def studentized_range(x: np.ndarray) -> float:
 
     Returns
     -------
-    sr : float or array_like.
+    sr : float
         The value of the studentized range.
 
     References
@@ -46,7 +46,7 @@ def coefficient_of_lvariation(x: np.ndarray) -> float:
 
     Returns
     -------
-    lcv : float or array_like.
+    lcv : float
         The value of the linear coefficient of variation.
 
     References
@@ -60,7 +60,11 @@ def coefficient_of_lvariation(x: np.ndarray) -> float:
     if abs(l1) <= EPS:
         warnings.warn("Mean is close to 0. Statistic is undefined.", stacklevel=2)
         return np.inf
-    l2 = np.nanmean(np.abs(x - l1)) * 0.5
+    n = len(x)
+    _x = np.sort(x)
+    common = 1 / special.comb(n - 1, 1) / n
+    beta_1 = common * np.nansum(special.comb(np.arange(1, n), 1) * _x[1:])
+    l2 = 2 * beta_1 - l1
     return l2 / l1
 
 
@@ -74,7 +78,7 @@ def coefficient_of_variation(x: np.ndarray) -> float:
 
     Returns
     -------
-    cv : float or array_like.
+    cv : float
         The value of the coefficient of variation.
 
     References
@@ -103,7 +107,7 @@ def robust_coefficient_of_variation(x: np.ndarray) -> float:
 
     Returns
     -------
-    rcv : float or array_like.
+    rcv : float
         The value of the robust coefficient of variation.
 
     References
@@ -130,7 +134,7 @@ def quartile_coefficient_of_dispersion(x: np.ndarray) -> float:
 
     Returns
     -------
-    qcd : float or array_like.
+    qcd : float
         The value of the quartile coefficient of dispersion.
 
     References
@@ -161,7 +165,7 @@ def dispersion_ratio(x: np.ndarray) -> float:
 
     Returns
     -------
-    dr : float or array_like.
+    dr : float
         The value of the dispersion ratio.
 
     References
@@ -189,7 +193,7 @@ def lloyds_index(x: np.ndarray) -> float:
 
     Returns
     -------
-    li : float or array_like.
+    li : float
         The value of the Lloyd's index.
 
     References
@@ -216,7 +220,7 @@ def morisita_index(x: np.ndarray) -> float:
 
     Returns
     -------
-    mi : float or array_like.
+    mi : float
         The value of the Morisita's index.
 
     References
@@ -242,7 +246,7 @@ def standard_quantile_absolute_deviation(x: np.ndarray) -> float:
 
     Returns
     -------
-    sqad : float or array_like.
+    sqad : float
         The value of the SQAD.
 
     References
@@ -294,3 +298,30 @@ def shamos_estimator(x: np.ndarray) -> float:
     # whole matrix, which is equvalent.
     product = np.meshgrid(x, x, sparse=True)
     return np.nanmedian(np.abs(product[0] - product[1]))
+
+
+def coefficient_of_range(x: np.ndarray) -> float:
+    """Calculate coefficient of range (Range / Midrange).
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+
+    Returns
+    -------
+    cr : float
+        The value of the linear coefficient of variation.
+
+    References
+    ----------
+    Yadav, S. K., Singh, S.,  &  Gupta, R. (2019).
+    Measures of Dispersion.
+    In Biomedical Statistics (pp. 59-70). Springer, Singapore
+    """
+    min_ = np.nanmin(x)
+    max_ = np.nanmax(x)
+    if abs(min_ + max_) <= EPS:
+        warnings.warn("Midrange is close to 0. Statistic is undefined.", stacklevel=2)
+        return np.inf
+    return (max_ - min_) / (max_ + min_)

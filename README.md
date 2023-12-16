@@ -40,11 +40,13 @@
     * Groeneveld Skewness Coefficient;
     * Hossain-Adnan Skewness Coefficient;
     * Kelly Skewness Coefficient;
+    * L-Skewness;
     * Medeen Skewness Coefficient;
     * Pearson Median Skewness Coefficient;
     * Pearson Mode Skewness Coefficient.
 - Collection of measures of kurtosis - `obscure_stats/kurtosis`:
     * Crow-Siddiqui Kurtosis;
+    * L-Kurtosis;
     * Hogg Kurtosis;
     * Moors Kurtosis;
     * Moors Octile Kurtosis;
