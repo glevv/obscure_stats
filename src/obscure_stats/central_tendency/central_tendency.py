@@ -238,7 +238,7 @@ def half_sample_mode(x: np.ndarray) -> float:
     Returns
     -------
     hsm : float
-        The value of Half Sample Mode.
+        The value of half sample mode.
 
     References
     ----------

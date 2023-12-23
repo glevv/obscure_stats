@@ -37,11 +37,12 @@
     * Area Under the Skewness Curve (weighted and unweighted);
     * Bickel Mode Skewness Coefficient;
     * Bowley Skewness Coefficient;
+    * Cumulative Skewness Coefficient;
     * Forhad-Shorna Rank Skewness Coefficient;
     * Groeneveld Skewness Coefficient;
     * Hossain-Adnan Skewness Coefficient;
     * Kelly Skewness Coefficient;
-    * L-Skewness;
+    * L-Skewness Coefficient;
     * Medeen Skewness Coefficient;
     * Pearson Median Skewness Coefficient;
     * Pearson Mode Skewness Coefficient.
@@ -53,18 +54,21 @@
     * Moors Octile Kurtosis;
     * Reza-Ma Kurtosis.
 - Collection of measures of association - `obscure_stats/association`:
-    * Chatterjee Xi correlation Coefficient (original and symmetric versions);
+    * Blomqvist's Beta;
+    * Chatterjee Xi Correlation Coefficient (original and symmetric versions);
     * Concordance Correlation Coefficient;
     * Concordance Rate;
+    * Rank Minrelation Coefficient;
     * Tanimoto Similarity;
+    * Winsorized Correlation Coefficient;
     * Zhang I Correlation Coefficient.
 - Collection of measures of qualitative variation - `obscure_stats/variation`:
     * AVDev;
     * B Index;
-    * Extropy;
     * Gibbs M1;
     * Gibbs M2;
     * ModVR;
+    * Negative Extropy;
     * RanVR.
 
 ## Installation

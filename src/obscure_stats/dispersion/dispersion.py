@@ -234,7 +234,7 @@ def morisita_index(x: np.ndarray) -> float:
 
 
 def standard_quantile_absolute_deviation(x: np.ndarray) -> float:
-    """Calculate Standard quantile absolute deviation.
+    """Calculate standard quantile absolute deviation.
 
     This measure is a robust measure of dispersion, that has higher
     gaussian efficiency, but lower breaking point than MAD.
@@ -247,7 +247,7 @@ def standard_quantile_absolute_deviation(x: np.ndarray) -> float:
     Returns
     -------
     sqad : float
-        The value of the SQAD.
+        The value of the standard quantile absolute deviation.
 
     References
     ----------
@@ -276,7 +276,7 @@ def shamos_estimator(x: np.ndarray) -> float:
     Returns
     -------
     se : float
-        The value of Hodges-Lehmann-Sen estimator.
+        The value of Shamos estimator.
 
     References
     ----------
@@ -311,7 +311,7 @@ def coefficient_of_range(x: np.ndarray) -> float:
     Returns
     -------
     cr : float
-        The value of the linear coefficient of variation.
+        The value of the range coefficient.
 
     References
     ----------

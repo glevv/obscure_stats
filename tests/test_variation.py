@@ -7,20 +7,20 @@ import pytest
 from obscure_stats.variation import (
     avdev,
     b_index,
-    extropy,
     gibbs_m1,
     gibbs_m2,
     mod_vr,
+    negative_extropy,
     range_vr,
 )
 
 all_functions = [
     avdev,
     b_index,
-    extropy,
     gibbs_m1,
     gibbs_m2,
     mod_vr,
+    negative_extropy,
     range_vr,
 ]
 

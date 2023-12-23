@@ -1,14 +1,15 @@
 [tool.poetry]
 name = "obscure_stats"
-version = "0.1.7"
+version = "0.1.8"
 description = "Collection of lesser-known statistical functions"
-authors = ["Gleb Levitski"]
+authors = ["Hleb Levitski"]
 readme = "README.md"
 classifiers = [
     "Development Status :: 3 - Alpha",
-    "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
     "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
@@ -16,11 +17,9 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3 :: Only",
-    "Topic :: Software Development",
     "Topic :: Scientific/Engineering",
+    "Topic :: Software Development",
     "Typing :: Typed",
-    "Operating System :: OS Independent",
-    "Natural Language :: English",
 ]
 
 [tool.poetry.dependencies]

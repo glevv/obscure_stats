@@ -192,7 +192,7 @@ def groeneveld_skew(x: np.ndarray) -> float:
 
     Returns
     -------
-    bsk : float
+    gsc : float
         The value of Groeneveld's skewness coefficinet.
 
     References
@@ -263,7 +263,7 @@ def hossain_adnan_skew(x: np.ndarray) -> float:
 
 
 def forhad_shorna_rank_skew(x: np.ndarray) -> float:
-    """Calculate Forhad-Shorna coefficient of Rank Skewness.
+    """Calculate Forhad-Shorna coefficient of rank skewness.
 
     This measure is similar to Houssain and Adnan skewness coefficient,
     but uses differences in ranks instead of absolute differences.
@@ -277,7 +277,7 @@ def forhad_shorna_rank_skew(x: np.ndarray) -> float:
     Returns
     -------
     fsrs : float
-        The value of Forhad-Shorna coefficient of Rank Skewness.
+        The value of Forhad-Shorna coefficient of rank skewness.
 
     References
     ----------
@@ -308,7 +308,7 @@ def _auc_skew_gamma(x: np.ndarray, dp: float, w: np.ndarray | float) -> float:
 
 
 def auc_skew_gamma(x: np.ndarray, dp: float = 0.01) -> float:
-    """Calculate Area under the curve of generalized Bowley skewness coefficients.
+    """Calculate area under the curve of generalized Bowley skewness coefficients.
 
     This measure tries to combine multiple generalized Bowley skewness coefficients
     into one value.
@@ -337,7 +337,7 @@ def auc_skew_gamma(x: np.ndarray, dp: float = 0.01) -> float:
 
 def wauc_skew_gamma(x: np.ndarray, dp: float = 0.01) -> float:
     """
-    Calculate Weighted Area under the curve of generalized Bowley skewness coefficients.
+    Calculate weighted area under the curve of generalized Bowley skewness coefficients.
 
     This version use reweightning. It will assign bigger weights to the
     Bowley skewness coefficients calculated on percentiles far from the median.
@@ -352,7 +352,7 @@ def wauc_skew_gamma(x: np.ndarray, dp: float = 0.01) -> float:
     Returns
     -------
     aucbs : float
-        The value of AUC Bowley skewness.
+        The value of weighted AUC Bowley skewness.
 
     References
     ----------
@@ -364,3 +364,35 @@ def wauc_skew_gamma(x: np.ndarray, dp: float = 0.01) -> float:
     half_n = n // 2
     w = (np.arange(half_n) / half_n)[::-1]
     return _auc_skew_gamma(x, dp, w)
+
+
+def cumulative_skew(x: np.ndarray) -> float:
+    """
+    Calculate cumulative measure of skewness.
+
+    It is based on calculating the cumulative statistics of the Lorenz curve.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+
+    Returns
+    -------
+    cs : float
+        The value of cumulative skew.
+
+    References
+    ----------
+    Schlemmer, M. (2022).
+    A robust measure of skewness using cumulative statistic calculation.
+    arXiv preprint arXiv:2209.10699.
+    """
+    n = len(x)
+    p = np.nancumsum(np.sort(x))
+    p = p / p[-1]
+    r = np.arange(n)
+    q = r / n
+    d = q - p
+    w = (2 * r - n) * 3 / n
+    return np.sum(d * w) / np.sum(d)

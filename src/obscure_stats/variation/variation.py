@@ -198,7 +198,7 @@ def avdev(x: np.ndarray) -> float:
     return 1 - (np.sum(np.abs(freq - mean)) / (2 * mean * max(k - 1, 1)))
 
 
-def extropy(x: np.ndarray) -> float:
+def negative_extropy(x: np.ndarray) -> float:
     """Calculate Negative Information Extropy (bits).
 
     This measure is complementary to entropy.
@@ -216,7 +216,7 @@ def extropy(x: np.ndarray) -> float:
     Returns
     -------
     ext : float
-        The value of extropy.
+        The value of negative extropy.
 
     References
     ----------

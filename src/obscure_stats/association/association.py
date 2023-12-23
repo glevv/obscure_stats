@@ -73,9 +73,9 @@ def chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Measured values.
+        Input array.
     y : array_like
-        Target values.
+        Input array.
 
     Returns
     -------
@@ -118,9 +118,9 @@ def concordance_corrcoef(x: np.ndarray, y: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Measured values.
+        Input array.
     y : array_like
-        Reference values.
+        Input array.
 
     Returns
     -------
@@ -162,14 +162,14 @@ def concordance_rate(
     Parameters
     ----------
     x : array_like
-        Measured values.
+        Input array.
     y : array_like
-        Reference values.
+        Input array.
 
     Returns
     -------
     cr : float.
-        The value of the quadrant count ratio.
+        The value of the concordance rate.
 
     References
     ----------
@@ -213,14 +213,14 @@ def symmetric_chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Measured values.
+        Input array.
     y : array_like
-        Target values.
+        Input array.
 
     Returns
     -------
     sxi : float.
-        The value of the xi correlation coefficient.
+        The value of the symmetric xi correlation coefficient.
 
     References
     ----------
@@ -266,9 +266,9 @@ def zhangi(x: np.ndarray, y: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Measured values.
+        Input array.
     y : array_like
-        Reference values.
+        Input array.
 
     Returns
     -------
@@ -309,14 +309,14 @@ def tanimoto_similarity(x: np.ndarray, y: np.ndarray) -> float:
     Parameters
     ----------
     x : array_like
-        Measured values.
+        Input array.
     y : array_like
-        Reference values.
+        Input array.
 
     Returns
     -------
     ts : float.
-        The value of the tanimoto similarity measure
+        The value of the Tanimoto similarity measure
 
     References
     ----------
@@ -336,3 +336,128 @@ def tanimoto_similarity(x: np.ndarray, y: np.ndarray) -> float:
     xx = np.mean(x**2)
     yy = np.mean(y**2)
     return xy / (xx + yy - xy)
+
+
+def blomqvistbeta(x: np.ndarray, y: np.ndarray) -> float:
+    """Calculate Blomqvist's beta.
+
+    Also known as medial correlation. It is similar to Spearman Rho
+    and Kendall Tau correlations, but have some advantages over them.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+    y : array_like
+        Input array.
+
+    Returns
+    -------
+    bb : float.
+        The value of the Blomqvist's beta.
+
+    References
+    ----------
+    Blomqvist,  N. (1950).
+    On a measure of dependence between two random variables.
+    Annals of Mathematical Statistics, 21, 593-600.
+
+    Schmid, F.; Schmidt, R. (2007).
+    Nonparametric Inference on Multivariate Versions of
+    Blomqvist's Beta and Related Measures of Tail Dependence.
+    Metrika, 66(3), 323-354.
+
+    See Also
+    --------
+    scipy.stats.spearmanr - Spearman R coefficient.
+    scipy.stats.kendalltau - Kendall Tau coefficient.
+    """
+    if _check_arrays(x, y):
+        return np.nan
+    x, y = _prep_arrays(x, y)
+    med_x = np.median(x)
+    med_y = np.median(y)
+    return np.mean(np.sign((x - med_x) * (y - med_y)))
+
+
+def winsorized_correlation(x: np.ndarray, y: np.ndarray, k: float = 0.1) -> float:
+    """Calculate winsorized correlation coefficient.
+
+    This correlation is a robust alternative of the Pearson correlation.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+    y : array_like
+        Input array.
+    k : float
+        The percentages of values to winsorize on each side of the arrays.
+
+    Returns
+    -------
+    wcr : float.
+        The value of the winsorized correlation.
+
+    References
+    ----------
+    Wilcox, R. R. (1993).
+    Some Results on a Winsorized Correlation Coefficient.
+    British Journal of Mathematical and Statistical Psychology, 46, 339-349.
+
+    See Also
+    --------
+    scipy.stats.pearsonr - Pearson correlation coefficient.
+    """
+    if _check_arrays(x, y):
+        return np.nan
+    x, y = _prep_arrays(x, y)
+    x_w = stats.mstats.winsorize(x, (k, k))
+    y_w = stats.mstats.winsorize(y, (k, k))
+    return np.corrcoef(x_w, y_w)[0, 1]
+
+
+def rank_minrelation_coefficient(x: np.ndarray, y: np.ndarray) -> float:
+    """Calculate rank minrelation coefficient.
+
+    This measure estimates p(y > x) when x and y are continuous random variables.
+    In short, if a variable x exhibits a minrelation to y then,
+    as x increases, y is likely to increases too.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+    y : array_like
+        Input array.
+
+    Returns
+    -------
+    rmc : float.
+        The value of the rank minrelation coefficient.
+
+    References
+    ----------
+    Meyer, P. E. (2013).
+    A Rank Minrelation-Majrelation Coefficient.
+    arXiv preprint arXiv:1305.2038.
+
+    Notes
+    -----
+    This measure is assymetric: (x, y) != (y, x).
+
+    See Also
+    --------
+    Concordance rate.
+    Concordance correlation coefficient.
+    """
+    if _check_arrays(x, y):
+        return np.nan
+    x, y = _prep_arrays(x, y)
+    n_sq = len(x) ** 2
+    rank_x_inc = (np.argsort(x) + 1) ** 2 / n_sq - 0.5
+    rank_y_inc = (np.argsort(y) + 1) ** 2 / n_sq - 0.5
+    rank_y_dec = 0.5 - (np.argsort(-y) + 1) ** 2 / n_sq
+    lower = np.sum((-rank_x_inc < rank_y_inc) * (rank_x_inc + rank_y_inc) ** 2)
+    higher = np.sum((rank_x_inc > rank_y_dec) * (rank_x_inc - rank_y_dec) ** 2)
+    return (lower - higher) / (lower + higher)
