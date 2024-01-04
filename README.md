@@ -98,6 +98,10 @@ Robust measure of central tendency = 1.09±0.42
 
 This projects adopts Python Software Foundation Code of Conduct, [please read it here](https://www.python.org/psf/conduct/).
 
+## Contributing
+
+If you would like to contribute, you can read a short guide [here](https://github.com/glevv/obscure_stats/blob/main/CONTRIBUTING.md)
+
 ## License
 
 The content of this repository is licensed under a [MIT license](https://github.com/glevv/obscure_stats/blob/main/LICENSE.txt).
