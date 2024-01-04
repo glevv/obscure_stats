@@ -100,7 +100,7 @@ This projects adopts Python Software Foundation Code of Conduct, [please read it
 
 ## Contributing
 
-If you would like to contribute, you can read a short guide [here](https://github.com/glevv/obscure_stats/blob/main/CONTRIBUTING.md)
+If you would like to contribute, you can read a short guide [here](https://github.com/glevv/obscure_stats/blob/main/CONTRIBUTING.md).
 
 ## License
 
