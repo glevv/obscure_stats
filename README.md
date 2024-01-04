@@ -67,9 +67,11 @@
     * B Index;
     * Gibbs M1;
     * Gibbs M2;
+    * McIntosh's D;
     * ModVR;
     * Negative Extropy;
-    * RanVR.
+    * RanVR;
+    * Rényi entropy.
 
 ## Installation
 
@@ -98,4 +100,6 @@ This projects adopts Python Software Foundation Code of Conduct, [please read it
 
 ## License
 
-The content of this repository is licensed under a [MIT license](https://github.com/glevv/obscure_stats/blob/main/LICENSE).
+The content of this repository is licensed under a [MIT license](https://github.com/glevv/obscure_stats/blob/main/LICENSE.txt).
+
+This repository bundle several libraries that are compatibly licensed. Full list could be found [here](https://github.com/glevv/obscure_stats/blob/main/LICENSES_bundled.txt).

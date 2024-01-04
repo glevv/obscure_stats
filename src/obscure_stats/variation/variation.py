@@ -1,6 +1,5 @@
 """Module for measures of categorical variations."""
 
-
 from collections import Counter
 
 import numpy as np
@@ -33,8 +32,7 @@ def mod_vr(x: np.ndarray) -> float:
     The Western Political Quarterly. 26 (2): 325-343.
     """
     cnts = np.asarray(list(Counter(x).values()))
-    n = len(x)
-    return 1 - np.max(cnts) / n
+    return 1 - np.max(cnts) / len(x)
 
 
 def range_vr(x: np.ndarray) -> float:
@@ -198,6 +196,44 @@ def avdev(x: np.ndarray) -> float:
     return 1 - (np.sum(np.abs(freq - mean)) / (2 * mean * max(k - 1, 1)))
 
 
+def renyi_entropy(x: np.ndarray, alpha: float = 2) -> float:
+    """Calculate Renyi entropy (bits).
+
+    Rényi entropy is a quantity that generalizes various notions of entropy,
+    including Hartley entropy, Shannon entropy, collision entropy, and min-entropy.
+
+    Low values of Rényi entropy correspond to lower variation and
+    high values to higher variation.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+    alpha : float
+        Order of the Rényi entropy
+
+    Returns
+    -------
+    ren : float
+        The value of Rényi entropy.
+
+    References
+    ----------
+    Rényi, A. (1961).
+    On measures of information and entropy.
+    Proceedings of the fourth Berkeley Symposium on Mathematics,
+    Statistics and Probability 1960. pp. 547-561.
+    """
+    if alpha < 0:
+        msg = "Parameter alpha should be positive!"
+        raise ValueError(msg)
+    freq = np.asarray(list(Counter(x).values())) / len(x)
+    if alpha == 1:
+        # return Shannon entropy to avoid division by 0
+        return -np.sum(freq * np.log2(freq))
+    return 1 / (1 - alpha) * np.log2(np.sum(freq**alpha))
+
+
 def negative_extropy(x: np.ndarray) -> float:
     """Calculate Negative Information Extropy (bits).
 
@@ -225,5 +261,32 @@ def negative_extropy(x: np.ndarray) -> float:
     Statistical Science, 30(1), 40-58.
     """
     freq = np.asarray(list(Counter(x).values())) / len(x)
-    p = 1.0 - freq + 1e-7
-    return -np.sum(p * np.log2(p))
+    p_inv = 1.0 - freq
+    return -np.sum(p_inv * np.log2(p_inv))
+
+
+def mcintosh_d(x: np.ndarray) -> float:
+    """Calculate McIntosh's D.
+
+    Ranges from 0 to 1, where 0 corresponds to no diversity,
+    and 1 to maximum diversity.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+
+    Returns
+    -------
+    mid : float
+        The value of McIntosh's D.
+
+    References
+    ----------
+    McIntosh, R. P. (1967).
+    An index of diversity and the relation of certain concepts to diversity.
+    Ecology, 48(3), 392-404.
+    """
+    n = len(x)
+    counts = np.asarray(list(Counter(x).values()))
+    return (n - np.sum(counts**2)) / (n - n**0.5)

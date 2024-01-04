@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "obscure_stats"
-version = "0.1.8"
+version = "0.1.9"
 description = "Collection of lesser-known statistical functions"
 authors = ["Hleb Levitski"]
 readme = "README.md"
