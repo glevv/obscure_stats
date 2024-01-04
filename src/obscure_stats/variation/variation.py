@@ -1,5 +1,6 @@
 """Module for measures of categorical variations."""
 
+import math
 from collections import Counter
 
 import numpy as np
@@ -103,7 +104,7 @@ def gibbs_m1(x: np.ndarray) -> float:
     Special case of Tsallis entropy (alpha = 2).
     """
     freq = np.asarray(list(Counter(x).values())) / len(x)
-    return 1 - np.sum(np.square(freq))
+    return 1 - np.sum(freq**2)
 
 
 def gibbs_m2(x: np.ndarray) -> float:
@@ -133,7 +134,7 @@ def gibbs_m2(x: np.ndarray) -> float:
     """
     freq = np.asarray(list(Counter(x).values())) / len(x)
     k = len(freq)
-    return (k / (k - 1)) * (1 - np.sum(np.square(freq)))
+    return (k / (k - 1)) * (1 - np.sum(freq**2))
 
 
 def b_index(x: np.ndarray) -> float:
@@ -162,7 +163,7 @@ def b_index(x: np.ndarray) -> float:
     """
     n = len(x)
     freq = np.asarray(list(Counter(x).values())) / n
-    return 1 - np.sqrt(1 - np.square(stats.gmean(freq * len(freq) / n)))
+    return 1 - (1 - (stats.gmean(freq * len(freq) / n)) ** 2) ** 0.5
 
 
 def avdev(x: np.ndarray) -> float:
@@ -231,7 +232,7 @@ def renyi_entropy(x: np.ndarray, alpha: float = 2) -> float:
     if alpha == 1:
         # return Shannon entropy to avoid division by 0
         return -np.sum(freq * np.log2(freq))
-    return 1 / (1 - alpha) * np.log2(np.sum(freq**alpha))
+    return 1 / (1 - alpha) * math.log2(np.sum(freq**alpha))
 
 
 def negative_extropy(x: np.ndarray) -> float:
