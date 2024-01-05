@@ -290,4 +290,4 @@ def mcintosh_d(x: np.ndarray) -> float:
     """
     n = len(x)
     counts = np.asarray(list(Counter(x).values()))
-    return (n - np.sum(counts**2)) / (n - n**0.5)
+    return (n - np.sum(counts**2) ** 0.5) / (n - n**0.5)
