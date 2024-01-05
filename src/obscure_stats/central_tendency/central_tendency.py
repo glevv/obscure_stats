@@ -251,6 +251,7 @@ def half_sample_mode(x: np.ndarray) -> float:
     --------
     scipy.stats.mode - Mode estimator.
     """
+    # heavily inspired by https://github.com/cran/modeest/blob/master/R/hsm.R
     y = np.sort(x)
     y = y[np.isfinite(y)]
     _corner_cases = (4, 3)  # for 4 samples and 3 samples

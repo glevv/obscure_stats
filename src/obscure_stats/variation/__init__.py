@@ -5,9 +5,11 @@ from .variation import (
     b_index,
     gibbs_m1,
     gibbs_m2,
+    mcintosh_d,
     mod_vr,
     negative_extropy,
     range_vr,
+    renyi_entropy,
 )
 
 __all__ = [
@@ -15,7 +17,9 @@ __all__ = [
     "b_index",
     "gibbs_m1",
     "gibbs_m2",
+    "mcintosh_d",
     "mod_vr",
     "negative_extropy",
     "range_vr",
+    "renyi_entropy",
 ]
