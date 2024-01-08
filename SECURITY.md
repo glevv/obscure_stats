@@ -2,7 +2,7 @@
 
 Thanks for helping make this repository safe for everyone!
 
-We take the security of the open source code repositories seriously and follow the security guidelines and services provided by GitHub.
+Authors of `obscure_stats` library take the security of the open source code repositories seriously and follow the security guidelines and services provided by GitHub.
 
 ## Supported Versions
 
@@ -17,7 +17,7 @@ If you believe you have found a security vulnerability in this repository, pleas
 
 Please do not report security vulnerabilities through public GitHub issues, discussions, or pull requests.
 
-Instead, please send an email to gleb.levitski@tutanota.com.
+Instead, please send an email to securityobscurestats@skiff.com
 
 Please include as much of the information listed below as you can to help us better understand and resolve the issue:
 
