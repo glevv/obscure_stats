@@ -21,7 +21,7 @@ Instead, please send an email to securityobscurestats@skiff.com
 
 Please include as much of the information listed below as you can to help us better understand and resolve the issue:
 
-- The type of issue (e.g., buffer overflow, etc.);
+- The type of issue (e.g. buffer overflow, SQL injection, cross-site scripting, etc.);
 - Full paths of source file(s) related to the manifestation of the issue;
 - The location of the affected source code (tag/branch/commit or direct URL);
 - Any special configuration required to reproduce the issue;
@@ -30,3 +30,7 @@ Please include as much of the information listed below as you can to help us bet
 - Impact of the issue, including how an attacker might exploit the issue.
 
 This information will help triage your report more quickly.
+
+## Preferred Languages
+
+We prefer all communications to be in English.
