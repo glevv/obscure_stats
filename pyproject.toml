@@ -27,7 +27,6 @@ python = ">=3.9,<3.13"
 numpy = "^1.23.5"
 scipy = "^1.9.1"
 
-
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.6.1"
 pytest = "^7.4.3"
