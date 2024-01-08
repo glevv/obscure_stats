@@ -10,7 +10,6 @@ type: software
 authors:
   - given-names: Hleb
     family-names: Levitski
-    email: gleb.levitski@tutanota.com
 identifiers:
   - type: doi
     value: 10.5281/zenodo.10206933
