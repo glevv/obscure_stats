@@ -96,15 +96,15 @@ Robust measure of central tendency = 1.09±0.42
 
 ## Code of Conduct
 
-[Code of Conduct for this project can be found here](CODE_OF_CONDUCT.md).
+Code of Conduct for this project can be found [here](CODE_OF_CONDUCT.md).
 
 ## Contributing
 
-[Contribution guidelines for this project can be found here](CONTRIBUTING.md).
+Contribution guidelines for this project can be found [here](CONTRIBUTING.md).
 
 ## Security Policy
 
-[Security Policy for this project can be found here](SECURITY.md).
+Security Policy for this project can be found [here](SECURITY.md).
 
 ## License
 
