@@ -2,7 +2,7 @@
 name = "obscure_stats"
 version = "0.2.0"
 description = "Collection of lesser-known statistical functions"
-authors = ["Hleb Levitski <gleb.levitski@tutanota.com>"]
+authors = ["Hleb Levitski"]
 readme = "README.md"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
