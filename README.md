@@ -24,10 +24,11 @@
 - Collection of measures of dispersion - `obscure_stats/dispersion`:
     * Coefficient of Range;
     * Coefficient of Variation;
+    * Cole's Index of Dispersion;
     * Dispersion Ratio;
+    * Fisher's Index of Dispersion;
     * Linear Coefficient of Variation;
-    * Lloyds Index;
-    * Morisita Index;
+    * Morisita Index of Dispersion;
     * Quartile Coefficient of Dispersion;
     * Robust Coefficient of Variation;
     * Shamos Estimator;
