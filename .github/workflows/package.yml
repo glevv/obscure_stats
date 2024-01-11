@@ -78,3 +78,8 @@ jobs:
           fail_ci_if_error: true
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Run audit
+        uses: pypa/gh-action-pip-audit@v1.0.8
+        with:
+          inputs: .
