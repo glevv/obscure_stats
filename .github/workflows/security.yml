@@ -50,7 +50,7 @@ jobs:
           source $VENV
 
       - name: Requirements extraction
-        run: poetry export --without-hashes --format=requirements.txt > requirements.txt --with dev
+        run: poetry export --with dev --without-hashes --without-urls | awk '{ print $1 }' FS=';' > requirements.txt
     
       - name: Run audit
         uses: pypa/gh-action-pip-audit@v1.0.8
