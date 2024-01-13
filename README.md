@@ -2,7 +2,8 @@
 
 | | |
 | --- | --- |
-| CI/CD | [![CI](https://github.com/glevv/obscure_stats/actions/workflows/package.yml/badge.svg)](https://github.com/glevv/obscure_stats/actions/workflows/package.yml) [![CD](https://github.com/glevv/obscure_stats/actions/workflows/publish.yml/badge.svg)](https://github.com/glevv/obscure_stats/actions/workflows/publish.yml) [![CodeQL](https://github.com/glevv/obscure_stats/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/glevv/obscure_stats/actions/workflows/github-code-scanning/codeql) [![Coverage](https://codecov.io/github/glevv/obscure_stats/coverage.svg?branch=main)](https://codecov.io/gh/glevv/obscure_stats)
+| CI/CD | [![CI](https://github.com/glevv/obscure_stats/actions/workflows/package.yml/badge.svg)](https://github.com/glevv/obscure_stats/actions/workflows/package.yml) [![CD](https://github.com/glevv/obscure_stats/actions/workflows/publish.yml/badge.svg)](https://github.com/glevv/obscure_stats/actions/workflows/publish.yml) [![Coverage](https://codecov.io/github/glevv/obscure_stats/coverage.svg?branch=main)](https://codecov.io/gh/glevv/obscure_stats) |
+| Security | [![CodeQL](https://github.com/glevv/obscure_stats/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/glevv/obscure_stats/actions/workflows/github-code-scanning/codeql) [![security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit) |
 | Package | [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/obscure_stats?logo=Python)](https://pypi.org/project/obscure_stats/) [![PyPI](https://img.shields.io/pypi/v/obscure_stats?logo=PyPI)](https://pypi.org/project/obscure_stats/) |
 | Meta | [![Poetry](https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json)](https://python-poetry.org/) [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff) [![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/) [![License - MIT](https://img.shields.io/badge/license-MIT-9400d3.svg)](https://spdx.org/licenses/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10206933.svg)](https://doi.org/10.5281/zenodo.10206933)
 
@@ -24,10 +25,11 @@
 - Collection of measures of dispersion - `obscure_stats/dispersion`:
     * Coefficient of Range;
     * Coefficient of Variation;
+    * Cole's Index of Dispersion;
     * Dispersion Ratio;
+    * Fisher's Index of Dispersion;
     * Linear Coefficient of Variation;
-    * Lloyds Index;
-    * Morisita Index;
+    * Morisita Index of Dispersion;
     * Quartile Coefficient of Dispersion;
     * Robust Coefficient of Variation;
     * Shamos Estimator;

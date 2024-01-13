@@ -180,11 +180,11 @@ def dispersion_ratio(x: np.ndarray) -> float:
     return np.nanmean(x) / stats.gmean(_x, nan_policy="omit")
 
 
-def lloyds_index(x: np.ndarray) -> float:
-    """Calculate Lloyd's index of mean crowding.
+def fisher_index_of_dispersion(x: np.ndarray) -> float:
+    """Calculate Fisher's index of dispersion.
 
-    Lloyd's index of mean crowding (IMC) is the average number of other points
-    contained in the sample unit that contains a randomly chosen point.
+    It is very similar to the coefficient of variation but uses unnormalized
+    variation instead of the standard deviation.
 
     Parameters
     ----------
@@ -193,25 +193,27 @@ def lloyds_index(x: np.ndarray) -> float:
 
     Returns
     -------
-    li : float
-        The value of the Lloyd's index.
+    fi : float
+        The value of the Fisher's index of dispersion.
 
     References
     ----------
-    Lloyd, M. (1967).
-    Mean crowding.
-    J Anim Ecol. 36 (1): 1-30.
+    Fisher, R. A. (1925).
+    Statistical methods for research workers.
+    Hafner, New York.
     """
-    m = np.nanmean(x)
-    s = np.nanvar(x)
-    return m + s / (m - 1)
+    mean = np.nanmean(x)
+    if abs(mean) <= EPS:
+        warnings.warn("Mean is close to 0. Statistic is undefined.", stacklevel=2)
+        return np.inf
+    return (len(x) - 1) * np.nanvar(x) / mean
 
 
-def morisita_index(x: np.ndarray) -> float:
+def morisita_index_of_dispersion(x: np.ndarray) -> float:
     """Calculate Morisita's index of dispersion.
 
-    Morisita's index of dispersion (Im) is the scaled probability
-    that two points chosen at random from the whole population are in the same sample.
+    Morisita's index of dispersion is the scaled probability that two
+    points chosen at random from the whole population are in the same sample.
 
     Parameters
     ----------
@@ -260,7 +262,8 @@ def standard_quantile_absolute_deviation(x: np.ndarray) -> float:
     # finite sample correction
     k = 1.0 + 0.762 / n + 0.967 / n**2
     # constant value that maximizes efficiency for normal distribution
-    return k * np.nanquantile(np.abs(x - med), q=0.682689492137086)
+    q = 0.6826894921370850  # stats.norm.cdf(1) - stats.norm.cdf(-1)
+    return k * np.nanquantile(np.abs(x - med), q=q)
 
 
 def shamos_estimator(x: np.ndarray) -> float:
@@ -325,3 +328,27 @@ def coefficient_of_range(x: np.ndarray) -> float:
         warnings.warn("Midrange is close to 0. Statistic is undefined.", stacklevel=2)
         return np.inf
     return (max_ - min_) / (max_ + min_)
+
+
+def cole_index_of_dispersion(x: np.ndarray) -> float:
+    """Calculate Cole's index of dispersion.
+
+    Higher values mean higher dispersion.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+
+    Returns
+    -------
+    ci : float
+        The value of the Cole's index of dispersion.
+
+    References
+    ----------
+    Cole, L. C. (1946).
+    A theory for analyzing contagiously distributed populations.
+    Ecology. 27 (4): 329-341.
+    """
+    return np.nansum(np.square(x)) / np.nansum(x) ** 2
