@@ -81,5 +81,6 @@ jobs:
 
       - name: Run audit
         uses: pypa/gh-action-pip-audit@v1.0.8
-        with:
-          inputs: .
+
+      - name: Run bandit
+        uses: tj-actions/bandit@v5.5
