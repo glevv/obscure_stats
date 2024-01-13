@@ -90,6 +90,7 @@ def test_dispersion_sensibility(func: typing.Callable, seed: int) -> None:
     [
         coefficient_of_lvariation,
         coefficient_of_variation,
+        fisher_index_of_dispersion,
         robust_coefficient_of_variation,
         quartile_coefficient_of_dispersion,
         coefficient_of_range,
