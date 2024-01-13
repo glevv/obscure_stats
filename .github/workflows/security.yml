@@ -1,0 +1,21 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  publish:
+    strategy:
+      fail-fast: True
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run audit
+        uses: pypa/gh-action-pip-audit@v1.0.8
+
+      - name: Run bandit
+        uses: tj-actions/bandit@v5.5
