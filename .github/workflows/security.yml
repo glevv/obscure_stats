@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  publish:
+  build:
     strategy:
       fail-fast: True
     runs-on: ubuntu-latest
@@ -49,8 +49,13 @@ jobs:
         run: |
           source $VENV
 
+      - name: Requirements extraction
+        run: poetry export -f requirements.txt --with dev
+    
       - name: Run audit
         uses: pypa/gh-action-pip-audit@v1.0.8
+        with:
+          inputs: requirements.txt
 
       - name: Run bandit
         uses: tj-actions/bandit@v5.5
