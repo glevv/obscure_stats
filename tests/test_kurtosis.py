@@ -1,4 +1,4 @@
-"""Collection of tests of kurtosis."""
+"""Collection of tests of kurtosis module."""
 
 import typing
 

@@ -1,4 +1,4 @@
-"""Collection of tests of variation."""
+"""Collection of tests of variation module."""
 
 import typing
 

@@ -1,4 +1,4 @@
-"""Collection of tests of central tendecies."""
+"""Collection of tests of central tendecy module."""
 
 from __future__ import annotations
 

@@ -13,6 +13,7 @@ from .dispersion import (
     shamos_estimator,
     standard_quantile_absolute_deviation,
     studentized_range,
+    wainer_thissen_scale,
 )
 
 __all__ = [
@@ -28,4 +29,5 @@ __all__ = [
     "shamos_estimator",
     "standard_quantile_absolute_deviation",
     "studentized_range",
+    "wainer_thissen_scale",
 ]

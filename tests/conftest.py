@@ -1,4 +1,4 @@
-"""Collection of fixtures."""
+"""Collection of pytest fixtures."""
 
 from __future__ import annotations
 

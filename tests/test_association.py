@@ -1,4 +1,4 @@
-"""Collection of tests of association."""
+"""Collection of tests of association module."""
 
 import typing
 
