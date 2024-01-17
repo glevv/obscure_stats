@@ -63,6 +63,7 @@
     * Concordance Rate;
     * Rank Minrelation Coefficient;
     * Tanimoto Similarity;
+    * Tukey's Correlation Coefficient;
     * Winsorized Correlation Coefficient;
     * Zhang I Correlation Coefficient.
 - Collection of measures of qualitative variation - `obscure_stats/variation`:

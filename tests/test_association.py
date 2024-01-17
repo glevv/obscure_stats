@@ -12,6 +12,7 @@ from obscure_stats.association import (
     rank_minrelation_coefficient,
     symmetric_chatterjeexi,
     tanimoto_similarity,
+    tukey_correlation,
     winsorized_correlation,
     zhangi,
 )
@@ -24,9 +25,12 @@ all_functions = [
     rank_minrelation_coefficient,
     symmetric_chatterjeexi,
     tanimoto_similarity,
+    tukey_correlation,
     winsorized_correlation,
     zhangi,
 ]
+
+allowed_range = [-1.0, 1.0]
 
 
 @pytest.mark.parametrize(
@@ -61,6 +65,7 @@ def test_mock_association_functions(
         concordance_rate,
         rank_minrelation_coefficient,
         tanimoto_similarity,
+        tukey_correlation,
         winsorized_correlation,
     ],
 )
@@ -103,6 +108,7 @@ def test_unsigned_corr_sensibility(
         concordance_corrcoef,
         concordance_rate,
         rank_minrelation_coefficient,
+        tukey_correlation,
         symmetric_chatterjeexi,
         winsorized_correlation,
         zhangi,
@@ -175,3 +181,43 @@ def test_unequal_arrays(
     """Test for unequal arrays."""
     with pytest.warns(match="Lenghts of the inputs do not match"):
         func(x_array_int[:4], y_array_int[:3])
+
+
+@pytest.mark.parametrize(
+    "func",
+    [
+        blomqvistbeta,
+        concordance_corrcoef,
+        concordance_rate,
+        rank_minrelation_coefficient,
+        tanimoto_similarity,
+        tukey_correlation,
+        winsorized_correlation,
+    ],
+)
+def test_signed_corr_boundries(
+    func: typing.Callable, y_array_float: np.ndarray
+) -> None:
+    """Testing for result correctness."""
+    res = func(y_array_float, -y_array_float)
+    if res < allowed_range[0]:
+        msg = f"Corr coeff should not be less than 1, got {res}"
+        raise ValueError(msg)
+
+
+@pytest.mark.parametrize(
+    "func",
+    [
+        zhangi,
+        chatterjeexi,
+        symmetric_chatterjeexi,
+    ],
+)
+def test_unsigned_corr_boundries(
+    func: typing.Callable, y_array_float: np.ndarray
+) -> None:
+    """Testing for result correctness."""
+    res = func(y_array_float, -y_array_float)
+    if res > allowed_range[1]:
+        msg = f"Corr coeff should not be bigger than 1, got {res}"
+        raise ValueError(msg)

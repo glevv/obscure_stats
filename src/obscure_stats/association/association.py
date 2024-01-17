@@ -7,6 +7,8 @@ import warnings
 import numpy as np
 from scipy import stats  # type: ignore[import-untyped]
 
+from obscure_stats.dispersion import wainer_thissen_scale
+
 
 def _check_arrays(x: np.ndarray, y: np.ndarray) -> bool:
     """Check arrays.
@@ -461,3 +463,44 @@ def rank_minrelation_coefficient(x: np.ndarray, y: np.ndarray) -> float:
     lower = np.sum((-rank_x_inc < rank_y_inc) * (rank_x_inc + rank_y_inc) ** 2)
     higher = np.sum((rank_x_inc > rank_y_dec) * (rank_x_inc - rank_y_dec) ** 2)
     return (lower - higher) / (lower + higher)
+
+
+def tukey_correlation(x: np.ndarray, y: np.ndarray) -> float:
+    """Calculate Tukey's correlation coefficient.
+
+    It is not quite as robust as rank correlations, but it is more
+    efficient in Gaussian and near-Gaussian cases.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+    y : array_like
+        Input array.
+
+    Returns
+    -------
+    tcc : float.
+        The value of the Tukey's correlation coefficient.
+
+    References
+    ----------
+    Wainer, H.; Thissen, D. (1976).
+    Three steps toward robust regression.
+    Psychometrika, 41, 9-34.
+
+    Notes
+    -----
+    This measure is assymetric: (x, y) != (y, x).
+    """
+    if _check_arrays(x, y):
+        return np.nan
+    x, y = _prep_arrays(x, y)
+    s_x = wainer_thissen_scale(x)
+    s_y = wainer_thissen_scale(y)
+    x_norm = x / s_x
+    y_norm = y / s_y
+    return 0.25 * (
+        wainer_thissen_scale(x_norm + y_norm) ** 2
+        - wainer_thissen_scale(x_norm - y_norm) ** 2
+    )
