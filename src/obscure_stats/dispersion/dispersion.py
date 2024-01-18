@@ -1,5 +1,6 @@
 """Module for measures of dispersion."""
 
+import math
 import warnings
 
 import numpy as np
@@ -352,3 +353,31 @@ def cole_index_of_dispersion(x: np.ndarray) -> float:
     Ecology. 27 (4): 329-341.
     """
     return np.nansum(np.square(x)) / np.nansum(x) ** 2
+
+
+def wainer_thissen_scale(x: np.ndarray) -> float:
+    """Calculate Wainer & Thissen estimator of scale.
+
+    It is closely related to Gini difference statistic and is a
+    more robust measure of dispersion than standard deviation.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+
+    Returns
+    -------
+    wte : float
+        The value of the Wainer & Thissen estimator of scale.
+
+    References
+    ----------
+    Wainer, H.; Thissen, D. (1976).
+    Three steps toward robust regression.
+    Psychometrika, 41, 9-34.
+    """
+    n = len(x) + 1
+    x_sorted = np.sort(x)
+    indexes = np.arange(1, n)
+    return math.pi**0.5 / (n * (n - 1)) * np.nansum((2 * indexes - n - 1) * x_sorted)

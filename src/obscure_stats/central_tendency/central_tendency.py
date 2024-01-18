@@ -242,10 +242,9 @@ def half_sample_mode(x: np.ndarray) -> float:
 
     References
     ----------
-    Bickel, D. R.; Frühwirth, R. (2006).
-    On a fast, robust estimator of the mode:
-    Comparisons to other robust estimators with applications.
-    Computational Statistics & Data Analysis, 50(12), 3500-3530.
+    Robertson, T.; Cryer, J. D. (1974).
+    An Iterative Procedure for Estimating the Mode.
+    Journal of the American Statistical Association, 69(348), 1012-1016.
 
     See Also
     --------

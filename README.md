@@ -34,7 +34,8 @@
     * Robust Coefficient of Variation;
     * Shamos Estimator;
     * Standard Quantile Absolute Deviation;
-    * Studentized Range.
+    * Studentized Range;
+    * Wainer & Thissen Estimator of Scale.
 - Collection of measures of skewness - `obscure_stats/skewness`:
     * Area Under the Skewness Curve (weighted and unweighted);
     * Bickel Mode Skewness Coefficient;
@@ -62,6 +63,7 @@
     * Concordance Rate;
     * Rank Minrelation Coefficient;
     * Tanimoto Similarity;
+    * Tukey's Correlation Coefficient;
     * Winsorized Correlation Coefficient;
     * Zhang I Correlation Coefficient.
 - Collection of measures of qualitative variation - `obscure_stats/variation`:

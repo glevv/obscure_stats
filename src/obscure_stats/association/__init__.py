@@ -8,6 +8,7 @@ from .association import (
     rank_minrelation_coefficient,
     symmetric_chatterjeexi,
     tanimoto_similarity,
+    tukey_correlation,
     winsorized_correlation,
     zhangi,
 )
@@ -20,6 +21,7 @@ __all__ = [
     "rank_minrelation_coefficient",
     "symmetric_chatterjeexi",
     "tanimoto_similarity",
+    "tukey_correlation",
     "winsorized_correlation",
     "zhangi",
 ]

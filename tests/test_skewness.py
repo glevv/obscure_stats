@@ -1,4 +1,4 @@
-"""Collection of tests of skewness."""
+"""Collection of tests of skewness module."""
 
 import typing
 
