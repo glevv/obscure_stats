@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import numpy as np
-from scipy import special, stats  # type: ignore[import-untyped]
+from scipy import integrate, special, stats  # type: ignore[import-untyped]
 
 from obscure_stats.central_tendency import half_sample_mode
 
@@ -83,7 +83,7 @@ def bickel_mode_skew(x: np.ndarray) -> float:
 
     Returns
     -------
-    phmods : float
+    bms : float
         The value of Bickel's mode skew coefficient.
 
     References
@@ -304,7 +304,7 @@ def _auc_skew_gamma(x: np.ndarray, dp: float, w: np.ndarray | float) -> float:
     qs_low = qs[:half_n]
     qs_high = qs[-half_n:]
     skews = (qs_low + qs_high - 2 * med) / (qs_high - qs_low) * w
-    return np.trapz(skews, dx=dp)
+    return integrate.trapezoid(skews, dx=dp)
 
 
 def auc_skew_gamma(x: np.ndarray, dp: float = 0.01) -> float:
@@ -351,7 +351,7 @@ def wauc_skew_gamma(x: np.ndarray, dp: float = 0.01) -> float:
 
     Returns
     -------
-    aucbs : float
+    waucbs : float
         The value of weighted AUC Bowley skewness.
 
     References
@@ -379,7 +379,7 @@ def cumulative_skew(x: np.ndarray) -> float:
 
     Returns
     -------
-    cs : float
+    csc : float
         The value of cumulative skew.
 
     References

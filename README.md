@@ -79,7 +79,9 @@
 
 ## Installation
 
-`pip install obscure_stats`
+```bash
+>>> pip install obscure_stats
+```
 
 ## Usage Example
 
