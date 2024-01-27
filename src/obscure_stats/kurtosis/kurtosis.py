@@ -1,6 +1,5 @@
 """Module for measures of kurtosis."""
 
-
 import numpy as np
 from scipy import special, stats  # type: ignore[import-untyped]
 

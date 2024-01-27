@@ -7,13 +7,13 @@ from .dispersion import (
     cole_index_of_dispersion,
     dispersion_ratio,
     fisher_index_of_dispersion,
+    gini_mean_difference,
     morisita_index_of_dispersion,
     quartile_coefficient_of_dispersion,
     robust_coefficient_of_variation,
     shamos_estimator,
     standard_quantile_absolute_deviation,
     studentized_range,
-    wainer_thissen_scale,
 )
 
 __all__ = [
@@ -23,11 +23,11 @@ __all__ = [
     "cole_index_of_dispersion",
     "dispersion_ratio",
     "fisher_index_of_dispersion",
+    "gini_mean_difference",
     "morisita_index_of_dispersion",
     "quartile_coefficient_of_dispersion",
     "robust_coefficient_of_variation",
     "shamos_estimator",
     "standard_quantile_absolute_deviation",
     "studentized_range",
-    "wainer_thissen_scale",
 ]

@@ -28,14 +28,14 @@
     * Cole's Index of Dispersion;
     * Dispersion Ratio;
     * Fisher's Index of Dispersion;
+    * Gini Mean Difference;
     * Linear Coefficient of Variation;
     * Morisita Index of Dispersion;
     * Quartile Coefficient of Dispersion;
     * Robust Coefficient of Variation;
     * Shamos Estimator;
     * Standard Quantile Absolute Deviation;
-    * Studentized Range;
-    * Wainer & Thissen Estimator of Scale.
+    * Studentized Range.
 - Collection of measures of skewness - `obscure_stats/skewness`:
     * Area Under the Skewness Curve (weighted and unweighted);
     * Bickel Mode Skewness Coefficient;

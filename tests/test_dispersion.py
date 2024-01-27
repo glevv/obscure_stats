@@ -11,13 +11,13 @@ from obscure_stats.dispersion import (
     cole_index_of_dispersion,
     dispersion_ratio,
     fisher_index_of_dispersion,
+    gini_mean_difference,
     morisita_index_of_dispersion,
     quartile_coefficient_of_dispersion,
     robust_coefficient_of_variation,
     shamos_estimator,
     standard_quantile_absolute_deviation,
     studentized_range,
-    wainer_thissen_scale,
 )
 
 all_functions = [
@@ -27,13 +27,13 @@ all_functions = [
     cole_index_of_dispersion,
     dispersion_ratio,
     fisher_index_of_dispersion,
+    gini_mean_difference,
     morisita_index_of_dispersion,
     quartile_coefficient_of_dispersion,
     robust_coefficient_of_variation,
     shamos_estimator,
     standard_quantile_absolute_deviation,
     studentized_range,
-    wainer_thissen_scale,
 ]
 
 
@@ -64,12 +64,12 @@ def test_mock_aggregation_functions(
         robust_coefficient_of_variation,
         dispersion_ratio,
         fisher_index_of_dispersion,
+        gini_mean_difference,
         morisita_index_of_dispersion,
         quartile_coefficient_of_dispersion,
         standard_quantile_absolute_deviation,
         shamos_estimator,
         coefficient_of_range,
-        wainer_thissen_scale,
     ],
 )
 @pytest.mark.parametrize("seed", [1, 42, 99])
