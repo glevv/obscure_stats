@@ -185,9 +185,7 @@ def test_unequal_arrays(
     "func",
     all_functions,
 )
-def test_corr_boundries(
-    func: typing.Callable, y_array_float: np.ndarray
-) -> None:
+def test_corr_boundries(func: typing.Callable, y_array_float: np.ndarray) -> None:
     """Testing for result correctness."""
     res = func(y_array_float, -y_array_float)
     if abs(res) > 1:
