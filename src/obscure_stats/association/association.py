@@ -7,7 +7,7 @@ import warnings
 import numpy as np
 from scipy import stats  # type: ignore[import-untyped]
 
-from obscure_stats.dispersion import wainer_thissen_scale
+from obscure_stats.dispersion import gini_mean_difference
 
 
 def _check_arrays(x: np.ndarray, y: np.ndarray) -> bool:
@@ -496,11 +496,11 @@ def tukey_correlation(x: np.ndarray, y: np.ndarray) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
-    s_x = wainer_thissen_scale(x)
-    s_y = wainer_thissen_scale(y)
+    s_x = gini_mean_difference(x)
+    s_y = gini_mean_difference(y)
     x_norm = x / s_x
     y_norm = y / s_y
     return 0.25 * (
-        wainer_thissen_scale(x_norm + y_norm) ** 2
-        - wainer_thissen_scale(x_norm - y_norm) ** 2
+        gini_mean_difference(x_norm + y_norm) ** 2
+        - gini_mean_difference(x_norm - y_norm) ** 2
     )

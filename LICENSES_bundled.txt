@@ -32,7 +32,7 @@ MyPy
 
 Ruff
   name: ruff
-  version: 0.1.8
+  version: 0.1.14
   license: The MIT license 
   repository: https://github.com/astral-sh/ruff
   homepage: https://docs.astral.sh/ruff/
