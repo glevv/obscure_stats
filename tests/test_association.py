@@ -30,8 +30,6 @@ all_functions = [
     zhangi,
 ]
 
-allowed_range = [-1.0, 1.0]
-
 
 @pytest.mark.parametrize(
     "func",
@@ -185,39 +183,13 @@ def test_unequal_arrays(
 
 @pytest.mark.parametrize(
     "func",
-    [
-        blomqvistbeta,
-        concordance_corrcoef,
-        concordance_rate,
-        rank_minrelation_coefficient,
-        tanimoto_similarity,
-        tukey_correlation,
-        winsorized_correlation,
-    ],
+    all_functions,
 )
-def test_signed_corr_boundries(
+def test_corr_boundries(
     func: typing.Callable, y_array_float: np.ndarray
 ) -> None:
     """Testing for result correctness."""
     res = func(y_array_float, -y_array_float)
-    if res < allowed_range[0]:
+    if abs(res) > 1:
         msg = f"Corr coeff should not be less than 1, got {res}"
-        raise ValueError(msg)
-
-
-@pytest.mark.parametrize(
-    "func",
-    [
-        zhangi,
-        chatterjeexi,
-        symmetric_chatterjeexi,
-    ],
-)
-def test_unsigned_corr_boundries(
-    func: typing.Callable, y_array_float: np.ndarray
-) -> None:
-    """Testing for result correctness."""
-    res = func(y_array_float, -y_array_float)
-    if res > allowed_range[1]:
-        msg = f"Corr coeff should not be bigger than 1, got {res}"
         raise ValueError(msg)
