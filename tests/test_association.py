@@ -191,5 +191,5 @@ def test_corr_boundries(
     """Testing for result correctness."""
     res = func(y_array_float, -y_array_float)
     if abs(res) > 1:
-        msg = f"Corr coeff should not be less than 1, got {res}"
+        msg = f"Corr coeff should not be higher than 1, got {res}"
         raise ValueError(msg)
