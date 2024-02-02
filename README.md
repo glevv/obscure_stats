@@ -2,7 +2,8 @@
 
 | | |
 | --- | --- |
-| CI/CD | [![CI](https://github.com/glevv/obscure_stats/actions/workflows/package.yml/badge.svg)](https://github.com/glevv/obscure_stats/actions/workflows/package.yml) [![CD](https://github.com/glevv/obscure_stats/actions/workflows/publish.yml/badge.svg)](https://github.com/glevv/obscure_stats/actions/workflows/publish.yml) [![Coverage](https://codecov.io/github/glevv/obscure_stats/coverage.svg?branch=main)](https://codecov.io/gh/glevv/obscure_stats) |
+| CI/CD | [![CI](https://github.com/glevv/obscure_stats/actions/workflows/package.yml/badge.svg)](https://github.com/glevv/obscure_stats/actions/workflows/package.yml) [![CD](https://github.com/glevv/obscure_stats/actions/workflows/publish.yml/badge.svg)](https://github.com/glevv/obscure_stats/actions/workflows/publish.yml) [![Coverage](https://codecov.io/github/glevv/obscure_stats/coverage.svg?branch=main)](https://codecov.io/gh/glevv/obscure_stats) [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fglevv%2Fobscure_stats.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fglevv%2Fobscure_stats?ref=badge_shield)
+|
 | Security | [![CodeQL](https://github.com/glevv/obscure_stats/actions/workflows/codeql.yml/badge.svg)](https://github.com/glevv/obscure_stats/actions/workflows/codeql.yml) [![Dependabot](https://img.shields.io/badge/Dependabot-active-brightgreen.svg)](https://github.com/dependabot/dependabot-core) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/glevv/obscure_stats/badge)](https://securityscorecards.dev/viewer/?uri=github.com/glevv/obscure_stats) |
 | Package | [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/obscure_stats?logo=Python)](https://pypi.org/project/obscure_stats/) [![PyPI](https://img.shields.io/pypi/v/obscure_stats?logo=PyPI)](https://pypi.org/project/obscure_stats/) |
 | Meta | [![Poetry](https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json)](https://python-poetry.org/) [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff) [![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/) [![License - MIT](https://img.shields.io/badge/license-MIT-9400d3.svg)](https://spdx.org/licenses/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10206933.svg)](https://doi.org/10.5281/zenodo.10206933)
@@ -117,3 +118,6 @@ Security Policy for this project can be found [here](SECURITY.md).
 The content of this repository is licensed under a [MIT license](https://github.com/glevv/obscure_stats/blob/main/LICENSE.txt).
 
 This repository bundles several libraries that are compatibly licensed. A full list can be found [here](https://github.com/glevv/obscure_stats/blob/main/LICENSES_bundled.txt).
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fglevv%2Fobscure_stats.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fglevv%2Fobscure_stats?ref=badge_large)
