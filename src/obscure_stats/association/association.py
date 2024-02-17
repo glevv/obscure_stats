@@ -504,3 +504,38 @@ def tukey_correlation(x: np.ndarray, y: np.ndarray) -> float:
         gini_mean_difference(x_norm + y_norm) ** 2
         - gini_mean_difference(x_norm - y_norm) ** 2
     )
+
+
+def gaussain_rank_correlation(x: np.ndarray, y: np.ndarray) -> float:
+    """Calculate Gaussian rank correlation coefficient.
+
+    The Gaussian rank correlation equals the usual correlation coefficient
+    computed from the normal scores of the data
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+    y : array_like
+        Input array.
+
+    Returns
+    -------
+    grc : float.
+        The value of the Gaussian rank correlation coefficient.
+
+    References
+    ----------
+    Boudt, K.; Cornelissen, J.; & Croux, C. (2012).
+    The Gaussian rank correlation estimator: robustness properties.
+    Statistics and Computing, 22, 471-483.
+    """
+    if _check_arrays(x, y):
+        return np.nan
+    x, y = _prep_arrays(x, y)
+    n = len(x)
+    x_ranks_norm = (np.argsort(x) + 1) / (n + 1)
+    y_ranks_norm = (np.argsort(y) + 1) / (n + 1)
+    return np.sum(stats.norm.ppf(x_ranks_norm) * stats.norm.ppf(y_ranks_norm)) / np.sum(
+        stats.norm.ppf(np.arange(1, n + 1) / (n + 1)) ** 2
+    )

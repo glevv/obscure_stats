@@ -61,6 +61,7 @@
     * Chatterjee Xi Correlation Coefficient (original and symmetric versions);
     * Concordance Correlation Coefficient;
     * Concordance Rate;
+    * Gaussian Rank Correlation Coefficient;
     * Rank Minrelation Coefficient;
     * Tanimoto Similarity;
     * Tukey's Correlation Coefficient;
