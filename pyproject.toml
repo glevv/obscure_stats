@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "obscure_stats"
-version = "0.2.2"
+version = "0.2.3"
 description = "Collection of lesser-known statistical functions"
 authors = ["Hleb Levitski"]
 readme = "README.md"
@@ -31,7 +31,7 @@ scipy = "^1.9.1"
 mypy = "^1.6.1"
 pytest = "^7.4.3"
 pytest-cov = "^4.1.0"
-ruff = "^0.1.5"
+ruff = "^0.2.1"
 
 [build-system]
 requires = ["poetry-core"]
@@ -44,9 +44,9 @@ addopts = [
 pythonpath = "src"
 
 [tool.ruff]
-select = ["ALL"]
-fixable = ["ALL"]
-ignore = ["COM812", "ISC001"]
+lint.select = ["ALL"]
+lint.fixable = ["ALL"]
+lint.ignore = ["COM812", "ISC001"]
 # Exclude a variety of commonly ignored directories.
 exclude = [
     ".bzr",
@@ -74,7 +74,7 @@ exclude = [
 line-length = 88
 indent-width = 4
 # Allow unused variables when underscore-prefixed.
-dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+lint.dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 [tool.ruff.format]
 quote-style = "double"
