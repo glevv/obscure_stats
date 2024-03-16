@@ -24,7 +24,7 @@ Poetry
 
 MyPy
   name: mypy
-  version: 1.8.0
+  version: 1.9.0
   license: The MIT License
   repository: https://github.com/python/mypy
   homepage: https://www.mypy-lang.org/
@@ -32,7 +32,7 @@ MyPy
 
 Ruff
   name: ruff
-  version: 0.2.1
+  version: 0.2.2
   license: The MIT license 
   repository: https://github.com/astral-sh/ruff
   homepage: https://docs.astral.sh/ruff/
