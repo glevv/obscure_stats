@@ -1,7 +1,6 @@
 """Module for measures of categorical variations."""
 
 import math
-from collections import Counter
 
 import numpy as np
 from scipy import stats  # type: ignore[import-untyped]
@@ -32,7 +31,7 @@ def mod_vr(x: np.ndarray) -> float:
     Indices of Qualitative Variation and Political Measurement.
     The Western Political Quarterly. 26 (2): 325-343.
     """
-    cnts = np.asarray(list(Counter(x).values()))
+    cnts = np.unique(x, return_counts=True, equal_nan=True)[1]
     return 1 - np.max(cnts) / len(x)
 
 
@@ -61,7 +60,7 @@ def range_vr(x: np.ndarray) -> float:
     Indices of Qualitative Variation and Political Measurement.
     The Western Political Quarterly. 26 (2): 325-343.
     """
-    cnts = np.asarray(list(Counter(x).values()))
+    cnts = np.unique(x, return_counts=True, equal_nan=True)[1]
     return np.min(cnts) / np.max(cnts)
 
 
@@ -103,7 +102,7 @@ def gibbs_m1(x: np.ndarray) -> float:
     Blau's index in sociology, psychology and management studies;
     Special case of Tsallis entropy (alpha = 2).
     """
-    freq = np.asarray(list(Counter(x).values())) / len(x)
+    freq = np.unique(x, return_counts=True, equal_nan=True)[1] / len(x)
     return 1 - np.sum(freq**2)
 
 
@@ -132,7 +131,7 @@ def gibbs_m2(x: np.ndarray) -> float:
     The Division of Labor: Conceptualization and Related Measures.
     Social Forces, 53 (3): 468-476.
     """
-    freq = np.asarray(list(Counter(x).values())) / len(x)
+    freq = np.unique(x, return_counts=True, equal_nan=True)[1] / len(x)
     k = len(freq)
     return (k / (k - 1)) * (1 - np.sum(freq**2))
 
@@ -162,7 +161,7 @@ def b_index(x: np.ndarray) -> float:
     The Western Political Quarterly. 26 (2): 325-343.
     """
     n = len(x)
-    freq = np.asarray(list(Counter(x).values())) / n
+    freq = np.unique(x, return_counts=True, equal_nan=True)[1] / n
     return 1 - (1 - (stats.gmean(freq * len(freq) / n)) ** 2) ** 0.5
 
 
@@ -191,7 +190,7 @@ def avdev(x: np.ndarray) -> float:
     The Western Political Quarterly. 26 (2): 325-343.
     """
     n = len(x)
-    freq = np.asarray(list(Counter(x).values())) / n
+    freq = np.unique(x, return_counts=True, equal_nan=True)[1] / n
     k = len(freq)
     mean = n / k
     return 1 - (np.sum(np.abs(freq - mean)) / (2 * mean * max(k - 1, 1)))
@@ -228,7 +227,7 @@ def renyi_entropy(x: np.ndarray, alpha: float = 2) -> float:
     if alpha < 0:
         msg = "Parameter alpha should be positive!"
         raise ValueError(msg)
-    freq = np.asarray(list(Counter(x).values())) / len(x)
+    freq = np.unique(x, return_counts=True, equal_nan=True)[1] / len(x)
     if alpha == 1:
         # return Shannon entropy to avoid division by 0
         return -np.sum(freq * np.log2(freq))
@@ -261,7 +260,7 @@ def negative_extropy(x: np.ndarray) -> float:
     Extropy: Complementary dual of entropy.
     Statistical Science, 30(1), 40-58.
     """
-    freq = np.asarray(list(Counter(x).values())) / len(x)
+    freq = np.unique(x, return_counts=True, equal_nan=True)[1] / len(x)
     p_inv = 1.0 - freq
     return -np.sum(p_inv * np.log2(p_inv))
 
@@ -289,5 +288,5 @@ def mcintosh_d(x: np.ndarray) -> float:
     Ecology, 48(3), 392-404.
     """
     n = len(x)
-    counts = np.asarray(list(Counter(x).values()))
+    counts = np.unique(x, return_counts=True, equal_nan=True)[1]
     return (n - np.sum(counts**2) ** 0.5) / (n - n**0.5)

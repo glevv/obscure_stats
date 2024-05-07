@@ -63,7 +63,6 @@ def test_mock_association_functions(
         blomqvistbeta,
         concordance_corrcoef,
         concordance_rate,
-        rank_minrelation_coefficient,
         tanimoto_similarity,
         tukey_correlation,
         winsorized_correlation,
@@ -73,7 +72,7 @@ def test_signed_corr_sensibility(
     func: typing.Callable, y_array_float: np.ndarray
 ) -> None:
     """Testing for result correctness."""
-    res = func(y_array_float, -y_array_float)
+    res = func(-2 * y_array_float, y_array_float)
     if res > 0:
         msg = f"Corr coeff should be negative, got {res}"
         raise ValueError(msg)
@@ -82,10 +81,11 @@ def test_signed_corr_sensibility(
 @pytest.mark.parametrize(
     "func",
     [
-        gaussain_rank_correlation,
-        zhangi,
         chatterjeexi,
+        gaussain_rank_correlation,
+        rank_minrelation_coefficient,
         symmetric_chatterjeexi,
+        zhangi,
     ],
 )
 def test_unsigned_corr_sensibility(
@@ -190,7 +190,7 @@ def test_unequal_arrays(
     "func",
     all_functions,
 )
-def test_corr_boundries(func: typing.Callable, y_array_float: np.ndarray) -> None:
+def test_corr_boundaries(func: typing.Callable, y_array_float: np.ndarray) -> None:
     """Testing for result correctness."""
     res = func(y_array_float, -y_array_float)
     if abs(res) > 1:

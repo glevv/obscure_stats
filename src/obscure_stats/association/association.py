@@ -191,11 +191,12 @@ def concordance_rate(
     mean_y = np.sum(y) / n
     sem_x = np.std(x, ddof=0) / n**0.5
     sem_y = np.std(y, ddof=0) / n**0.5
-    n_q1 = np.sum((x > mean_x + sem_x) & (y > mean_y + sem_y))
-    n_q2 = np.sum((x < mean_x - sem_x) & (y > mean_y + sem_y))
-    n_q3 = np.sum((x < mean_x - sem_x) & (y < mean_y - sem_y))
-    n_q4 = np.sum((x > mean_x + sem_x) & (y < mean_y - sem_y))
-    return (n_q1 + n_q3 - n_q2 - n_q4) / n
+    return (
+        np.sum((x > mean_x + sem_x) & (y > mean_y + sem_y))
+        + np.sum((x < mean_x - sem_x) & (y > mean_y + sem_y))
+        - np.sum((x < mean_x - sem_x) & (y < mean_y - sem_y))
+        - np.sum((x > mean_x + sem_x) & (y < mean_y - sem_y))
+    ) / n
 
 
 def symmetric_chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
@@ -457,11 +458,12 @@ def rank_minrelation_coefficient(x: np.ndarray, y: np.ndarray) -> float:
         return np.nan
     x, y = _prep_arrays(x, y)
     n_sq = len(x) ** 2
-    rank_x_inc = (np.argsort(x) + 1) ** 2 / n_sq - 0.5
-    rank_y_inc = (np.argsort(y) + 1) ** 2 / n_sq - 0.5
-    rank_y_dec = 0.5 - (np.argsort(-y) + 1) ** 2 / n_sq
-    lower = np.sum((-rank_x_inc < rank_y_inc) * (rank_x_inc + rank_y_inc) ** 2)
-    higher = np.sum((rank_x_inc > rank_y_dec) * (rank_x_inc - rank_y_dec) ** 2)
+    ranks = np.argsort(np.vstack([x, y, -y]).T, axis=0)
+    rank_x_inc = (ranks[0, :] + 1) ** 2 / n_sq - 0.5
+    rank_y_inc = (ranks[1, :] + 1) ** 2 / n_sq - 0.5
+    rank_y_dec = -((ranks[2, :] + 1) ** 2) / n_sq + 0.5
+    lower = np.sum(np.less(-rank_x_inc, rank_y_inc) * (rank_x_inc + rank_y_inc) ** 2)
+    higher = np.sum(np.greater(rank_x_inc, rank_y_dec) * (rank_x_inc - rank_y_dec) ** 2)
     return (lower - higher) / (lower + higher)
 
 
@@ -534,8 +536,10 @@ def gaussain_rank_correlation(x: np.ndarray, y: np.ndarray) -> float:
         return np.nan
     x, y = _prep_arrays(x, y)
     n = len(x)
-    x_ranks_norm = (np.argsort(x) + 1) / (n + 1)
-    y_ranks_norm = (np.argsort(y) + 1) / (n + 1)
+    norm_factor = 1 / (n + 1)
+    ranks = np.argsort(np.vstack([x, y]).T, axis=0)
+    x_ranks_norm = ranks[0, :] * norm_factor
+    y_ranks_norm = ranks[1, :] * norm_factor
     return np.sum(stats.norm.ppf(x_ranks_norm) * stats.norm.ppf(y_ranks_norm)) / np.sum(
         stats.norm.ppf(np.arange(1, n + 1) / (n + 1)) ** 2
     )

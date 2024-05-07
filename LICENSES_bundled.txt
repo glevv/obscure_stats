@@ -8,7 +8,7 @@ NumPy:
 
 SciPy
   name: scipy
-  version: 1.12.0
+  version: 1.13.0
   license: BSD 3-Clause "New" or "Revised" License
   repository: https://github.com/scipy/scipy
   homepage: https://scipy.org/
@@ -24,7 +24,7 @@ Poetry
 
 MyPy
   name: mypy
-  version: 1.9.0
+  version: 1.10.0
   license: The MIT License
   repository: https://github.com/python/mypy
   homepage: https://www.mypy-lang.org/
@@ -32,7 +32,7 @@ MyPy
 
 Ruff
   name: ruff
-  version: 0.2.2
+  version: 0.4.3
   license: The MIT license 
   repository: https://github.com/astral-sh/ruff
   homepage: https://docs.astral.sh/ruff/
@@ -40,7 +40,7 @@ Ruff
 
 Pytest
   name: pytest
-  version: 7.4.4
+  version: 8.2.0
   license: The MIT License
   repository: https://github.com/pytest-dev/pytest
   homepage: https://docs.pytest.org/en/latest/
@@ -48,7 +48,7 @@ Pytest
 
 Pytest-cov
   name: pytest-cov
-  version: 4.1.0
+  version: 5.0.0
   license: The MIT License
   repository: https://github.com/pytest-dev/pytest-cov
   homepage: https://pytest-cov.readthedocs.io/en/latest/
