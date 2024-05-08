@@ -79,7 +79,7 @@ def c_list_obj() -> list[str]:
 @pytest.fixture(scope="session")
 def c_array_obj(c_list_obj: list[str]) -> np.ndarray:
     """Array of objects."""
-    return np.asarray(c_list_obj, dtype="object")
+    return np.asarray(c_list_obj)
 
 
 @pytest.fixture(scope="session")
