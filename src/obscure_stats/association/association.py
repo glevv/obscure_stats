@@ -458,12 +458,11 @@ def rank_minrelation_coefficient(x: np.ndarray, y: np.ndarray) -> float:
         return np.nan
     x, y = _prep_arrays(x, y)
     n_sq = len(x) ** 2
-    ranks = np.argsort(np.vstack([x, y, -y]).T, axis=0)
-    rank_x_inc = (ranks[0, :] + 1) ** 2 / n_sq - 0.5
-    rank_y_inc = (ranks[1, :] + 1) ** 2 / n_sq - 0.5
-    rank_y_dec = -((ranks[2, :] + 1) ** 2) / n_sq + 0.5
-    lower = np.sum(np.less(-rank_x_inc, rank_y_inc) * (rank_x_inc + rank_y_inc) ** 2)
-    higher = np.sum(np.greater(rank_x_inc, rank_y_dec) * (rank_x_inc - rank_y_dec) ** 2)
+    rank_x_inc = (np.argsort(x) + 1) ** 2 / n_sq - 0.5
+    rank_y_inc = (np.argsort(y) + 1) ** 2 / n_sq - 0.5
+    rank_y_dec = -((np.argsort(-y) + 1) ** 2) / n_sq + 0.5
+    lower = np.sum((-rank_x_inc < rank_y_inc) * (rank_x_inc + rank_y_inc) ** 2)
+    higher = np.sum((rank_x_inc > rank_y_dec) * (rank_x_inc - rank_y_dec) ** 2)
     return (lower - higher) / (lower + higher)
 
 
@@ -537,9 +536,8 @@ def gaussain_rank_correlation(x: np.ndarray, y: np.ndarray) -> float:
     x, y = _prep_arrays(x, y)
     n = len(x)
     norm_factor = 1 / (n + 1)
-    ranks = np.argsort(np.vstack([x, y]).T, axis=0)
-    x_ranks_norm = ranks[0, :] * norm_factor
-    y_ranks_norm = ranks[1, :] * norm_factor
+    x_ranks_norm = (np.argsort(x) + 1) * norm_factor
+    y_ranks_norm = (np.argsort(y) + 1) * norm_factor
     return np.sum(stats.norm.ppf(x_ranks_norm) * stats.norm.ppf(y_ranks_norm)) / np.sum(
-        stats.norm.ppf(np.arange(1, n + 1) / (n + 1)) ** 2
+        stats.norm.ppf(np.arange(1, n + 1) * norm_factor) ** 2
     )
