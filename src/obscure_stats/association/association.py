@@ -461,8 +461,8 @@ def rank_minrelation_coefficient(x: np.ndarray, y: np.ndarray) -> float:
     rank_x_inc = (np.argsort(x) + 1) ** 2 / n_sq - 0.5
     rank_y_inc = (np.argsort(y) + 1) ** 2 / n_sq - 0.5
     rank_y_dec = -((np.argsort(-y) + 1) ** 2) / n_sq + 0.5
-    lower = np.sum(np.less(-rank_x_inc, rank_y_inc) * (rank_x_inc + rank_y_inc) ** 2)
-    higher = np.sum(np.greater(rank_x_inc, rank_y_dec) * (rank_x_inc - rank_y_dec) ** 2)
+    lower = np.sum((-rank_x_inc < rank_y_inc) * (rank_x_inc + rank_y_inc) ** 2)
+    higher = np.sum((rank_x_inc > rank_y_dec) * (rank_x_inc - rank_y_dec) ** 2)
     return (lower - higher) / (lower + higher)
 
 
