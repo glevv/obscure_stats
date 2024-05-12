@@ -63,6 +63,7 @@ def test_mock_association_functions(
         blomqvistbeta,
         concordance_corrcoef,
         concordance_rate,
+        rank_minrelation_coefficient,
         tanimoto_similarity,
         tukey_correlation,
         winsorized_correlation,
@@ -83,7 +84,6 @@ def test_signed_corr_sensibility(
     [
         chatterjeexi,
         gaussain_rank_correlation,
-        rank_minrelation_coefficient,
         symmetric_chatterjeexi,
         zhangi,
     ],
