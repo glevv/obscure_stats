@@ -597,7 +597,9 @@ def quantile_correlation(x: np.ndarray, y: np.ndarray, q: float = 0.5) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
+    _x = np.sort(x, axis=None)
+    _y = np.sort(y, axis=None)
     return (
-        np.mean(q - (y - np.quantile(y, q=q) < 0) * (x - np.mean(x)))
+        np.mean(q - (_y - np.quantile(_y, q=q) > 0) * (_x - np.mean(x)))
         / ((q - q**2) * np.var(x)) ** 0.5
     )

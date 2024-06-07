@@ -66,7 +66,7 @@ def test_edge_cases(x_array_float: np.ndarray) -> None:
     if result != pytest.approx(x_array_float[0], rel=1e-4):
         msg = "Result does not match expected output."
         raise ValueError(msg)
-    result = standard_trimmed_harrell_davis_quantile([])
+    result = standard_trimmed_harrell_davis_quantile(x_array_float[:0])
     if result is not np.nan:
         msg = "Result does not match expected output."
         raise ValueError(msg)
