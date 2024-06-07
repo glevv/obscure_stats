@@ -4,12 +4,9 @@ import typing
 
 import numpy as np
 import pytest
-from hypothesis import given  # type: ignore[import-not-found]
-from hypothesis import strategies as st  # type: ignore[import-not-found]
-from hypothesis.extra.numpy import (  # type: ignore[import-not-found]
-    array_shapes,
-    arrays,
-)
+from hypothesis import given
+from hypothesis import strategies as st
+from hypothesis.extra.numpy import array_shapes, arrays
 from obscure_stats.association import (
     blomqvistbeta,
     chatterjeexi,
@@ -182,18 +179,21 @@ def test_corr_boundaries(func: typing.Callable, y_array_float: np.ndarray) -> No
         msg = f"Corr coeff should not be higher than 1, got {res}"
         raise ValueError(msg)
 
-
 @given(
     arrays(
         dtype=np.float64,
         shape=array_shapes(),
-        elements=st.floats(allow_nan=True, allow_infinity=True),
+        elements=st.floats(
+            allow_nan=True, allow_infinity=True
+        ),
     ),
     arrays(
         dtype=np.float64,
         shape=array_shapes(),
-        elements=st.floats(allow_nan=True, allow_infinity=True),
-    ),
+        elements=st.floats(
+            allow_nan=True, allow_infinity=True
+        ),
+    )
 )
 @pytest.mark.parametrize("func", all_functions)
 def test_fuzz_all(func: typing.Callable, x: np.ndarray, y: np.ndarray) -> None:

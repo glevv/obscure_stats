@@ -4,12 +4,9 @@ import typing
 
 import numpy as np
 import pytest
-from hypothesis import given  # type: ignore[import-not-found]
-from hypothesis import strategies as st  # type: ignore[import-not-found]
-from hypothesis.extra.numpy import (  # type: ignore[import-not-found]
-    array_shapes,
-    arrays,
-)
+from hypothesis import given
+from hypothesis import strategies as st
+from hypothesis.extra.numpy import array_shapes, arrays
 from obscure_stats.variation import (
     avdev,
     b_index,
