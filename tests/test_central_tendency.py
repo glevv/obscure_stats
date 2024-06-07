@@ -66,6 +66,10 @@ def test_edge_cases(x_array_float: np.ndarray) -> None:
     if result != pytest.approx(x_array_float[0], rel=1e-4):
         msg = "Result does not match expected output."
         raise ValueError(msg)
+    result = standard_trimmed_harrell_davis_quantile([])
+    if result is not np.nan:
+        msg = "Result does not match expected output."
+        raise ValueError(msg)
 
 
 def test_q_in_sthdq(x_array_float: np.ndarray) -> None:
@@ -124,6 +128,6 @@ def test_statistic_with_nans(func: typing.Callable, x_array_nan: np.ndarray) -> 
     )
 )
 @pytest.mark.parametrize("func", all_functions)
-def test_fuzz_all(func: typing.Callable, data: np.ndarray) -> None:
+def test_fuzz_central_tendencies(func: typing.Callable, data: np.ndarray) -> None:
     """Test all functions with fuzz."""
     func(data)

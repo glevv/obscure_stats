@@ -86,6 +86,6 @@ def test_renyi_entropy_edgecases(c_array_obj: np.ndarray) -> None:
     )
 )
 @pytest.mark.parametrize("func", all_functions)
-def test_fuzz_all(func: typing.Callable, data: np.ndarray) -> None:
+def test_fuzz_variations(func: typing.Callable, data: np.ndarray) -> None:
     """Test all functions with fuzz."""
     func(data)

@@ -39,7 +39,7 @@ def _check_arrays(x: np.ndarray, y: np.ndarray) -> bool:
             stacklevel=2,
         )
         return True
-    if (np.isnan(_x).sum() >= len(_x) - 1) or (np.isnan(_y).sum() >= len(_x) - 1):
+    if (np.isnan(_x).sum() >= len(_x) - 1) or (np.isnan(_y).sum() >= len(_y) - 1):
         warnings.warn(
             "One of the input arrays has too many missing values,"
             " please check the arrays.",
@@ -599,5 +599,5 @@ def quantile_correlation(x: np.ndarray, y: np.ndarray, q: float = 0.5) -> float:
     x, y = _prep_arrays(x, y)
     return (
         np.mean(q - (y - np.quantile(y, q=q) < 0) * (x - np.mean(x)))
-        / ((q * q**2) * np.var(x)) ** 0.5
+        / ((q - q**2) * np.var(x)) ** 0.5
     )

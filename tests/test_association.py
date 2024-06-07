@@ -193,6 +193,6 @@ def test_corr_boundaries(func: typing.Callable, y_array_float: np.ndarray) -> No
     ),
 )
 @pytest.mark.parametrize("func", all_functions)
-def test_fuzz_all(func: typing.Callable, x: np.ndarray, y: np.ndarray) -> None:
+def test_fuzz_associations(func: typing.Callable, x: np.ndarray, y: np.ndarray) -> None:
     """Test all functions with fuzz."""
     func(x, y)

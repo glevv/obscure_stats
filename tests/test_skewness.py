@@ -94,6 +94,6 @@ def test_statistic_with_nans(func: typing.Callable, x_array_nan: np.ndarray) -> 
     )
 )
 @pytest.mark.parametrize("func", all_functions)
-def test_fuzz_all(func: typing.Callable, data: np.ndarray) -> None:
+def test_fuzz_skewnesses(func: typing.Callable, data: np.ndarray) -> None:
     """Test all functions with fuzz."""
     func(data)
