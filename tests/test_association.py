@@ -179,21 +179,18 @@ def test_corr_boundaries(func: typing.Callable, y_array_float: np.ndarray) -> No
         msg = f"Corr coeff should not be higher than 1, got {res}"
         raise ValueError(msg)
 
+
 @given(
     arrays(
         dtype=np.float64,
         shape=array_shapes(),
-        elements=st.floats(
-            allow_nan=True, allow_infinity=True
-        ),
+        elements=st.floats(allow_nan=True, allow_infinity=True),
     ),
     arrays(
         dtype=np.float64,
         shape=array_shapes(),
-        elements=st.floats(
-            allow_nan=True, allow_infinity=True
-        ),
-    )
+        elements=st.floats(allow_nan=True, allow_infinity=True),
+    ),
 )
 @pytest.mark.parametrize("func", all_functions)
 def test_fuzz_all(func: typing.Callable, x: np.ndarray, y: np.ndarray) -> None:
