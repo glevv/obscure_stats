@@ -6,9 +6,9 @@ import typing
 
 import numpy as np
 import pytest
-from hypothesis import given
-from hypothesis import strategies as st
-from hypothesis.extra.numpy import array_shapes, arrays
+from hypothesis import given  # type: ignore[import-untyped]
+from hypothesis import strategies as st  # type: ignore[import-untyped]
+from hypothesis.extra.numpy import array_shapes, arrays  # type: ignore[import-untyped]
 from obscure_stats.central_tendency import (
     contraharmonic_mean,
     half_sample_mode,
