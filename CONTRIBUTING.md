@@ -43,7 +43,7 @@ This command will run autoformatter.
 This command will run type checker. All typing problems should be fixed.
 
 ```python
->>> pytest --cov-report term-missing --cov=obscure_stats
+>>> poetry run pytest --cov-report term-missing --cov=obscure_stats
 ```
 This command will run the test suite. All tests should pass, as well as codecoverage should be high enough.
 

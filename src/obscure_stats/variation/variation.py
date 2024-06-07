@@ -133,7 +133,7 @@ def gibbs_m2(x: np.ndarray) -> float:
     """
     freq = np.unique(x, return_counts=True, equal_nan=True)[1] / len(x)
     k = len(freq)
-    return (k / (k - 1)) * (1 - np.sum(freq**2))
+    return (k / (k - 1)) * (1 - np.sum(freq**2)) if k > 1 else 0
 
 
 def b_index(x: np.ndarray) -> float:

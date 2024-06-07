@@ -1,11 +1,7 @@
 """Module for measures of dispersion."""
 
-import warnings
-
 import numpy as np
 from scipy import special, stats  # type: ignore[import-untyped]
-
-EPS = 1e-6
 
 
 def studentized_range(x: np.ndarray) -> float:
@@ -27,9 +23,9 @@ def studentized_range(x: np.ndarray) -> float:
     Errors of routine analysis.
     Biometrika. 19 (1/2): 151-164.
     """
+    std = np.nanstd(x)
     maximum = np.nanmax(x)
     minimum = np.nanmin(x)
-    std = np.nanstd(x)
     return (maximum - minimum) / std
 
 
@@ -38,6 +34,7 @@ def coefficient_of_lvariation(x: np.ndarray) -> float:
 
     L-CV is the L-scale (half of mean absolute deviation) divided
     by L-mean (the same as regular mean).
+    The array will be flatten before any calculations.
 
     Parameters
     ----------
@@ -57,11 +54,8 @@ def coefficient_of_lvariation(x: np.ndarray) -> float:
     Journal of the Royal Statistical Society, Series B. 52 (1): 105-124.
     """
     l1 = np.nanmean(x)
-    if abs(l1) <= EPS:
-        warnings.warn("Mean is close to 0. Statistic is undefined.", stacklevel=2)
-        return np.inf
-    n = len(x)
-    _x = np.sort(x)
+    _x = np.sort(x, axis=None)
+    n = len(_x)
     common = 1 / special.comb(n - 1, 1) / n
     beta_1 = common * np.nansum(special.comb(np.arange(1, n), 1) * _x[1:])
     l2 = 2 * beta_1 - l1
@@ -87,11 +81,7 @@ def coefficient_of_variation(x: np.ndarray) -> float:
     Coefficient of Variation.
     Applied Multivariate Statistics in Geohydrology and Related Sciences. Springer.
     """
-    mean = np.nanmean(x)
-    if abs(mean) <= EPS:
-        warnings.warn("Mean is close to 0. Statistic is undefined.", stacklevel=2)
-        return np.inf
-    return np.nanstd(x) / mean
+    return np.nanstd(x) / np.nanmean(x)
 
 
 def robust_coefficient_of_variation(x: np.ndarray) -> float:
@@ -117,9 +107,6 @@ def robust_coefficient_of_variation(x: np.ndarray) -> float:
     John Wiley and Sons, New York.
     """
     med = np.nanmedian(x)
-    if abs(med) <= EPS:
-        warnings.warn("Median is close to 0. Statistic is undefined.", stacklevel=2)
-        return np.inf
     med_abs_dev = np.nanmedian(np.abs(x - med))
     return med_abs_dev / med
 
@@ -144,9 +131,6 @@ def quartile_coefficient_of_dispersion(x: np.ndarray) -> float:
     Computational Statistics & Data Analysis. 50 (11): 2953-2957.
     """
     q1, q3 = np.nanquantile(x, [0.25, 0.75])
-    if abs(q3 + q1) <= EPS:
-        warnings.warn("Midhinge is close to 0. Statistic is undefined.", stacklevel=2)
-        return np.inf
     return (q3 - q1) / (q3 + q1)
 
 
@@ -202,11 +186,7 @@ def fisher_index_of_dispersion(x: np.ndarray) -> float:
     Statistical methods for research workers.
     Hafner, New York.
     """
-    mean = np.nanmean(x)
-    if abs(mean) <= EPS:
-        warnings.warn("Mean is close to 0. Statistic is undefined.", stacklevel=2)
-        return np.inf
-    return (len(x) - 1) * np.nanvar(x) / mean
+    return (len(x) - 1) * np.nanvar(x) / np.nanmean(x)
 
 
 def morisita_index_of_dispersion(x: np.ndarray) -> float:
@@ -324,9 +304,6 @@ def coefficient_of_range(x: np.ndarray) -> float:
     """
     min_ = np.nanmin(x)
     max_ = np.nanmax(x)
-    if abs(min_ + max_) <= EPS:
-        warnings.warn("Midrange is close to 0. Statistic is undefined.", stacklevel=2)
-        return np.inf
     return (max_ - min_) / (max_ + min_)
 
 

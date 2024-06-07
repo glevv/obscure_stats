@@ -178,6 +178,8 @@ def standard_trimmed_harrell_davis_quantile(x: np.ndarray, q: float = 0.5) -> fl
     It calculates weighted Harrel-Davies quantiles on only sqrt(N) samples,
     located in the region with the most probability mass.
 
+    The array will be flatten before any calculations.
+
     Parameters
     ----------
     x : array_like
@@ -204,11 +206,13 @@ def standard_trimmed_harrell_davis_quantile(x: np.ndarray, q: float = 0.5) -> fl
     if q <= 0 or q >= 1:
         msg = "Parameter q should be in range (0, 1)."
         raise ValueError(msg)
-    xs = np.sort(x)
-    xs = xs[np.isfinite(xs)]
-    n = len(xs)
-    if n <= 1:
-        return xs[0]
+    _x = np.sort(x, axis=None)
+    _x = _x[np.isfinite(_x)]
+    n = len(_x)
+    if n == 0:
+        return np.nan
+    if n == 1:
+        return _x[0]
     n_calculated = 1 / n**0.5  # heuristic suggested by the author
     a = (n + 1) * q
     b = (n + 1) * (1.0 - q)
@@ -221,7 +225,7 @@ def standard_trimmed_harrell_davis_quantile(x: np.ndarray, q: float = 0.5) -> fl
     nums[nums >= hdi[1]] = hdi[1]
     cdfs = (stats.beta.cdf(nums, a, b) - hdi_cdf[0]) / (hdi_cdf[1] - hdi_cdf[0])
     w = cdfs[1:] - cdfs[:-1]
-    return np.sum(xs[i_start:i_end] * w)
+    return np.sum(_x[i_start:i_end] * w)
 
 
 def half_sample_mode(x: np.ndarray) -> float:
@@ -229,6 +233,7 @@ def half_sample_mode(x: np.ndarray) -> float:
 
     This estimator is more stable than regular mode estimation,
     especially for floating point values.
+    The array will be flatten before any calculations.
 
     Parameters
     ----------
@@ -251,7 +256,7 @@ def half_sample_mode(x: np.ndarray) -> float:
     scipy.stats.mode - Mode estimator.
     """
     # heavily inspired by https://github.com/cran/modeest/blob/master/R/hsm.R
-    y = np.sort(x)
+    y = np.sort(x, axis=None)
     y = y[np.isfinite(y)]
     _corner_cases = (4, 3)  # for 4 samples and 3 samples
     while (ny := len(y)) >= _corner_cases[0]:
@@ -299,6 +304,7 @@ def tau_location(x: np.ndarray, c: float = 4.5) -> float:
     3rd Edition, Academic Press, New York.
     """
     med = np.nanmedian(x)
-    scaled_x = (x - med) / np.nanmedian(np.abs(x - med))
+    mad = np.nanmedian(np.abs(x - med))
+    scaled_x = (x - med) / mad
     w = np.square(1.0 - np.square(scaled_x / c)) * (np.abs(scaled_x) <= c)
     return np.nansum(x * w) / np.nansum(w)

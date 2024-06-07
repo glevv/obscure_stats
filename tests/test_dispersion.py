@@ -4,6 +4,9 @@ import typing
 
 import numpy as np
 import pytest
+from hypothesis import given
+from hypothesis import strategies as st
+from hypothesis.extra.numpy import array_shapes, arrays
 from obscure_stats.dispersion import (
     coefficient_of_lvariation,
     coefficient_of_range,
@@ -82,29 +85,22 @@ def test_dispersion_sensibility(func: typing.Callable, seed: int) -> None:
         raise ValueError(msg)
 
 
-@pytest.mark.parametrize(
-    "func",
-    [
-        coefficient_of_lvariation,
-        coefficient_of_variation,
-        fisher_index_of_dispersion,
-        robust_coefficient_of_variation,
-        quartile_coefficient_of_dispersion,
-        coefficient_of_range,
-    ],
-)
-def test_cv_corner_cases(func: typing.Callable) -> None:
-    """Testing for very small central tendency in CV calculation."""
-    x = [0.0, 0.0, 0.0, 0.0, 1e-9, 0.0, 0.0]
-    with pytest.warns(match="Statistic is undefined"):
-        if func(x) is not np.inf:
-            msg = "Dispersion should be inf."
-            raise ValueError(msg)
-
-
 @pytest.mark.parametrize("func", all_functions)
 def test_statistic_with_nans(func: typing.Callable, x_array_nan: np.ndarray) -> None:
     """Test for different data types."""
     if np.isnan(func(x_array_nan)):
         msg = "Statistic should not return nans."
         raise ValueError(msg)
+
+
+@given(
+    arrays(
+        dtype=np.float64,
+        shape=array_shapes(),
+        elements=st.floats(allow_nan=True, allow_infinity=True),
+    )
+)
+@pytest.mark.parametrize("func", all_functions)
+def test_fuzz_all(func: typing.Callable, data: np.ndarray) -> None:
+    """Test all functions with fuzz."""
+    func(data)
