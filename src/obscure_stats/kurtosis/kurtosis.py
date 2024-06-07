@@ -88,8 +88,7 @@ def moors_octile_kurt(x: np.ndarray) -> float:
     Journal of the Royal Statistical Society. Series D, 37(1):25-32.
     """
     o1, o2, o3, o5, o6, o7 = np.nanquantile(
-        x,
-        [0.125, 0.25, 0.375, 0.625, 0.750, 0.875],
+        x, [0.125, 0.25, 0.375, 0.625, 0.750, 0.875]
     )
     return ((o7 - o5) + (o3 - o1)) / (o6 - o2)
 

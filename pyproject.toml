@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "obscure_stats"
-version = "0.2.5"
+version = "0.2.6"
 description = "Collection of lesser-known statistical functions"
 authors = ["Hleb Levitski"]
 readme = "README.md"
@@ -44,10 +44,6 @@ addopts = [
 pythonpath = "src"
 
 [tool.ruff]
-lint.select = ["ALL"]
-lint.fixable = ["ALL"]
-lint.ignore = ["COM812", "ISC001"]
-# Exclude a variety of commonly ignored directories.
 exclude = [
     ".bzr",
     ".direnv",
@@ -73,14 +69,24 @@ exclude = [
 ]
 line-length = 88
 indent-width = 4
-# Allow unused variables when underscore-prefixed.
-lint.dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint]
+select = ["ALL"]
+fixable = ["ALL"]
+ignore = ["COM812", "ISC001"]
+task-tags = ["TODO"]
 
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
 skip-magic-trailing-comma = false
 line-ending = "auto"
+docstring-code-line-length = "dynamic"
+docstring-code-format = false
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
+
+[tool.ruff.lint.pycodestyle]
+max-doc-length = 88
+max-line-length = 100

@@ -14,6 +14,7 @@ from obscure_stats.central_tendency import (
     midmean,
     midrange,
     standard_trimmed_harrell_davis_quantile,
+    tau_location,
     trimean,
 )
 
@@ -25,22 +26,17 @@ all_functions = [
     midmean,
     midrange,
     standard_trimmed_harrell_davis_quantile,
+    tau_location,
     trimean,
 ]
 
 
+@pytest.mark.parametrize("func", all_functions)
 @pytest.mark.parametrize(
-    "func",
-    all_functions,
-)
-@pytest.mark.parametrize(
-    "data",
-    ["x_list_float", "x_list_int", "x_array_int", "x_array_float"],
+    "data", ["x_list_float", "x_list_int", "x_array_int", "x_array_float"]
 )
 def test_mock_aggregation_functions(
-    func: typing.Callable,
-    data: str,
-    request: pytest.FixtureRequest,
+    func: typing.Callable, data: str, request: pytest.FixtureRequest
 ) -> None:
     """Test for different data types."""
     data = request.getfixturevalue(data)
@@ -109,14 +105,8 @@ def test_hsm(hsm_test_data: np.ndarray) -> None:
         raise ValueError(msg)
 
 
-@pytest.mark.parametrize(
-    "func",
-    all_functions,
-)
-def test_statistic_with_nans(
-    func: typing.Callable,
-    x_array_nan: np.ndarray,
-) -> None:
+@pytest.mark.parametrize("func", all_functions)
+def test_statistic_with_nans(func: typing.Callable, x_array_nan: np.ndarray) -> None:
     """Test for different data types."""
     if np.isnan(func(x_array_nan)):
         msg = "Statistic should not return nans."

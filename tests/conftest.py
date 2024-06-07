@@ -202,7 +202,7 @@ def rank_skewness_test_data() -> np.ndarray:
             80.0,
             84.0,
             50.9,
-        ),
+        )
     )
 
 
@@ -210,7 +210,7 @@ def rank_skewness_test_data() -> np.ndarray:
 def thdme_test_data() -> np.ndarray:
     """Test data from the paper for Trimmed Harrles-Davies median."""
     return np.asarray(
-        (-0.565, -0.106, -0.095, 0.363, 0.404, 0.633, 1.371, 1.512, 2.018, 100_000),
+        (-0.565, -0.106, -0.095, 0.363, 0.404, 0.633, 1.371, 1.512, 2.018, 100_000)
     )
 
 

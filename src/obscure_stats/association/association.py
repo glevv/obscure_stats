@@ -19,8 +19,7 @@ def _check_arrays(x: np.ndarray, y: np.ndarray) -> bool:
     """
     if len(x) != len(y):
         warnings.warn(
-            "Lenghts of the inputs do not match, please check the arrays.",
-            stacklevel=2,
+            "Lenghts of the inputs do not match, please check the arrays.", stacklevel=2
         )
         return True
     if all(np.isclose(x, x[0], equal_nan=False)) or all(
@@ -147,10 +146,7 @@ def concordance_corrcoef(x: np.ndarray, y: np.ndarray) -> float:
     return p * x_a
 
 
-def concordance_rate(
-    x: np.ndarray,
-    y: np.ndarray,
-) -> float:
+def concordance_rate(x: np.ndarray, y: np.ndarray) -> float:
     """Calculate conventional concordance rate.
 
     Also known as quadrant count ratio.
@@ -297,8 +293,7 @@ def zhangi(x: np.ndarray, y: np.ndarray) -> float:
         return np.nan
     x, y = _prep_arrays(x, y)
     return max(
-        abs(stats.spearmanr(x, y, nan_policy="omit")[0]),
-        2.5**0.5 * chatterjeexi(x, y),
+        abs(stats.spearmanr(x, y, nan_policy="omit")[0]), 2.5**0.5 * chatterjeexi(x, y)
     )
 
 
@@ -540,4 +535,43 @@ def gaussain_rank_correlation(x: np.ndarray, y: np.ndarray) -> float:
     y_ranks_norm = (np.argsort(y) + 1) * norm_factor
     return np.sum(stats.norm.ppf(x_ranks_norm) * stats.norm.ppf(y_ranks_norm)) / np.sum(
         stats.norm.ppf(np.arange(1, n + 1) * norm_factor) ** 2
+    )
+
+
+def quantile_correlation(x: np.ndarray, y: np.ndarray, q: float = 0.5) -> float:
+    """Calculate quantile correlation.
+
+    This function measures linear association between two
+    variables for a given quantile.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+    y : array_like
+        Input array.
+    q : float, default = 0.5
+        Quantile used in the calculations.
+
+    Returns
+    -------
+    qcor : float.
+        The value of the quantile sample correlation.
+
+    References
+    ----------
+    Li, G.; Li, Y.; & Tsai, C. (2015).
+    Quantile Correlations and Quantile Autoregressive Modeling.
+    Journal of the American Statistical Association, 110(509), 246-261.
+
+    Notes
+    -----
+    This measure is assymetric: (x, y) != (y, x).
+    """
+    if _check_arrays(x, y):
+        return np.nan
+    x, y = _prep_arrays(x, y)
+    return (
+        np.mean(q - (y - np.quantile(y, q=q) < 0) * (x - np.mean(x)))
+        / ((q * q**2) * np.var(x)) ** 0.5
     )

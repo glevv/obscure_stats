@@ -21,6 +21,7 @@
     * Midmean;
     * Midrange;
     * Standard Trimmed Harrell-Davis Quantile;
+    * Tau Measure of Location;
     * Trimean.
 - Collection of measures of dispersion - `obscure_stats/dispersion`:
     * Coefficient of Range;
@@ -62,6 +63,7 @@
     * Concordance Correlation Coefficient;
     * Concordance Rate;
     * Gaussian Rank Correlation Coefficient;
+    * Quantile Correlation Coefficient;
     * Rank Minrelation Coefficient;
     * Tanimoto Similarity;
     * Tukey's Correlation Coefficient;

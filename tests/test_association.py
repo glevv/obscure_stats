@@ -10,6 +10,7 @@ from obscure_stats.association import (
     concordance_corrcoef,
     concordance_rate,
     gaussain_rank_correlation,
+    quantile_correlation,
     rank_minrelation_coefficient,
     symmetric_chatterjeexi,
     tanimoto_similarity,
@@ -24,6 +25,7 @@ all_functions = [
     concordance_corrcoef,
     concordance_rate,
     gaussain_rank_correlation,
+    quantile_correlation,
     rank_minrelation_coefficient,
     symmetric_chatterjeexi,
     tanimoto_similarity,
@@ -33,23 +35,15 @@ all_functions = [
 ]
 
 
+@pytest.mark.parametrize("func", all_functions)
 @pytest.mark.parametrize(
-    "func",
-    all_functions,
+    "x_array", ["x_list_float", "x_list_int", "x_array_int", "x_array_float"]
 )
 @pytest.mark.parametrize(
-    "x_array",
-    ["x_list_float", "x_list_int", "x_array_int", "x_array_float"],
-)
-@pytest.mark.parametrize(
-    "y_array",
-    ["y_list_float", "y_list_int", "y_array_int", "y_array_float"],
+    "y_array", ["y_list_float", "y_list_int", "y_array_int", "y_array_float"]
 )
 def test_mock_association_functions(
-    func: typing.Callable,
-    x_array: str,
-    y_array: str,
-    request: pytest.FixtureRequest,
+    func: typing.Callable, x_array: str, y_array: str, request: pytest.FixtureRequest
 ) -> None:
     """Test for different data types."""
     x_array = request.getfixturevalue(x_array)
@@ -63,6 +57,7 @@ def test_mock_association_functions(
         blomqvistbeta,
         concordance_corrcoef,
         concordance_rate,
+        quantile_correlation,
         rank_minrelation_coefficient,
         tanimoto_similarity,
         tukey_correlation,
@@ -80,13 +75,7 @@ def test_signed_corr_sensibility(
 
 
 @pytest.mark.parametrize(
-    "func",
-    [
-        chatterjeexi,
-        gaussain_rank_correlation,
-        symmetric_chatterjeexi,
-        zhangi,
-    ],
+    "func", [chatterjeexi, gaussain_rank_correlation, symmetric_chatterjeexi, zhangi]
 )
 def test_unsigned_corr_sensibility(
     func: typing.Callable, y_array_float: np.ndarray
@@ -109,6 +98,7 @@ def test_unsigned_corr_sensibility(
         concordance_corrcoef,
         concordance_rate,
         gaussain_rank_correlation,
+        quantile_correlation,
         rank_minrelation_coefficient,
         tukey_correlation,
         symmetric_chatterjeexi,
@@ -149,10 +139,7 @@ def test_invariance(
         raise ValueError(msg)
 
 
-@pytest.mark.parametrize(
-    "func",
-    all_functions,
-)
+@pytest.mark.parametrize("func", all_functions)
 def test_notfinite_association(
     func: typing.Callable,
     x_array_nan: np.ndarray,
@@ -172,24 +159,16 @@ def test_notfinite_association(
             raise ValueError(msg)
 
 
-@pytest.mark.parametrize(
-    "func",
-    all_functions,
-)
+@pytest.mark.parametrize("func", all_functions)
 def test_unequal_arrays(
-    func: typing.Callable,
-    x_array_int: np.ndarray,
-    y_array_int: np.ndarray,
+    func: typing.Callable, x_array_int: np.ndarray, y_array_int: np.ndarray
 ) -> None:
     """Test for unequal arrays."""
     with pytest.warns(match="Lenghts of the inputs do not match"):
         func(x_array_int[:4], y_array_int[:3])
 
 
-@pytest.mark.parametrize(
-    "func",
-    all_functions,
-)
+@pytest.mark.parametrize("func", all_functions)
 def test_corr_boundaries(func: typing.Callable, y_array_float: np.ndarray) -> None:
     """Testing for result correctness."""
     res = func(y_array_float, -y_array_float)

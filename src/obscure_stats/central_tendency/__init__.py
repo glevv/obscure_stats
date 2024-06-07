@@ -8,6 +8,7 @@ from .central_tendency import (
     midmean,
     midrange,
     standard_trimmed_harrell_davis_quantile,
+    tau_location,
     trimean,
 )
 
@@ -19,5 +20,6 @@ __all__ = [
     "midmean",
     "midrange",
     "standard_trimmed_harrell_davis_quantile",
+    "tau_location",
     "trimean",
 ]

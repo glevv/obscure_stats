@@ -273,3 +273,32 @@ def half_sample_mode(x: np.ndarray) -> float:
             return np.mean(y[1:2])
         return y[1]
     return np.mean(y)
+
+
+def tau_location(x: np.ndarray, c: float = 4.5) -> float:
+    """Calculate Tau measure of location.
+
+    This measure is very robust and has higher efficiency than median.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+    c : float
+        Constant that filter outliers.
+
+    Returns
+    -------
+    tml : float
+        The value of Tau location.
+
+    References
+    ----------
+    Wilcox, R. (2012).
+    Introduction to Robust Estimation Hypothesis Testing.
+    3rd Edition, Academic Press, New York.
+    """
+    med = np.nanmedian(x)
+    scaled_x = (x - med) / np.nanmedian(np.abs(x - med))
+    w = np.square(1.0 - np.square(scaled_x / c)) * (np.abs(scaled_x) <= c)
+    return np.nansum(x * w) / np.nansum(w)

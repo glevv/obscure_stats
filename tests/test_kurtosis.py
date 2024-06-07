@@ -23,28 +23,19 @@ all_functions = [
 ]
 
 
+@pytest.mark.parametrize("func", all_functions)
 @pytest.mark.parametrize(
-    "func",
-    all_functions,
-)
-@pytest.mark.parametrize(
-    "data",
-    ["x_list_float", "x_list_int", "x_array_int", "x_array_float"],
+    "data", ["x_list_float", "x_list_int", "x_array_int", "x_array_float"]
 )
 def test_mock_aggregation_functions(
-    func: typing.Callable,
-    data: str,
-    request: pytest.FixtureRequest,
+    func: typing.Callable, data: str, request: pytest.FixtureRequest
 ) -> None:
     """Test for different data types."""
     data = request.getfixturevalue(data)
     func(data)
 
 
-@pytest.mark.parametrize(
-    "func",
-    all_functions,
-)
+@pytest.mark.parametrize("func", all_functions)
 @pytest.mark.parametrize("seed", [1, 42, 99])
 def test_kurt_sensibility(func: typing.Callable, seed: int) -> None:
     """Testing for result correctness."""
@@ -60,14 +51,8 @@ def test_kurt_sensibility(func: typing.Callable, seed: int) -> None:
         raise ValueError(msg)
 
 
-@pytest.mark.parametrize(
-    "func",
-    all_functions,
-)
-def test_statistic_with_nans(
-    func: typing.Callable,
-    x_array_nan: np.ndarray,
-) -> None:
+@pytest.mark.parametrize("func", all_functions)
+def test_statistic_with_nans(func: typing.Callable, x_array_nan: np.ndarray) -> None:
     """Test for different data types."""
     if np.isnan(func(x_array_nan)):
         msg = "Statistic should not return nans."

@@ -29,25 +29,17 @@ all_functions = [
 ]
 
 
-@pytest.mark.parametrize(
-    "func",
-    all_functions,
-)
+@pytest.mark.parametrize("func", all_functions)
 @pytest.mark.parametrize("data", ["c_list_obj", "c_array_obj"])
 def test_mock_variation_functions(
-    func: typing.Callable,
-    data: str,
-    request: pytest.FixtureRequest,
+    func: typing.Callable, data: str, request: pytest.FixtureRequest
 ) -> None:
     """Test for different data types."""
     data = request.getfixturevalue(data)
     func(data)
 
 
-@pytest.mark.parametrize(
-    "func",
-    all_functions,
-)
+@pytest.mark.parametrize("func", all_functions)
 @pytest.mark.parametrize("seed", [1, 42, 99])
 def test_var_sensibility_higher_better(func: typing.Callable, seed: int) -> None:
     """Testing for result correctness."""
@@ -61,14 +53,8 @@ def test_var_sensibility_higher_better(func: typing.Callable, seed: int) -> None
         raise ValueError(msg)
 
 
-@pytest.mark.parametrize(
-    "func",
-    all_functions,
-)
-def test_statistic_with_nans(
-    func: typing.Callable,
-    c_array_nan: np.ndarray,
-) -> None:
+@pytest.mark.parametrize("func", all_functions)
+def test_statistic_with_nans(func: typing.Callable, c_array_nan: np.ndarray) -> None:
     """Test for different data types."""
     if np.isnan(func(c_array_nan)):
         msg = "Statistic should not return nans."
