@@ -123,7 +123,7 @@ def test_statistic_with_nans(func: typing.Callable, x_array_nan: np.ndarray) -> 
 @given(
     arrays(
         dtype=np.float64,
-        shape=array_shapes(),
+        shape=array_shapes(max_dims=1),
         elements=st.floats(allow_nan=True, allow_infinity=True),
     )
 )

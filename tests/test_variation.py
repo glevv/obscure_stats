@@ -81,7 +81,7 @@ def test_renyi_entropy_edgecases(c_array_obj: np.ndarray) -> None:
 @given(
     arrays(
         dtype=np.object_,
-        shape=array_shapes(),
+        shape=array_shapes(max_dims=1),
         elements=st.characters(),
     )
 )

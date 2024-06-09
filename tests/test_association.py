@@ -183,12 +183,12 @@ def test_corr_boundaries(func: typing.Callable, y_array_float: np.ndarray) -> No
 @given(
     arrays(
         dtype=np.float64,
-        shape=array_shapes(),
+        shape=array_shapes(max_dims=1),
         elements=st.floats(allow_nan=True, allow_infinity=True),
     ),
     arrays(
         dtype=np.float64,
-        shape=array_shapes(),
+        shape=array_shapes(max_dims=1),
         elements=st.floats(allow_nan=True, allow_infinity=True),
     ),
 )

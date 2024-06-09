@@ -34,7 +34,6 @@ def coefficient_of_lvariation(x: np.ndarray) -> float:
 
     L-CV is the L-scale (half of mean absolute deviation) divided
     by L-mean (the same as regular mean).
-    The array will be flatten before any calculations.
 
     Parameters
     ----------
@@ -54,7 +53,7 @@ def coefficient_of_lvariation(x: np.ndarray) -> float:
     Journal of the Royal Statistical Society, Series B. 52 (1): 105-124.
     """
     l1 = np.nanmean(x)
-    _x = np.sort(x, axis=None)
+    _x = np.sort(x)
     n = len(_x)
     common = 1 / special.comb(n - 1, 1) / n
     beta_1 = common * np.nansum(special.comb(np.arange(1, n), 1) * _x[1:])

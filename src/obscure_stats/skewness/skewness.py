@@ -13,7 +13,6 @@ def l_skew(x: np.ndarray) -> float:
 
     This measure is a 3rd linear moment, which is an
     alternative to conventional moments.
-    The array will be flatten before any calculations.
 
     Parameters
     ----------
@@ -32,7 +31,7 @@ def l_skew(x: np.ndarray) -> float:
     using linear combinations of order statistics.
     Journal of the Royal Statistical Society, Series B. 52 (1): 105-124.
     """
-    _x = np.sort(x, axis=None)
+    _x = np.sort(x)
     n = len(_x)
     common = 1 / special.comb(n - 1, (0, 1, 2)) / n
     betas = [
@@ -392,7 +391,7 @@ def cumulative_skew(x: np.ndarray) -> float:
     A robust measure of skewness using cumulative statistic calculation.
     arXiv preprint arXiv:2209.10699.
     """
-    _x = np.sort(x, axis=None)
+    _x = np.sort(x)
     n = len(_x)
     p = np.nancumsum(_x)
     p = p / p[-1]

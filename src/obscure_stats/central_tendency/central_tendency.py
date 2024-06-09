@@ -178,8 +178,6 @@ def standard_trimmed_harrell_davis_quantile(x: np.ndarray, q: float = 0.5) -> fl
     It calculates weighted Harrel-Davies quantiles on only sqrt(N) samples,
     located in the region with the most probability mass.
 
-    The array will be flatten before any calculations.
-
     Parameters
     ----------
     x : array_like
@@ -206,7 +204,7 @@ def standard_trimmed_harrell_davis_quantile(x: np.ndarray, q: float = 0.5) -> fl
     if q <= 0 or q >= 1:
         msg = "Parameter q should be in range (0, 1)."
         raise ValueError(msg)
-    _x = np.sort(x, axis=None)
+    _x = np.sort(x)
     _x = _x[np.isfinite(_x)]
     n = len(_x)
     if n == 0:
@@ -233,7 +231,6 @@ def half_sample_mode(x: np.ndarray) -> float:
 
     This estimator is more stable than regular mode estimation,
     especially for floating point values.
-    The array will be flatten before any calculations.
 
     Parameters
     ----------
@@ -256,7 +253,7 @@ def half_sample_mode(x: np.ndarray) -> float:
     scipy.stats.mode - Mode estimator.
     """
     # heavily inspired by https://github.com/cran/modeest/blob/master/R/hsm.R
-    y = np.sort(x, axis=None)
+    y = np.sort(x)
     y = y[np.isfinite(y)]
     _corner_cases = (4, 3)  # for 4 samples and 3 samples
     while (ny := len(y)) >= _corner_cases[0]:
