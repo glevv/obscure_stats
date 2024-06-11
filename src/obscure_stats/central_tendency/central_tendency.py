@@ -300,6 +300,9 @@ def tau_location(x: np.ndarray, c: float = 4.5) -> float:
     Introduction to Robust Estimation Hypothesis Testing.
     3rd Edition, Academic Press, New York.
     """
+    if c <= 0:
+        msg = "Parameter c should be strictly positive."
+        raise ValueError(msg)
     med = np.nanmedian(x)
     mad = np.nanmedian(np.abs(x - med))
     scaled_x = (x - med) / mad

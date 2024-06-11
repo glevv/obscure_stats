@@ -72,12 +72,11 @@ def test_edge_cases(x_array_float: np.ndarray) -> None:
         raise ValueError(msg)
 
 
-def test_q_in_sthdq(x_array_float: np.ndarray) -> None:
+@pytest.mark.parametrize("q", [0.0, 1.0])
+def test_q_in_sthdq(x_array_float: np.ndarray, q: float) -> None:
     """Simple tets case for correctnes of q."""
     with pytest.raises(ValueError, match="Parameter q should be in range"):
-        standard_trimmed_harrell_davis_quantile(x_array_float, q=1)
-    with pytest.raises(ValueError, match="Parameter q should be in range"):
-        standard_trimmed_harrell_davis_quantile(x_array_float, q=0)
+        standard_trimmed_harrell_davis_quantile(x_array_float, q=q)
 
 
 def test_hls(hls_test_data: np.ndarray, hls_test_data_big: list[int]) -> None:
@@ -118,6 +117,13 @@ def test_statistic_with_nans(func: typing.Callable, x_array_nan: np.ndarray) -> 
     if np.isnan(func(x_array_nan)):
         msg = "Statistic should not return nans."
         raise ValueError(msg)
+
+
+@pytest.mark.parametrize("c", [0.0, -1.0])
+def test_tau_location(x_array_float: np.ndarray, c: float) -> None:
+    """Test that function will raise error if c parameter is incorrect."""
+    with pytest.raises(ValueError, match="Parameter c should be strictly"):
+        tau_location(x_array_float, c=c)
 
 
 @given(
