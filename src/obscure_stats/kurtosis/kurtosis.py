@@ -27,8 +27,8 @@ def l_kurt(x: np.ndarray) -> float:
     using linear combinations of order statistics.
     Journal of the Royal Statistical Society, Series B. 52 (1): 105-124.
     """
-    n = len(x)
     _x = np.sort(x)
+    n = len(_x)
     common = 1 / special.comb(n - 1, (0, 1, 2, 4)) / n
     betas = [
         common[i] * np.nansum(special.comb(np.arange(i, n), i) * _x[i:])

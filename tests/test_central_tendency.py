@@ -6,6 +6,9 @@ import typing
 
 import numpy as np
 import pytest
+from hypothesis import given
+from hypothesis import strategies as st
+from hypothesis.extra.numpy import array_shapes, arrays
 from obscure_stats.central_tendency import (
     contraharmonic_mean,
     half_sample_mode,
@@ -63,14 +66,17 @@ def test_edge_cases(x_array_float: np.ndarray) -> None:
     if result != pytest.approx(x_array_float[0], rel=1e-4):
         msg = "Result does not match expected output."
         raise ValueError(msg)
+    result = standard_trimmed_harrell_davis_quantile(x_array_float[:0])
+    if result is not np.nan:
+        msg = "Result does not match expected output."
+        raise ValueError(msg)
 
 
-def test_q_in_sthdq(x_array_float: np.ndarray) -> None:
+@pytest.mark.parametrize("q", [0.0, 1.0])
+def test_q_in_sthdq(x_array_float: np.ndarray, q: float) -> None:
     """Simple tets case for correctnes of q."""
     with pytest.raises(ValueError, match="Parameter q should be in range"):
-        standard_trimmed_harrell_davis_quantile(x_array_float, q=1)
-    with pytest.raises(ValueError, match="Parameter q should be in range"):
-        standard_trimmed_harrell_davis_quantile(x_array_float, q=0)
+        standard_trimmed_harrell_davis_quantile(x_array_float, q=q)
 
 
 def test_hls(hls_test_data: np.ndarray, hls_test_data_big: list[int]) -> None:
@@ -111,3 +117,23 @@ def test_statistic_with_nans(func: typing.Callable, x_array_nan: np.ndarray) -> 
     if np.isnan(func(x_array_nan)):
         msg = "Statistic should not return nans."
         raise ValueError(msg)
+
+
+@pytest.mark.parametrize("c", [0.0, -1.0])
+def test_tau_location(x_array_float: np.ndarray, c: float) -> None:
+    """Test that function will raise error if c parameter is incorrect."""
+    with pytest.raises(ValueError, match="Parameter c should be strictly"):
+        tau_location(x_array_float, c=c)
+
+
+@given(
+    arrays(
+        dtype=np.float64,
+        shape=array_shapes(max_dims=1),
+        elements=st.floats(allow_nan=True, allow_infinity=True),
+    )
+)
+@pytest.mark.parametrize("func", all_functions)
+def test_fuzz_central_tendencies(func: typing.Callable, data: np.ndarray) -> None:
+    """Test all functions with fuzz."""
+    func(data)

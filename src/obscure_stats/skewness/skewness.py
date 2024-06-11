@@ -31,8 +31,8 @@ def l_skew(x: np.ndarray) -> float:
     using linear combinations of order statistics.
     Journal of the Royal Statistical Society, Series B. 52 (1): 105-124.
     """
-    n = len(x)
     _x = np.sort(x)
+    n = len(_x)
     common = 1 / special.comb(n - 1, (0, 1, 2)) / n
     betas = [
         common[i] * np.nansum(special.comb(np.arange(i, n), i) * _x[i:])
@@ -268,6 +268,7 @@ def forhad_shorna_rank_skew(x: np.ndarray) -> float:
     This measure is similar to Houssain and Adnan skewness coefficient,
     but uses differences in ranks instead of absolute differences.
     This measure should be more robust than moment based skewness.
+    The array will be flatten before any calculations.
 
     Parameters
     ----------
@@ -286,8 +287,9 @@ def forhad_shorna_rank_skew(x: np.ndarray) -> float:
     An Alternative Form of Boxplot.
     arXiv preprint arXiv:1908.06400.
     """
-    mr = (np.nanmin(x) + np.nanmax(x)) * 0.5
-    arr = np.r_[x, mr]
+    _x = np.ravel(x)
+    mr = (np.nanmin(_x) + np.nanmax(_x)) * 0.5
+    arr = np.r_[_x, mr]
     arr_ranked = stats.rankdata(arr, method="min", nan_policy="omit")
     diff = arr_ranked[-1] - arr_ranked
     diff = diff[:-1]
@@ -371,6 +373,7 @@ def cumulative_skew(x: np.ndarray) -> float:
     Calculate cumulative measure of skewness.
 
     It is based on calculating the cumulative statistics of the Lorenz curve.
+    The array will be flatten before any calculations.
 
     Parameters
     ----------
@@ -388,8 +391,9 @@ def cumulative_skew(x: np.ndarray) -> float:
     A robust measure of skewness using cumulative statistic calculation.
     arXiv preprint arXiv:2209.10699.
     """
-    n = len(x)
-    p = np.nancumsum(np.sort(x))
+    _x = np.sort(x)
+    n = len(_x)
+    p = np.nancumsum(_x)
     p = p / p[-1]
     r = np.arange(n)
     q = r / n

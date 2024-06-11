@@ -17,13 +17,15 @@ def _check_arrays(x: np.ndarray, y: np.ndarray) -> bool:
     - Constant input;
     - Contains inf.
     """
-    if len(x) != len(y):
+    _x = np.ravel(x)
+    _y = np.ravel(y)
+    if len(_x) != len(_y):
         warnings.warn(
             "Lenghts of the inputs do not match, please check the arrays.", stacklevel=2
         )
         return True
-    if all(np.isclose(x, x[0], equal_nan=False)) or all(
-        np.isclose(y, y[0], equal_nan=False)
+    if all(np.isclose(_x, _x[0], equal_nan=False)) or all(
+        np.isclose(_y, _y[0], equal_nan=False)
     ):
         warnings.warn(
             "One of the input arrays is constant;"
@@ -31,13 +33,13 @@ def _check_arrays(x: np.ndarray, y: np.ndarray) -> bool:
             stacklevel=2,
         )
         return True
-    if any(np.isinf(x)) or any(np.isinf(y)):
+    if any(np.isinf(_x)) or any(np.isinf(_y)):
         warnings.warn(
             "One of the input arrays contains inf, please check the array.",
             stacklevel=2,
         )
         return True
-    if (np.isnan(x).sum() >= len(x) - 1) or (np.isnan(y).sum() >= len(x) - 1):
+    if (np.isnan(_x).sum() >= len(_x) - 1) or (np.isnan(_y).sum() >= len(_y) - 1):
         warnings.warn(
             "One of the input arrays has too many missing values,"
             " please check the arrays.",
@@ -49,9 +51,9 @@ def _check_arrays(x: np.ndarray, y: np.ndarray) -> bool:
 
 def _prep_arrays(x: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """Prepare data for downstream task."""
-    notnan = ~(np.isnan(x) | np.isnan(y))
-    _x = np.asarray(x)
-    _y = np.asarray(y)
+    _x = np.ravel(x)
+    _y = np.ravel(y)
+    notnan = ~(np.isnan(_x) | np.isnan(_y))
     _x = _x[notnan]
     _y = _y[notnan]
     return _x, _y
@@ -70,6 +72,8 @@ def chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
     it break ties depending on order. This makes it dependent on
     data sorting, which could be useful in application like time
     series.
+
+    The arrays will be flatten before any calculations.
 
     Parameters
     ----------
@@ -116,6 +120,8 @@ def concordance_corrcoef(x: np.ndarray, y: np.ndarray) -> float:
     CCC measures the agreement between two variables, e.g.,
     to evaluate reproducibility or for inter-rater reliability.
 
+    The arrays will be flatten before any calculations.
+
     Parameters
     ----------
     x : array_like
@@ -156,6 +162,8 @@ def concordance_rate(x: np.ndarray, y: np.ndarray) -> float:
     variation has an option for an exclusion zone. It is based on the
     standard error of the mean and will exlucde points that are in the
     range of mean+-sem.
+
+    The arrays will be flatten before any calculations.
 
     Parameters
     ----------
@@ -208,6 +216,8 @@ def symmetric_chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
     it break ties depending on order. This makes it dependent on
     data sorting, which could be useful in application like time
     series.
+
+    The arrays will be flatten before any calculations.
 
     Parameters
     ----------
@@ -262,6 +272,8 @@ def zhangi(x: np.ndarray, y: np.ndarray) -> float:
     This coefficient combines Spearman and Chatterjee rank correlation coefficients
     to get higher sensetivity to complex nonlinear relationships between variables.
 
+    The arrays will be flatten before any calculations.
+
     Parameters
     ----------
     x : array_like
@@ -304,6 +316,8 @@ def tanimoto_similarity(x: np.ndarray, y: np.ndarray) -> float:
     dot product is normalized.
     This version is designed for numeric values, instead of sets.
 
+    The arrays will be flatten before any calculations.
+
     Parameters
     ----------
     x : array_like
@@ -341,6 +355,8 @@ def blomqvistbeta(x: np.ndarray, y: np.ndarray) -> float:
 
     Also known as medial correlation. It is similar to Spearman Rho
     and Kendall Tau correlations, but have some advantages over them.
+
+    The arrays will be flatten before any calculations.
 
     Parameters
     ----------
@@ -383,6 +399,8 @@ def winsorized_correlation(x: np.ndarray, y: np.ndarray, k: float = 0.1) -> floa
 
     This correlation is a robust alternative of the Pearson correlation.
 
+    The arrays will be flatten before any calculations.
+
     Parameters
     ----------
     x : array_like
@@ -421,6 +439,8 @@ def rank_minrelation_coefficient(x: np.ndarray, y: np.ndarray) -> float:
     This measure estimates p(y > x) when x and y are continuous random variables.
     In short, if a variable x exhibits a minrelation to y then,
     as x increases, y is likely to increases too.
+
+    The arrays will be flatten before any calculations.
 
     Parameters
     ----------
@@ -467,6 +487,8 @@ def tukey_correlation(x: np.ndarray, y: np.ndarray) -> float:
     It is not quite as robust as rank correlations, but it is more
     efficient in Gaussian and near-Gaussian cases.
 
+    The arrays will be flatten before any calculations.
+
     Parameters
     ----------
     x : array_like
@@ -506,7 +528,9 @@ def gaussain_rank_correlation(x: np.ndarray, y: np.ndarray) -> float:
     """Calculate Gaussian rank correlation coefficient.
 
     The Gaussian rank correlation equals the usual correlation coefficient
-    computed from the normal scores of the data
+    computed from the normal scores of the data.
+
+    The arrays will be flatten before any calculations.
 
     Parameters
     ----------
@@ -544,6 +568,10 @@ def quantile_correlation(x: np.ndarray, y: np.ndarray, q: float = 0.5) -> float:
     This function measures linear association between two
     variables for a given quantile.
 
+    The arrays will be flatten before any calculations.
+    This implementation is dependent on the order of the arrays,
+    which could be useful in application like time series.
+
     Parameters
     ----------
     x : array_like
@@ -571,7 +599,6 @@ def quantile_correlation(x: np.ndarray, y: np.ndarray, q: float = 0.5) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
-    return (
-        np.mean(q - (y - np.quantile(y, q=q) < 0) * (x - np.mean(x)))
-        / ((q * q**2) * np.var(x)) ** 0.5
+    return np.mean((q - (y < np.quantile(y, q=q))) * (x - np.mean(x))) / (
+        ((q - q**2) * np.var(x)) ** 0.5
     )

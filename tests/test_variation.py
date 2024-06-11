@@ -4,6 +4,9 @@ import typing
 
 import numpy as np
 import pytest
+from hypothesis import given
+from hypothesis import strategies as st
+from hypothesis.extra.numpy import array_shapes, arrays
 from obscure_stats.variation import (
     avdev,
     b_index,
@@ -73,3 +76,16 @@ def test_renyi_entropy_edgecases(c_array_obj: np.ndarray) -> None:
     if renyi_1 != pytest.approx(2.040373):
         msg = f"Results from the test and paper do not match, got {renyi_1}"
         raise ValueError(msg)
+
+
+@given(
+    arrays(
+        dtype=np.object_,
+        shape=array_shapes(max_dims=1),
+        elements=st.characters(),
+    )
+)
+@pytest.mark.parametrize("func", all_functions)
+def test_fuzz_variations(func: typing.Callable, data: np.ndarray) -> None:
+    """Test all functions with fuzz."""
+    func(data)
