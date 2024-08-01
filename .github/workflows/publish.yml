@@ -38,7 +38,7 @@ jobs:
 
       - name: Install poetry
         if: steps.cached-poetry.outputs.cache-hit != 'true'
-        uses: snok/install-poetry@93ada01c735cc8a383ce0ce2ae205a21c415379b # v1.3.4
+        uses: snok/install-poetry@972a0e78ffdebf9e98f6fe404b77831716cdd4aa # v1.4.0
 
       - name: Restore cached dependencies
         uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
