@@ -59,7 +59,7 @@ def _prep_arrays(x: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     return _x, _y
 
 
-def chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
+def chatterjee_xi(x: np.ndarray, y: np.ndarray) -> float:
     """Calculate Xi correlation coefficient.
 
     Another variation of rank correlation which does not make any assumptions about
@@ -111,7 +111,7 @@ def chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
     return 1.0 - 0.5 * np.sum(np.abs(np.diff(right))) / np.mean(left * (n - left))
 
 
-def concordance_corrcoef(x: np.ndarray, y: np.ndarray) -> float:
+def concordance_correlation(x: np.ndarray, y: np.ndarray) -> float:
     """Calculate concordance correlation coefficient.
 
     The main difference between Pearson's R and CCC is that CCC
@@ -203,7 +203,7 @@ def concordance_rate(x: np.ndarray, y: np.ndarray) -> float:
     ) / n
 
 
-def symmetric_chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
+def symmetric_chatterjee_xi(x: np.ndarray, y: np.ndarray) -> float:
     """Calculate symmetric Xi correlation coefficient.
 
     Another variation of rank correlation which does not make any assumptions about
@@ -239,7 +239,7 @@ def symmetric_chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
 
     See Also
     --------
-    obscure_stats.associaton.chatterjeexi - Chatterjee Xi coefficient.
+    obscure_stats.associaton.chatterjee_xi - Chatterjee Xi coefficient.
     """
     if _check_arrays(x, y):
         return np.nan
@@ -266,7 +266,7 @@ def symmetric_chatterjeexi(x: np.ndarray, y: np.ndarray) -> float:
     )
 
 
-def zhangi(x: np.ndarray, y: np.ndarray) -> float:
+def zhang_i(x: np.ndarray, y: np.ndarray) -> float:
     """Calculate I correlation coefficient proposed by Q. Zhang.
 
     This coefficient combines Spearman and Chatterjee rank correlation coefficients
@@ -299,13 +299,13 @@ def zhangi(x: np.ndarray, y: np.ndarray) -> float:
     See Also
     --------
     scipy.stats.spearmanr - Spearman R coefficient.
-    obscure_stats.associaton.chatterjeexi - Chatterjee Xi coefficient.
+    obscure_stats.associaton.chatterjee_xi - Chatterjee Xi coefficient.
     """
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
     return max(
-        abs(stats.spearmanr(x, y, nan_policy="omit")[0]), 2.5**0.5 * chatterjeexi(x, y)
+        abs(stats.spearmanr(x, y, nan_policy="omit")[0]), 2.5**0.5 * chatterjee_xi(x, y)
     )
 
 
@@ -350,7 +350,7 @@ def tanimoto_similarity(x: np.ndarray, y: np.ndarray) -> float:
     return xy / (xx + yy - xy)
 
 
-def blomqvistbeta(x: np.ndarray, y: np.ndarray) -> float:
+def blomqvist_beta(x: np.ndarray, y: np.ndarray) -> float:
     """Calculate Blomqvist's beta.
 
     Also known as medial correlation. It is similar to Spearman Rho
@@ -392,6 +392,44 @@ def blomqvistbeta(x: np.ndarray, y: np.ndarray) -> float:
     med_x = np.median(x)
     med_y = np.median(y)
     return np.mean(np.sign((x - med_x) * (y - med_y)))
+
+
+def fechner_correlation(x: np.ndarray, y: np.ndarray) -> float:
+    """Calculate Fechner correlation.
+
+    It is similar to Bloomqvist beta and Pearson correlation.
+
+    The arrays will be flatten before any calculations.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+    y : array_like
+        Input array.
+
+    Returns
+    -------
+    fc : float.
+        The value of the Fechner correlation.
+
+    References
+    ----------
+    Latyshev, A.V.; Koldanov, P.A. (2014).
+    Investigation of Connections Between Pearson and Fechner Correlations
+    in Market Network: Experimental Study.
+    Models, Algorithms, and Technologies for Network Analysis, 156, 175-182
+
+    See Also
+    --------
+    obscure_stats.associaton.blomqvist_beta - Bloomqvist beta.
+    """
+    if _check_arrays(x, y):
+        return np.nan
+    x, y = _prep_arrays(x, y)
+    avg_x = np.mean(x)
+    avg_y = np.mean(y)
+    return np.mean(np.sign(x - avg_x) * np.sign(y - avg_y))
 
 
 def winsorized_correlation(x: np.ndarray, y: np.ndarray, k: float = 0.1) -> float:

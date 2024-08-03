@@ -1,31 +1,33 @@
 """Association module."""
 
 from .association import (
-    blomqvistbeta,
-    chatterjeexi,
-    concordance_corrcoef,
+    blomqvist_beta,
+    chatterjee_xi,
+    concordance_correlation,
     concordance_rate,
+    fechner_correlation,
     gaussain_rank_correlation,
     quantile_correlation,
     rank_minrelation_coefficient,
-    symmetric_chatterjeexi,
+    symmetric_chatterjee_xi,
     tanimoto_similarity,
     tukey_correlation,
     winsorized_correlation,
-    zhangi,
+    zhang_i,
 )
 
 __all__ = [
-    "blomqvistbeta",
-    "chatterjeexi",
-    "concordance_corrcoef",
+    "blomqvist_beta",
+    "chatterjee_xi",
+    "concordance_correlation",
     "concordance_rate",
+    "fechner_correlation",
     "gaussain_rank_correlation",
     "quantile_correlation",
     "rank_minrelation_coefficient",
-    "symmetric_chatterjeexi",
+    "symmetric_chatterjee_xi",
     "tanimoto_similarity",
     "tukey_correlation",
     "winsorized_correlation",
-    "zhangi",
+    "zhang_i",
 ]

@@ -62,6 +62,7 @@
     * Chatterjee Xi Correlation Coefficient (original and symmetric versions);
     * Concordance Correlation Coefficient;
     * Concordance Rate;
+    * Fechner Correlation Coefficient;
     * Gaussian Rank Correlation Coefficient;
     * Quantile Correlation Coefficient;
     * Rank Minrelation Coefficient;

@@ -16,7 +16,7 @@ All contributions are appreciated, from reporting bugs to implementing new featu
 - Set up local enviroment that `poetry` will use. You can do it with [pyenv](https://github.com/pyenv/pyenv#installation) or venv or any other enviroment manager that you like.
 - to initialize your local enviroment run:
 ```bash
->>> poetry init
+>>> poetry install
 ```
 - You are good to go!
 
