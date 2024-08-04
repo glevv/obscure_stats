@@ -8,33 +8,35 @@ from hypothesis import given
 from hypothesis import strategies as st
 from hypothesis.extra.numpy import array_shapes, arrays
 from obscure_stats.association import (
-    blomqvistbeta,
-    chatterjeexi,
-    concordance_corrcoef,
+    blomqvist_beta,
+    chatterjee_xi,
+    concordance_correlation,
     concordance_rate,
+    fechner_correlation,
     gaussain_rank_correlation,
     quantile_correlation,
     rank_minrelation_coefficient,
-    symmetric_chatterjeexi,
+    symmetric_chatterjee_xi,
     tanimoto_similarity,
     tukey_correlation,
     winsorized_correlation,
-    zhangi,
+    zhang_i,
 )
 
 all_functions = [
-    blomqvistbeta,
-    chatterjeexi,
-    concordance_corrcoef,
+    blomqvist_beta,
+    chatterjee_xi,
+    concordance_correlation,
     concordance_rate,
+    fechner_correlation,
     gaussain_rank_correlation,
     quantile_correlation,
     rank_minrelation_coefficient,
-    symmetric_chatterjeexi,
+    symmetric_chatterjee_xi,
     tanimoto_similarity,
     tukey_correlation,
     winsorized_correlation,
-    zhangi,
+    zhang_i,
 ]
 
 
@@ -57,9 +59,10 @@ def test_mock_association_functions(
 @pytest.mark.parametrize(
     "func",
     [
-        blomqvistbeta,
-        concordance_corrcoef,
+        blomqvist_beta,
+        concordance_correlation,
         concordance_rate,
+        fechner_correlation,
         quantile_correlation,
         rank_minrelation_coefficient,
         tanimoto_similarity,
@@ -78,7 +81,7 @@ def test_signed_corr_sensibility(
 
 
 @pytest.mark.parametrize(
-    "func", [chatterjeexi, gaussain_rank_correlation, symmetric_chatterjeexi, zhangi]
+    "func", [chatterjee_xi, gaussain_rank_correlation, symmetric_chatterjee_xi, zhang_i]
 )
 def test_unsigned_corr_sensibility(
     func: typing.Callable, y_array_float: np.ndarray
@@ -96,17 +99,18 @@ def test_unsigned_corr_sensibility(
 @pytest.mark.parametrize(
     "func",
     [
-        blomqvistbeta,
-        chatterjeexi,
-        concordance_corrcoef,
+        blomqvist_beta,
+        chatterjee_xi,
+        concordance_correlation,
         concordance_rate,
+        fechner_correlation,
         gaussain_rank_correlation,
         quantile_correlation,
         rank_minrelation_coefficient,
         tukey_correlation,
-        symmetric_chatterjeexi,
+        symmetric_chatterjee_xi,
         winsorized_correlation,
-        zhangi,
+        zhang_i,
     ],
 )
 def test_const(func: typing.Callable, y_array_float: np.ndarray) -> None:
@@ -122,12 +126,13 @@ def test_const(func: typing.Callable, y_array_float: np.ndarray) -> None:
 @pytest.mark.parametrize(
     "func",
     [
-        blomqvistbeta,
-        concordance_corrcoef,
+        blomqvist_beta,
+        concordance_correlation,
         concordance_rate,
+        fechner_correlation,
         gaussain_rank_correlation,
         tanimoto_similarity,
-        symmetric_chatterjeexi,
+        symmetric_chatterjee_xi,
         winsorized_correlation,
     ],
 )

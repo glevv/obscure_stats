@@ -185,3 +185,7 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# User defined
+.ruff_cache/
+.vscode/
