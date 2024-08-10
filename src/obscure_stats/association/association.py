@@ -24,8 +24,8 @@ def _check_arrays(x: np.ndarray, y: np.ndarray) -> bool:
             "Lenghts of the inputs do not match, please check the arrays.", stacklevel=2
         )
         return True
-    if all(np.isclose(_x, _x[0], equal_nan=False)) or all(
-        np.isclose(_y, _y[0], equal_nan=False)
+    if all(np.isclose(_x, np.nanmin(_x), equal_nan=False)) or all(
+        np.isclose(_y, np.nanmin(_y), equal_nan=False)
     ):
         warnings.warn(
             "One of the input arrays is constant;"
@@ -53,7 +53,7 @@ def _prep_arrays(x: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """Prepare data for downstream task."""
     _x = np.ravel(x)
     _y = np.ravel(y)
-    notnan = ~(np.isnan(_x) | np.isnan(_y))
+    notnan = np.isfinite(_x) & np.isfinite(_y)
     _x = _x[notnan]
     _y = _y[notnan]
     return _x, _y
@@ -100,6 +100,8 @@ def chatterjee_xi(x: np.ndarray, y: np.ndarray) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
+    if _check_arrays(x, y):
+        return np.nan
     # heavily inspired by https://github.com/czbiohub-sf/xicor/issues/17#issue-965635013
     n = len(x)
     y_forward_ordered = y[np.argsort(x)]
@@ -143,6 +145,8 @@ def concordance_correlation(x: np.ndarray, y: np.ndarray) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
+    if _check_arrays(x, y):
+        return np.nan
     std_x = np.std(x, ddof=0)
     std_y = np.std(y, ddof=0)
     w = std_y / std_x
@@ -190,6 +194,8 @@ def concordance_rate(x: np.ndarray, y: np.ndarray) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
+    if _check_arrays(x, y):
+        return np.nan
     n = len(x)
     mean_x = np.sum(x) / n
     mean_y = np.sum(y) / n
@@ -244,6 +250,8 @@ def symmetric_chatterjee_xi(x: np.ndarray, y: np.ndarray) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
+    if _check_arrays(x, y):
+        return np.nan
     n = len(x)
     # y ~ f(x)
     y_forward_ordered = y[np.argsort(x)]
@@ -304,6 +312,8 @@ def zhang_i(x: np.ndarray, y: np.ndarray) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
+    if _check_arrays(x, y):
+        return np.nan
     return max(
         abs(stats.spearmanr(x, y, nan_policy="omit")[0]), 2.5**0.5 * chatterjee_xi(x, y)
     )
@@ -344,6 +354,8 @@ def tanimoto_similarity(x: np.ndarray, y: np.ndarray) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
+    if _check_arrays(x, y):
+        return np.nan
     xy = np.mean(x * y)
     xx = np.mean(x**2)
     yy = np.mean(y**2)
@@ -389,6 +401,8 @@ def blomqvist_beta(x: np.ndarray, y: np.ndarray) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
+    if _check_arrays(x, y):
+        return np.nan
     med_x = np.median(x)
     med_y = np.median(y)
     return np.mean(np.sign((x - med_x) * (y - med_y)))
@@ -427,6 +441,8 @@ def fechner_correlation(x: np.ndarray, y: np.ndarray) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
+    if _check_arrays(x, y):
+        return np.nan
     avg_x = np.mean(x)
     avg_y = np.mean(y)
     return np.mean(np.sign(x - avg_x) * np.sign(y - avg_y))
@@ -466,6 +482,8 @@ def winsorized_correlation(x: np.ndarray, y: np.ndarray, k: float = 0.1) -> floa
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
+    if _check_arrays(x, y):
+        return np.nan
     x_w = stats.mstats.winsorize(x, (k, k))
     y_w = stats.mstats.winsorize(y, (k, k))
     return np.corrcoef(x_w, y_w)[0, 1]
@@ -510,6 +528,8 @@ def rank_minrelation_coefficient(x: np.ndarray, y: np.ndarray) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
+    if _check_arrays(x, y):
+        return np.nan
     n_sq = len(x) ** 2
     rank_x_inc = (np.argsort(x) + 1) ** 2 / n_sq - 0.5
     rank_y_inc = (np.argsort(y) + 1) ** 2 / n_sq - 0.5
@@ -552,6 +572,8 @@ def tukey_correlation(x: np.ndarray, y: np.ndarray) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
+    if _check_arrays(x, y):
+        return np.nan
     s_x = gini_mean_difference(x)
     s_y = gini_mean_difference(y)
     x_norm = x / s_x
@@ -591,6 +613,8 @@ def gaussain_rank_correlation(x: np.ndarray, y: np.ndarray) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
+    if _check_arrays(x, y):
+        return np.nan
     n = len(x)
     norm_factor = 1 / (n + 1)
     x_ranks_norm = (np.argsort(x) + 1) * norm_factor
@@ -637,6 +661,8 @@ def quantile_correlation(x: np.ndarray, y: np.ndarray, q: float = 0.5) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
+    if _check_arrays(x, y):
+        return np.nan
     return np.mean((q - (y < np.quantile(y, q=q))) * (x - np.mean(x))) / (
         ((q - q**2) * np.var(x)) ** 0.5
     )

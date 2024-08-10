@@ -14,6 +14,7 @@ from obscure_stats.kurtosis import (
     moors_kurt,
     moors_octile_kurt,
     reza_ma_kurt,
+    staudte_kurt,
 )
 
 all_functions = [
@@ -23,6 +24,7 @@ all_functions = [
     moors_kurt,
     moors_octile_kurt,
     reza_ma_kurt,
+    staudte_kurt,
 ]
 
 
@@ -43,8 +45,8 @@ def test_mock_aggregation_functions(
 def test_kurt_sensibility(func: typing.Callable, seed: int) -> None:
     """Testing for result correctness."""
     rng = np.random.default_rng(seed)
-    platy = np.round(rng.uniform(size=100), 2)
-    lepto = np.round(rng.exponential(size=100), 2)
+    platy = rng.uniform(size=100)
+    lepto = rng.laplace(size=100)
     platy_res = func(platy)
     lepto_res = func(lepto)
     if platy_res > lepto_res:

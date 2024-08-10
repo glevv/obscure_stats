@@ -7,6 +7,7 @@ from .kurtosis import (
     moors_kurt,
     moors_octile_kurt,
     reza_ma_kurt,
+    staudte_kurt,
 )
 
 __all__ = [
@@ -16,4 +17,5 @@ __all__ = [
     "moors_kurt",
     "moors_octile_kurt",
     "reza_ma_kurt",
+    "staudte_kurt",
 ]

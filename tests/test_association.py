@@ -123,6 +123,17 @@ def test_const(func: typing.Callable, y_array_float: np.ndarray) -> None:
             raise ValueError(msg)
 
 
+@pytest.mark.parametrize("func", all_functions)
+def test_const_after_prep(
+    func: typing.Callable, corr_test_data: np.ndarray, x_array_float: np.ndarray
+) -> None:
+    """Testing for constant input."""
+    res = func(x_array_float, corr_test_data)
+    if res is not np.nan:
+        msg = f"Corr coef should be 0 with constant input, got {res}"
+        raise ValueError(msg)
+
+
 @pytest.mark.parametrize(
     "func",
     [

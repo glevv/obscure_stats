@@ -31,6 +31,7 @@
     * Fisher's Index of Dispersion;
     * Gini Mean Difference;
     * Linear Coefficient of Variation;
+    * Inter-expectile Range;
     * Morisita Index of Dispersion;
     * Quartile Coefficient of Dispersion;
     * Robust Coefficient of Variation;
@@ -56,7 +57,8 @@
     * Hogg Kurtosis;
     * Moors Kurtosis;
     * Moors Octile Kurtosis;
-    * Reza-Ma Kurtosis.
+    * Reza-Ma Kurtosis;
+    * Staudte Kurtosis.
 - Collection of measures of association - `obscure_stats/association`:
     * Blomqvist's Beta;
     * Chatterjee Xi Correlation Coefficient (original and symmetric versions);

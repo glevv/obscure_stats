@@ -150,7 +150,7 @@ def crow_siddiqui_kurt(x: np.ndarray) -> float:
     Journal of the American Statistical Association, 62(318):353-389.
     """
     p025, p25, p75, p975 = np.nanquantile(x, [0.025, 0.25, 0.75, 0.975])
-    return (p975 + p025) / (p75 - p25)
+    return (p975 - p025) / (p75 - p25)
 
 
 def reza_ma_kurt(x: np.ndarray) -> float:
@@ -178,3 +178,31 @@ def reza_ma_kurt(x: np.ndarray) -> float:
     """
     h1, h7, h9, h15 = np.nanquantile(x, [0.0625, 0.4375, 0.5625, 0.9375])
     return ((h15 - h9) + (h7 - h1)) / (h15 - h1)
+
+
+def staudte_kurt(x: np.ndarray) -> float:
+    """Calculate Staudte kurtosis coefficient.
+
+    It is based on inter-percentile ranges (uncentered, unscaled) and
+    tries to compare two different measures of dispersion of the same
+    sample.
+    This measure should be more robust than moment based kurtosis.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+
+    Returns
+    -------
+    sk : float
+        The value of Staudte kurtosis coefficient.
+
+    References
+    ----------
+    Staudte, R. G. (2017).
+    Inference for quantile measures of kurtosis, peakedness, and tail weight.
+    Communications in Statistics-Theory and Methods, 46(7), 3148-3163.
+    """
+    p10, p33, p66, p90 = np.nanquantile(x, [0.1, 1 / 3, 2 / 3, 0.9])
+    return (p90 - p10) / (p66 - p33)

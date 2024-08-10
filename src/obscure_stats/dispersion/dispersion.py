@@ -359,3 +359,31 @@ def gini_mean_difference(x: np.ndarray) -> float:
     n = len(x)
     product = np.meshgrid(x, x, sparse=True)
     return np.nansum(np.abs(product[0] - product[1])) / (n * (n - 1))
+
+
+def inter_expectile_range(x: np.ndarray) -> float:
+    """Calculate inter expectile range (IER).
+
+    It is the same as IQR, but uses expectile instead of quantile.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+
+    Returns
+    -------
+    ier : float
+        The value of the inter expectile range.
+
+    References
+    ----------
+    Bellini, F.; Mercuri, L.; Rroji, E. (2018)
+    Implicit expectiles and measures of implied volatility.
+    Quantitative Finance, 18(11), pp. 1851-1864.
+    """
+    _x = np.ravel(x)
+    _x = _x[np.isfinite(_x)]
+    if len(_x) <= 1:
+        return np.nan
+    return stats.expectile(_x, 0.75) - stats.expectile(_x, 0.25)
