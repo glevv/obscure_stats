@@ -13,7 +13,8 @@ from obscure_stats.dispersion import gini_mean_difference
 def _check_arrays(x: np.ndarray, y: np.ndarray) -> bool:
     """Check arrays.
 
-    - Lenghts of the arrays;
+    - Equal lenghts of the arrays;
+    - Enough lenghts of the arrays;
     - Constant input;
     - Contains inf.
     """
@@ -22,6 +23,12 @@ def _check_arrays(x: np.ndarray, y: np.ndarray) -> bool:
     if len(_x) != len(_y):
         warnings.warn(
             "Lenghts of the inputs do not match, please check the arrays.", stacklevel=2
+        )
+        return True
+    if len(_x) <= 1:
+        warnings.warn(
+            "Lenghts of the inputs are too small, please check the arrays.",
+            stacklevel=2,
         )
         return True
     if all(np.isclose(_x, np.nanmin(_x), equal_nan=False)) or all(
