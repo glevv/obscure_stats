@@ -1,5 +1,6 @@
 """Collection of tests of skewness module."""
 
+import math
 import typing
 
 import numpy as np
@@ -7,6 +8,7 @@ import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 from hypothesis.extra.numpy import array_shapes, arrays
+
 from obscure_stats.skewness import (
     auc_skew_gamma,
     bickel_mode_skew,
@@ -57,8 +59,8 @@ def test_mock_aggregation_functions(
 def test_skew_sensibility(func: typing.Callable, seed: int) -> None:
     """Testing for result correctness."""
     rng = np.random.default_rng(seed)
-    no_skew = np.round(rng.normal(size=100), 2)
-    left_skew = np.round(rng.exponential(size=100) + 1, 2)
+    no_skew = np.round(rng.normal(size=99), 2)
+    left_skew = np.round(rng.exponential(size=99) + 1, 2)
     no_skew_res = func(no_skew)
     left_skew_res = func(left_skew)
     if no_skew_res > left_skew_res:
@@ -81,7 +83,7 @@ def test_rank_skew(rank_skewness_test_data: np.ndarray) -> None:
 @pytest.mark.parametrize("func", all_functions)
 def test_statistic_with_nans(func: typing.Callable, x_array_nan: np.ndarray) -> None:
     """Test for different data types."""
-    if np.isnan(func(x_array_nan)):
+    if math.isnan(func(x_array_nan)):
         msg = "Statistic should not return nans."
         raise ValueError(msg)
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import typing
 
 import numpy as np
@@ -9,8 +10,10 @@ import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 from hypothesis.extra.numpy import array_shapes, arrays
+
 from obscure_stats.central_tendency import (
     contraharmonic_mean,
+    grenanders_m,
     half_sample_mode,
     hodges_lehmann_sen_location,
     midhinge,
@@ -23,6 +26,7 @@ from obscure_stats.central_tendency import (
 
 all_functions = [
     contraharmonic_mean,
+    grenanders_m,
     half_sample_mode,
     hodges_lehmann_sen_location,
     midhinge,
@@ -67,7 +71,7 @@ def test_edge_cases(x_array_float: np.ndarray) -> None:
         msg = "Result does not match expected output."
         raise ValueError(msg)
     result = standard_trimmed_harrell_davis_quantile(x_array_float[:0])
-    if result is not np.nan:
+    if not math.isnan(result):
         msg = "Result does not match expected output."
         raise ValueError(msg)
 
@@ -114,7 +118,7 @@ def test_hsm(hsm_test_data: np.ndarray) -> None:
 @pytest.mark.parametrize("func", all_functions)
 def test_statistic_with_nans(func: typing.Callable, x_array_nan: np.ndarray) -> None:
     """Test for different data types."""
-    if np.isnan(func(x_array_nan)):
+    if math.isnan(func(x_array_nan)):
         msg = "Statistic should not return nans."
         raise ValueError(msg)
 
@@ -124,6 +128,19 @@ def test_tau_location(x_array_float: np.ndarray, c: float) -> None:
     """Test that function will raise error if c parameter is incorrect."""
     with pytest.raises(ValueError, match="Parameter c should be strictly"):
         tau_location(x_array_float, c=c)
+
+
+def test_grenaders_m(x_array_float: np.ndarray) -> None:
+    """Test that function will raise error if p or k parameters are incorrect."""
+    with pytest.raises(ValueError, match="Parameter p should be a float"):
+        grenanders_m(x_array_float, p=1)
+    with pytest.raises(ValueError, match="Parameter k should be an integer"):
+        grenanders_m(x_array_float, k=0)
+    with pytest.raises(ValueError, match="Parameter k should be an integer"):
+        grenanders_m(x_array_float, k=1.5)  # type: ignore[arg-type]
+    if not math.isnan(grenanders_m(x_array_float, k=len(x_array_float))):
+        msg = "Statistic should return nans."
+        raise ValueError(msg)
 
 
 @given(

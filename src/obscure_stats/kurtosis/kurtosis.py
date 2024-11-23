@@ -87,9 +87,7 @@ def moors_octile_kurt(x: np.ndarray) -> float:
     A quantile alternative for kurtosis.
     Journal of the Royal Statistical Society. Series D, 37(1):25-32.
     """
-    o1, o2, o3, o5, o6, o7 = np.nanquantile(
-        x, [0.125, 0.25, 0.375, 0.625, 0.750, 0.875]
-    )
+    o1, o2, o3, o5, o6, o7 = np.nanquantile(x, [0.125, 0.25, 0.375, 0.625, 0.75, 0.875])
     return ((o7 - o5) + (o3 - o1)) / (o6 - o2)
 
 
@@ -206,3 +204,103 @@ def staudte_kurt(x: np.ndarray) -> float:
     """
     p10, p33, p66, p90 = np.nanquantile(x, [0.1, 1 / 3, 2 / 3, 0.9])
     return (p90 - p10) / (p66 - p33)
+
+
+def schmid_trede_peakedness(x: np.ndarray) -> float:
+    """Calculate Schmid and Trder measure of peakedness P.
+
+    It is based on inter-percentile ranges (uncentered, unscaled) and
+    tries to compare two different measures of dispersion of the same
+    sample.
+    This measure should be more robust than moment based kurtosis.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+
+    Returns
+    -------
+    stp : float
+        The value of measure of peakedness P.
+
+    References
+    ----------
+    Schmid, F.; Trede, M. (2003).
+    Simple tests for peakedness, fat tails and leptokurtosis based on quantiles.
+    Computational Statistics and Data Analysis, 43, 1-12.
+    """
+    p125, p25, p75, p875 = np.nanquantile(x, [0.125, 0.25, 0.75, 0.875])
+    return (p875 - p125) / (p75 - p25)
+
+
+def left_quantile_weight(x: np.ndarray, q: float = 0.25) -> float:
+    """Calculate left quantile weight (LQW).
+
+    It is based on inter-percentile ranges (uncentered, unscaled) of the
+    left tail of the distribution.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+    q : float
+        Quantile to use for the anchor.
+
+    Returns
+    -------
+    lqw : float
+        The value of left quantile weight.
+
+    References
+    ----------
+    Brys, G.; Hubert, M.; Struyf, A. (2006).
+    Robust measures of tail weight.
+    Computational Statistics and Data Analysis 50(3), 733-759.
+    """
+    min_q, max_q = 0.0, 0.5
+    if q <= min_q or q >= max_q:
+        msg = "Parameter q should be in range (0, 0.5)."
+        raise ValueError(msg)
+    lower_quantile, q025, upper_quantile = np.nanquantile(
+        x, [q * 0.5, 0.25, (1 - q) * 0.5]
+    )
+    return -(upper_quantile + lower_quantile - 2 * q025) / (
+        upper_quantile - lower_quantile
+    )
+
+
+def right_quantile_weight(x: np.ndarray, q: float = 0.75) -> float:
+    """Calculate right quantile weight (RQW).
+
+    It is based on inter-percentile ranges (uncentered, unscaled) of the
+    right tail of the distribution.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+    q : float
+        Quantile to use for the anchor.
+
+    Returns
+    -------
+    rqw : float
+        The value of right quantile weight.
+
+    References
+    ----------
+    Brys, G.; Hubert, M.; Struyf, A. (2006).
+    Robust measures of tail weight.
+    Computational Statistics and Data Analysis 50(3), 733-759.
+    """
+    min_q, max_q = 0.5, 1.0
+    if q <= min_q or q >= max_q:
+        msg = "Parameter q should be in range (0.5, 1.0)."
+        raise ValueError(msg)
+    lower_quantile, q075, upper_quantile = np.nanquantile(
+        x, [1 - q * 0.5, 0.75, (1 + q) * 0.5]
+    )
+    return (lower_quantile + upper_quantile - 2 * q075) / (
+        lower_quantile - upper_quantile
+    )
