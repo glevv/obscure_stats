@@ -10,9 +10,11 @@ from .skewness import (
     hossain_adnan_skew,
     kelly_skew,
     l_skew,
+    left_quantile_weight,
     medeen_skew,
     pearson_median_skew,
     pearson_mode_skew,
+    right_quantile_weight,
     wauc_skew_gamma,
 )
 
@@ -26,8 +28,10 @@ __all__ = [
     "hossain_adnan_skew",
     "kelly_skew",
     "l_skew",
+    "left_quantile_weight",
     "medeen_skew",
     "pearson_median_skew",
     "pearson_mode_skew",
+    "right_quantile_weight",
     "wauc_skew_gamma",
 ]

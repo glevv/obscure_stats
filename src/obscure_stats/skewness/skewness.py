@@ -400,3 +400,75 @@ def cumulative_skew(x: np.ndarray) -> float:
     d = q - p
     w = (2 * r - n) * 3 / n
     return np.sum(d * w) / np.sum(d)
+
+
+def left_quantile_weight(x: np.ndarray, q: float = 0.25) -> float:
+    """Calculate left quantile weight (LQW).
+
+    It is based on inter-percentile ranges (uncentered, unscaled) of the
+    left tail of the distribution.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+    q : float
+        Quantile to use for the anchor.
+
+    Returns
+    -------
+    lqw : float
+        The value of left quantile weight.
+
+    References
+    ----------
+    Brys, G.; Hubert, M.; Struyf, A. (2006).
+    Robust measures of tail weight.
+    Computational Statistics and Data Analysis 50(3), 733-759.
+    """
+    min_q, max_q = 0.0, 0.5
+    if q <= min_q or q >= max_q:
+        msg = "Parameter q should be in range (0, 0.5)."
+        raise ValueError(msg)
+    lower_quantile, q025, upper_quantile = np.nanquantile(
+        x, [q * 0.5, 0.25, (1 - q) * 0.5]
+    )
+    return -(upper_quantile + lower_quantile - 2 * q025) / (
+        upper_quantile - lower_quantile
+    )
+
+
+def right_quantile_weight(x: np.ndarray, q: float = 0.75) -> float:
+    """Calculate right quantile weight (RQW).
+
+    It is based on inter-percentile ranges (uncentered, unscaled) of the
+    right tail of the distribution.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+    q : float
+        Quantile to use for the anchor.
+
+    Returns
+    -------
+    rqw : float
+        The value of right quantile weight.
+
+    References
+    ----------
+    Brys, G.; Hubert, M.; Struyf, A. (2006).
+    Robust measures of tail weight.
+    Computational Statistics and Data Analysis 50(3), 733-759.
+    """
+    min_q, max_q = 0.5, 1.0
+    if q <= min_q or q >= max_q:
+        msg = "Parameter q should be in range (0.5, 1.0)."
+        raise ValueError(msg)
+    lower_quantile, q075, upper_quantile = np.nanquantile(
+        x, [1 - q * 0.5, 0.75, (1 + q) * 0.5]
+    )
+    return (lower_quantile + upper_quantile - 2 * q075) / (
+        lower_quantile - upper_quantile
+    )

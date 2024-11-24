@@ -30,6 +30,7 @@
     * Dispersion Ratio;
     * Fisher's Index of Dispersion;
     * Gini Mean Difference;
+    * Grenander's Mode;
     * Linear Coefficient of Variation;
     * Inter-expectile Range;
     * Morisita Index of Dispersion;
@@ -58,6 +59,7 @@
     * Moors Kurtosis;
     * Moors Octile Kurtosis;
     * Reza-Ma Kurtosis;
+    * Schmid-Trede measure of Peakedness;
     * Staudte Kurtosis.
 - Collection of measures of association - `obscure_stats/association`:
     * Blomqvist's Beta;

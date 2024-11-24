@@ -19,9 +19,11 @@ from obscure_stats.skewness import (
     hossain_adnan_skew,
     kelly_skew,
     l_skew,
+    left_quantile_weight,
     medeen_skew,
     pearson_median_skew,
     pearson_mode_skew,
+    right_quantile_weight,
     wauc_skew_gamma,
 )
 
@@ -35,9 +37,11 @@ all_functions = [
     hossain_adnan_skew,
     kelly_skew,
     l_skew,
+    left_quantile_weight,
     medeen_skew,
     pearson_median_skew,
     pearson_mode_skew,
+    right_quantile_weight,
     wauc_skew_gamma,
 ]
 
@@ -59,10 +63,15 @@ def test_mock_aggregation_functions(
 def test_skew_sensibility(func: typing.Callable, seed: int) -> None:
     """Testing for result correctness."""
     rng = np.random.default_rng(seed)
-    no_skew = np.round(rng.normal(size=99), 2)
-    left_skew = np.round(rng.exponential(size=99) + 1, 2)
+    # round for the mode estimators to work properly
+    no_skew = np.round(rng.uniform(size=100), 2)
+    left_skew = np.round(rng.exponential(size=100) + 1, 2)
     no_skew_res = func(no_skew)
     left_skew_res = func(left_skew)
+    if func.__name__ == "right_quantile_weight":
+        # ugly but more harmonized this way
+        no_skew_res = -no_skew_res
+        left_skew_res = -left_skew_res
     if no_skew_res > left_skew_res:
         msg = (
             f"Skewness in the first case should be lower, "
@@ -86,6 +95,14 @@ def test_statistic_with_nans(func: typing.Callable, x_array_nan: np.ndarray) -> 
     if math.isnan(func(x_array_nan)):
         msg = "Statistic should not return nans."
         raise ValueError(msg)
+
+
+@pytest.mark.parametrize("func", [right_quantile_weight, left_quantile_weight])
+@pytest.mark.parametrize("q", [0.0, 1.0])
+def test_q_in_qw(x_array_float: np.ndarray, func: typing.Callable, q: float) -> None:
+    """Simple tets case for correctnes of q."""
+    with pytest.raises(ValueError, match="Parameter q should be in range"):
+        func(x_array_float, q=q)
 
 
 @given(
