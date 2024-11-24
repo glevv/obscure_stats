@@ -257,7 +257,7 @@ def half_sample_mode(x: np.ndarray) -> float:
     y = y[np.isfinite(y)]
     _corner_cases = (4, 3)  # for 4 samples and 3 samples
     while (ny := len(y)) >= _corner_cases[0]:
-        half_y = ny // 2
+        half_y = math.ceil(ny / 2)
         w_min = y[-1] - y[0]
         for i in range(ny - half_y):
             w = y[i + half_y - 1] - y[i]
@@ -308,3 +308,51 @@ def tau_location(x: np.ndarray, c: float = 4.5) -> float:
     scaled_x = (x - med) / mad
     w = np.square(1.0 - np.square(scaled_x / c)) * (np.abs(scaled_x) <= c)
     return np.nansum(x * w) / np.nansum(w)
+
+
+def grenanders_m(x: np.ndarray, p: float = 1.5, k: int = 3) -> float:
+    """Calculate Grenander's Mode.
+
+    This measure is a direct nonparametric estimation of the mode.
+    It is not very robust to outliers.
+    It is recommended to set k > 2p, but it is only possible if x has
+    enough samples.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+    p : float
+        Smoothing constant.
+    k : int
+        The number of samples to exclude from the calculation.
+
+    Returns
+    -------
+    gm : float
+        The value of Grenander's Mode
+
+    References
+    ----------
+    Grenander, U. (1965).
+    Some direct estimates of the mode.
+    Annals of Mathematical Statistics, 36, 131-138.
+    """
+    x_sort = np.sort(x)
+    x_sort = x_sort[np.isfinite(x_sort)]
+
+    if p <= 1:
+        msg = "Parameter p should be a float greater than 1."
+        raise ValueError(msg)
+    if (k <= 0) or (not isinstance(k, int)):
+        msg = "Parameter k should be an integer between 1 and lenght of x."
+        raise ValueError(msg)
+
+    if len(x_sort) <= k:
+        return np.nan
+
+    return (
+        0.5
+        * np.sum((x_sort[k:] + x_sort[:-k]) / np.power(x_sort[k:] - x_sort[:-k], p))
+        / np.sum(np.power(x_sort[k:] - x_sort[:-k], -p))
+    )

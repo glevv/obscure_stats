@@ -1,5 +1,6 @@
 """Collection of tests of variation module."""
 
+import math
 import typing
 
 import numpy as np
@@ -7,6 +8,7 @@ import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 from hypothesis.extra.numpy import array_shapes, arrays
+
 from obscure_stats.variation import (
     avdev,
     b_index,
@@ -47,8 +49,8 @@ def test_mock_variation_functions(
 def test_var_sensibility_higher_better(func: typing.Callable, seed: int) -> None:
     """Testing for result correctness."""
     rng = np.random.default_rng(seed)
-    low_var = rng.choice(["a", "b", "c", "d"], p=[0.25, 0.25, 0.25, 0.25], size=100)
-    high_var = rng.choice(["a", "b", "c", "d"], p=[0.75, 0.15, 0.05, 0.05], size=100)
+    low_var = rng.choice(["a", "b", "c", "d"], p=[0.25, 0.25, 0.25, 0.25], size=99)
+    high_var = rng.choice(["a", "b", "c", "d"], p=[0.75, 0.15, 0.05, 0.05], size=99)
     low_var_res = func(low_var)
     high_var_res = func(high_var)
     if low_var_res < high_var_res:
@@ -59,7 +61,7 @@ def test_var_sensibility_higher_better(func: typing.Callable, seed: int) -> None
 @pytest.mark.parametrize("func", all_functions)
 def test_statistic_with_nans(func: typing.Callable, c_array_nan: np.ndarray) -> None:
     """Test for different data types."""
-    if np.isnan(func(c_array_nan)):
+    if math.isnan(func(c_array_nan)):
         msg = "Statistic should not return nans."
         raise ValueError(msg)
 

@@ -2,6 +2,7 @@
 
 from .central_tendency import (
     contraharmonic_mean,
+    grenanders_m,
     half_sample_mode,
     hodges_lehmann_sen_location,
     midhinge,
@@ -14,6 +15,7 @@ from .central_tendency import (
 
 __all__ = [
     "contraharmonic_mean",
+    "grenanders_m",
     "half_sample_mode",
     "hodges_lehmann_sen_location",
     "midhinge",

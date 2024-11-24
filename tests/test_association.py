@@ -1,5 +1,6 @@
 """Collection of tests of association module."""
 
+import math
 import typing
 
 import numpy as np
@@ -7,6 +8,7 @@ import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 from hypothesis.extra.numpy import array_shapes, arrays
+
 from obscure_stats.association import (
     blomqvist_beta,
     chatterjee_xi,
@@ -118,7 +120,7 @@ def test_const(func: typing.Callable, y_array_float: np.ndarray) -> None:
     x = np.ones(shape=(len(y_array_float),))
     with pytest.warns(match="is constant"):
         res = func(x, y_array_float)
-        if res is not np.nan:
+        if not math.isnan(res):
             msg = f"Corr coef should be 0 with constant input, got {res}"
             raise ValueError(msg)
 
@@ -129,7 +131,7 @@ def test_const_after_prep(
 ) -> None:
     """Testing for constant input."""
     res = func(x_array_float, corr_test_data)
-    if res is not np.nan:
+    if not math.isnan(res):
         msg = f"Corr coef should be 0 with constant input, got {res}"
         raise ValueError(msg)
 
@@ -167,13 +169,13 @@ def test_notfinite_association(
     y_array_int: np.ndarray,
 ) -> None:
     """Test for correct nan behaviour."""
-    if np.isnan(func(x_array_nan, y_array_int)):
+    if math.isnan(func(x_array_nan, y_array_int)):
         msg = "Corr coef should support nans."
         raise ValueError(msg)
     with pytest.warns(match="too many missing values"):
         func(x_array_nan[:2], x_array_int[:2])
     with pytest.warns(match="contains inf"):
-        if not np.isnan(func(x_array_int, y_array_inf)):
+        if not math.isnan(func(x_array_int, y_array_inf)):
             msg = "Corr coef should support infs."
             raise ValueError(msg)
 
