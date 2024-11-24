@@ -78,8 +78,8 @@ def test_mock_aggregation_functions(
 def test_dispersion_sensibility(func: typing.Callable, seed: int) -> None:
     """Testing for result correctness."""
     rng = np.random.default_rng(seed)
-    low_disp = np.round(rng.exponential(scale=1, size=99) + 1, 2)
-    high_disp = np.round(rng.exponential(scale=10, size=99) + 1, 2)
+    low_disp = np.round(rng.exponential(scale=1, size=100) + 1, 2)
+    high_disp = np.round(rng.exponential(scale=10, size=100) + 1, 2)
     low_disp_res = func(low_disp)
     high_disp_res = func(high_disp)
     if low_disp_res > high_disp_res:

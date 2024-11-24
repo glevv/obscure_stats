@@ -15,6 +15,7 @@
 
 - Collection of measures of central tendency - `obscure_stats/central_tendency`:
     * Contraharmonic Mean;
+    * Grenander's Mode;
     * Half-Sample Mode;
     * Hodges-Lehmann-Sen Location;
     * Midhinge;
@@ -48,9 +49,11 @@
     * Hossain-Adnan Skewness Coefficient;
     * Kelly Skewness Coefficient;
     * L-Skewness Coefficient;
+    * Left Quantile Weight;
     * Medeen Skewness Coefficient;
     * Pearson Median Skewness Coefficient;
-    * Pearson Mode Skewness Coefficient.
+    * Pearson Mode Skewness Coefficient;
+    * Right Quantile Weight;
 - Collection of measures of kurtosis - `obscure_stats/kurtosis`:
     * Crow-Siddiqui Kurtosis;
     * L-Kurtosis;
@@ -58,6 +61,7 @@
     * Moors Kurtosis;
     * Moors Octile Kurtosis;
     * Reza-Ma Kurtosis;
+    * Schmid-Trede measure of Peakedness;
     * Staudte Kurtosis.
 - Collection of measures of association - `obscure_stats/association`:
     * Blomqvist's Beta;
