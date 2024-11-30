@@ -182,7 +182,7 @@ def standard_trimmed_harrell_davis_quantile(x: np.ndarray, q: float = 0.5) -> fl
     ----------
     x : array_like
         Input array.
-    q : float
+    q : float, default = 0.5
         Quantile value in range (0, 1).
 
     Returns
@@ -286,7 +286,7 @@ def tau_location(x: np.ndarray, c: float = 4.5) -> float:
     ----------
     x : array_like
         Input array.
-    c : float
+    c : float, default = 4.5
         Constant that filter outliers.
 
     Returns
@@ -310,7 +310,7 @@ def tau_location(x: np.ndarray, c: float = 4.5) -> float:
     return np.nansum(x * w) / np.nansum(w)
 
 
-def grenanders_m(x: np.ndarray, p: float = 1.5, k: int = 3) -> float:
+def grenanders_m(x: np.ndarray, p: float = 1.001, k: int = 2) -> float:
     """Calculate Grenander's Mode.
 
     This measure is a direct nonparametric estimation of the mode.
@@ -322,10 +322,10 @@ def grenanders_m(x: np.ndarray, p: float = 1.5, k: int = 3) -> float:
     ----------
     x : array_like
         Input array.
-    p : float
+    p : float, default = 1.001
         Smoothing constant.
-    k : int
-        The number of samples to exclude from the calculation.
+    k : int, default = 2
+        The number of samples to filter.
 
     Returns
     -------
@@ -339,6 +339,7 @@ def grenanders_m(x: np.ndarray, p: float = 1.5, k: int = 3) -> float:
     Annals of Mathematical Statistics, 36, 131-138.
     """
     x_sort = np.sort(x)
+    x_sort = x_sort.astype("float")
     x_sort = x_sort[np.isfinite(x_sort)]
 
     if p <= 1:
@@ -351,8 +352,41 @@ def grenanders_m(x: np.ndarray, p: float = 1.5, k: int = 3) -> float:
     if len(x_sort) <= k:
         return np.nan
 
+    # pre calculate diffs
+    diff = x_sort[k:] - x_sort[:-k]
+    # if the diffs are constant - return the value
+    if diff.sum() == 0.0:
+        return x_sort[0]
+    # to avoid division by zero
+    diff[diff == 0.0] = np.nan
+
     return (
         0.5
-        * np.sum((x_sort[k:] + x_sort[:-k]) / np.power(x_sort[k:] - x_sort[:-k], p))
-        / np.sum(np.power(x_sort[k:] - x_sort[:-k], -p))
+        * np.nansum((x_sort[k:] + x_sort[:-k]) / np.power(diff, p))
+        / np.nansum(np.power(diff, -p))
     )
+
+
+def gastwirth_location(x: np.ndarray) -> float:
+    """Calculate Gastwirth's location estimator.
+
+    This measure is more robust then average.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+
+    Returns
+    -------
+    gle : float
+        The value of the Gastwirth's location.
+
+    References
+    ----------
+    Gastwirth, J. L. (1966).
+    On Robust Procedures.
+    J. Amer. Statist. Assn., Vol. 61, pp. 929-948.
+    """
+    p33, p50, p66 = np.nanquantile(x, [1 / 3, 0.5, 2 / 3])
+    return 0.3 * p33 + 0.4 * p50 + 0.3 * p66

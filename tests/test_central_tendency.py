@@ -13,6 +13,7 @@ from hypothesis.extra.numpy import array_shapes, arrays
 
 from obscure_stats.central_tendency import (
     contraharmonic_mean,
+    gastwirth_location,
     grenanders_m,
     half_sample_mode,
     hodges_lehmann_sen_location,
@@ -26,6 +27,7 @@ from obscure_stats.central_tendency import (
 
 all_functions = [
     contraharmonic_mean,
+    gastwirth_location,
     grenanders_m,
     half_sample_mode,
     hodges_lehmann_sen_location,

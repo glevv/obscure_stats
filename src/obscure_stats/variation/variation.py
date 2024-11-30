@@ -209,7 +209,7 @@ def renyi_entropy(x: np.ndarray, alpha: float = 2) -> float:
     ----------
     x : array_like
         Input array.
-    alpha : float
+    alpha : float, default = 2
         Order of the Rényi entropy
 
     Returns

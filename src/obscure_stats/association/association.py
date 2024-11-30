@@ -468,7 +468,7 @@ def winsorized_correlation(x: np.ndarray, y: np.ndarray, k: float = 0.1) -> floa
         Input array.
     y : array_like
         Input array.
-    k : float
+    k : float, default = 0.1
         The percentages of values to winsorize on each side of the arrays.
 
     Returns
