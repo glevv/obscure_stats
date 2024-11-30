@@ -15,6 +15,7 @@
 
 - Collection of measures of central tendency - `obscure_stats/central_tendency`:
     * Contraharmonic Mean;
+    * Gastwirth's Location;
     * Grenander's Mode;
     * Half-Sample Mode;
     * Hodges-Lehmann-Sen Location;

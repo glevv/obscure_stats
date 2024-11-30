@@ -412,8 +412,8 @@ def left_quantile_weight(x: np.ndarray, q: float = 0.25) -> float:
     ----------
     x : array_like
         Input array.
-    q : float
-        Quantile to use for the anchor.
+    q : float, default = 0.25
+        Quantile to use for the calculation, (0.0, 0.5)
 
     Returns
     -------
@@ -448,8 +448,8 @@ def right_quantile_weight(x: np.ndarray, q: float = 0.75) -> float:
     ----------
     x : array_like
         Input array.
-    q : float
-        Quantile to use for the anchor.
+    q : float, default = 0.75
+        Quantile to use for the calculation, (0.5, 1.0).
 
     Returns
     -------
