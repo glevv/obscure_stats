@@ -29,7 +29,7 @@ def midrange(x: np.ndarray) -> float:
     """
     maximum = np.nanmax(x)
     minimum = np.nanmin(x)
-    return (maximum + minimum) * 0.5
+    return float((maximum + minimum) * 0.5)
 
 
 def midhinge(x: np.ndarray) -> float:
@@ -54,7 +54,7 @@ def midhinge(x: np.ndarray) -> float:
     Addison-Wesley.
     """
     q1, q3 = np.nanquantile(x, [0.25, 0.75])
-    return (q3 + q1) * 0.5
+    return float((q3 + q1) * 0.5)
 
 
 def trimean(x: np.ndarray) -> float:
@@ -79,7 +79,7 @@ def trimean(x: np.ndarray) -> float:
     Addison-Wesley.
     """
     q1, q2, q3 = np.nanquantile(x, [0.25, 0.5, 0.75])
-    return 0.5 * q2 + 0.25 * q1 + 0.25 * q3
+    return float(0.5 * q2 + 0.25 * q1 + 0.25 * q3)
 
 
 def contraharmonic_mean(x: np.ndarray) -> float:
@@ -105,7 +105,7 @@ def contraharmonic_mean(x: np.ndarray) -> float:
     Handbook of means and their inequalities.
     Springer.
     """
-    return np.nansum(np.square(x)) / np.nansum(x)
+    return float(np.nansum(np.square(x)) / np.nansum(x))
 
 
 def midmean(x: np.ndarray) -> float:
@@ -130,7 +130,7 @@ def midmean(x: np.ndarray) -> float:
     SAGE Publications, Inc.
     """
     q1, q3 = np.nanquantile(x, [0.25, 0.75])
-    return np.nanmean(np.where((x >= q1) & (x <= q3), x, np.nan))
+    return float(np.nanmean(np.where((x >= q1) & (x <= q3), x, np.nan)))
 
 
 def hodges_lehmann_sen_location(x: np.ndarray) -> float:
@@ -168,7 +168,7 @@ def hodges_lehmann_sen_location(x: np.ndarray) -> float:
     # of the cartesian product, but in this implementation we use
     # whole matrix, which is equvalent.
     product = np.meshgrid(x, x, sparse=True)
-    return np.nanmedian(product[0] + product[1]) * 0.5
+    return float(np.nanmedian(product[0] + product[1]) * 0.5)
 
 
 def standard_trimmed_harrell_davis_quantile(x: np.ndarray, q: float = 0.5) -> float:
@@ -216,14 +216,14 @@ def standard_trimmed_harrell_davis_quantile(x: np.ndarray, q: float = 0.5) -> fl
     b = (n + 1) * (1.0 - q)
     hdi = (max(0, q - n_calculated * 0.5), min(1, q + n_calculated * 0.5))
     hdi_cdf = stats.beta.cdf(hdi, a, b)
-    i_start = int(math.floor(hdi[0] * n))
-    i_end = int(math.ceil(hdi[1] * n))
+    i_start = math.floor(hdi[0] * n)
+    i_end = math.ceil(hdi[1] * n)
     nums = np.arange(i_start, i_end + 1) / n
     nums[nums <= hdi[0]] = hdi[0]
     nums[nums >= hdi[1]] = hdi[1]
     cdfs = (stats.beta.cdf(nums, a, b) - hdi_cdf[0]) / (hdi_cdf[1] - hdi_cdf[0])
     w = cdfs[1:] - cdfs[:-1]
-    return np.sum(_x[i_start:i_end] * w)
+    return float(np.sum(_x[i_start:i_end] * w))
 
 
 def half_sample_mode(x: np.ndarray) -> float:
@@ -274,7 +274,7 @@ def half_sample_mode(x: np.ndarray) -> float:
         if z > 0:
             return np.mean(y[1:2])
         return y[1]
-    return np.mean(y)
+    return float(np.mean(y))
 
 
 def tau_location(x: np.ndarray, c: float = 4.5) -> float:
@@ -307,7 +307,7 @@ def tau_location(x: np.ndarray, c: float = 4.5) -> float:
     mad = np.nanmedian(np.abs(x - med))
     scaled_x = (x - med) / mad
     w = np.square(1.0 - np.square(scaled_x / c)) * (np.abs(scaled_x) <= c)
-    return np.nansum(x * w) / np.nansum(w)
+    return float(np.nansum(x * w) / np.nansum(w))
 
 
 def grenanders_m(x: np.ndarray, p: float = 1.001, k: int = 2) -> float:
@@ -360,7 +360,7 @@ def grenanders_m(x: np.ndarray, p: float = 1.001, k: int = 2) -> float:
     # to avoid division by zero
     diff[diff == 0.0] = np.nan
 
-    return (
+    return float(
         0.5
         * np.nansum((x_sort[k:] + x_sort[:-k]) / np.power(diff, p))
         / np.nansum(np.power(diff, -p))
@@ -389,4 +389,4 @@ def gastwirth_location(x: np.ndarray) -> float:
     J. Amer. Statist. Assn., Vol. 61, pp. 929-948.
     """
     p33, p50, p66 = np.nanquantile(x, [1 / 3, 0.5, 2 / 3])
-    return 0.3 * p33 + 0.4 * p50 + 0.3 * p66
+    return float(0.3 * p33 + 0.4 * p50 + 0.3 * p66)

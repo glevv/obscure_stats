@@ -40,7 +40,7 @@ def l_skew(x: np.ndarray) -> float:
     ]
     l3 = 6 * betas[2] - 6 * betas[1] + betas[0]
     l2 = 2 * betas[1] - betas[0]
-    return l3 / l2
+    return float(l3 / l2)
 
 
 def pearson_mode_skew(x: np.ndarray) -> float:
@@ -67,7 +67,7 @@ def pearson_mode_skew(x: np.ndarray) -> float:
     mean = np.nanmean(x)
     mode = stats.mode(x)[0]
     std = np.nanstd(x)
-    return (mean - mode) / std
+    return float((mean - mode) / std)
 
 
 def bickel_mode_skew(x: np.ndarray) -> float:
@@ -93,7 +93,7 @@ def bickel_mode_skew(x: np.ndarray) -> float:
     Computational Statistics & Data Analysis, Elsevier, 39(2), 153-163.
     """
     mode = half_sample_mode(x)
-    return np.nanmean(np.sign(x - mode))
+    return float(np.nanmean(np.sign(x - mode)))
 
 
 def pearson_median_skew(x: np.ndarray) -> float:
@@ -118,7 +118,7 @@ def pearson_median_skew(x: np.ndarray) -> float:
     mean = np.nanmean(x)
     median = np.nanmedian(x)
     std = np.nanstd(x)
-    return 3 * (mean - median) / std
+    return float(3.0 * (mean - median) / std)
 
 
 def medeen_skew(x: np.ndarray) -> float:
@@ -146,7 +146,7 @@ def medeen_skew(x: np.ndarray) -> float:
     """
     median = np.nanmedian(x)
     mean = np.nanmean(x)
-    return (mean - median) / np.nanmean(np.abs(x - median))
+    return float((mean - median) / np.nanmean(np.abs(x - median)))
 
 
 def bowley_skew(x: np.ndarray) -> float:
@@ -174,7 +174,7 @@ def bowley_skew(x: np.ndarray) -> float:
     P.S. King and Son, London.
     """
     q1, q2, q3 = np.nanquantile(x, [0.25, 0.5, 0.75])
-    return (q3 + q1 - 2 * q2) / (q3 - q1)
+    return float((q3 + q1 - 2 * q2) / (q3 - q1))
 
 
 def groeneveld_skew(x: np.ndarray) -> float:
@@ -184,6 +184,7 @@ def groeneveld_skew(x: np.ndarray) -> float:
     It is similar to Bowley skewness coefficient, but tries to
     reweight distance bwetwen median and quartiles separately.
     This measure should be more robust than moment based skewness.
+    This is the implementation of 'b3' skewness from the paper.
 
     Parameters
     ----------
@@ -201,10 +202,40 @@ def groeneveld_skew(x: np.ndarray) -> float:
     Measuring Skewness and Kurtosis.
     The Statistician. 33 (4): 391-399.
     """
-    q1, q2, q3 = np.nanquantile(x, [0.25, 0.5, 0.75])
-    rs = (q3 + q1 - 2 * q2) / (q2 - q1)
-    ls = (q3 + q1 - 2 * q2) / (q3 - q2)
-    return rs if abs(rs) > abs(ls) else ls
+    m = np.nanmedian(x)
+    masked_ml = np.where(x >= m, x, np.nan)
+    masked_mh = np.where(x <= m, x, np.nan)
+    mean_h = np.nanmean(masked_mh)
+    mean_l = np.nanmean(masked_ml)
+    return float((mean_h - mean_l - 2 * m) / (mean_h - mean_l))
+
+
+def groeneveld_range_skew(x: np.ndarray) -> float:
+    """Calculate Groeneveld's skewness coefficinet.
+
+    This measure should be more robust than moment based skewness.
+    This is the implementation of 'b4' skewness from the paper.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+
+    Returns
+    -------
+    grs : float
+        The value of Groeneveld's range skewness coefficinet.
+
+    References
+    ----------
+    Groeneveld, R. A.; Meeden, G. (1984).
+    Measuring Skewness and Kurtosis.
+    The Statistician. 33 (4): 391-399.
+    """
+    m = np.nanmedian(x)
+    min_ = np.nanmin(x)
+    max_ = np.nanmax(x)
+    return float((max_ + min_ - 2 * m) / (max_ - min_))
 
 
 def kelly_skew(x: np.ndarray) -> float:
@@ -232,7 +263,7 @@ def kelly_skew(x: np.ndarray) -> float:
     J. R. Stat. Soc. Ser. B Stat. Methodol. 18, 1-31.
     """
     d1, d5, d9 = np.nanquantile(x, [0.1, 0.5, 0.9])
-    return (d9 + d1 - 2 * d5) / (d9 - d1)
+    return float((d9 + d1 - 2 * d5) / (d9 - d1))
 
 
 def hossain_adnan_skew(x: np.ndarray) -> float:
@@ -259,7 +290,7 @@ def hossain_adnan_skew(x: np.ndarray) -> float:
     Journal of Applied St atistical Science, Vol.15, pp. 127-134.
     """
     diff = x - np.nanmedian(x)
-    return np.nanmean(diff) / np.nanmean(np.abs(diff))
+    return float(np.nanmean(diff) / np.nanmean(np.abs(diff)))
 
 
 def forhad_shorna_rank_skew(x: np.ndarray) -> float:
@@ -293,7 +324,7 @@ def forhad_shorna_rank_skew(x: np.ndarray) -> float:
     arr_ranked = stats.rankdata(arr, method="min", nan_policy="omit")
     diff = arr_ranked[-1] - arr_ranked
     diff = diff[:-1]
-    return np.nansum(diff) / np.nansum(np.abs(diff))
+    return float(np.nansum(diff) / np.nansum(np.abs(diff)))
 
 
 def _auc_skew_gamma(x: np.ndarray, dp: float, w: np.ndarray | float) -> float:
@@ -306,7 +337,7 @@ def _auc_skew_gamma(x: np.ndarray, dp: float, w: np.ndarray | float) -> float:
     qs_low = qs[:half_n]
     qs_high = qs[-half_n:]
     skews = (qs_low + qs_high - 2 * med) / (qs_high - qs_low) * w
-    return integrate.trapezoid(skews, dx=dp)
+    return float(integrate.trapezoid(skews, dx=dp))
 
 
 def auc_skew_gamma(x: np.ndarray, dp: float = 0.01) -> float:
@@ -399,7 +430,7 @@ def cumulative_skew(x: np.ndarray) -> float:
     q = r / n
     d = q - p
     w = (2 * r - n) * 3 / n
-    return np.sum(d * w) / np.sum(d)
+    return float(np.sum(d * w) / np.sum(d))
 
 
 def left_quantile_weight(x: np.ndarray, q: float = 0.25) -> float:
@@ -433,8 +464,9 @@ def left_quantile_weight(x: np.ndarray, q: float = 0.25) -> float:
     lower_quantile, q025, upper_quantile = np.nanquantile(
         x, [q * 0.5, 0.25, (1 - q) * 0.5]
     )
-    return -(upper_quantile + lower_quantile - 2 * q025) / (
-        upper_quantile - lower_quantile
+    return float(
+        -(upper_quantile + lower_quantile - 2 * q025)
+        / (upper_quantile - lower_quantile)
     )
 
 
@@ -469,6 +501,6 @@ def right_quantile_weight(x: np.ndarray, q: float = 0.75) -> float:
     lower_quantile, q075, upper_quantile = np.nanquantile(
         x, [1 - q * 0.5, 0.75, (1 + q) * 0.5]
     )
-    return (lower_quantile + upper_quantile - 2 * q075) / (
-        lower_quantile - upper_quantile
+    return float(
+        (lower_quantile + upper_quantile - 2 * q075) / (lower_quantile - upper_quantile)
     )

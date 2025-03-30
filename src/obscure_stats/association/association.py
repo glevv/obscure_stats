@@ -117,7 +117,9 @@ def chatterjee_xi(x: np.ndarray, y: np.ndarray) -> float:
     )
     right = np.cumsum(y_counts)[y_unique_indexes]
     left = np.cumsum(y_counts[::-1])[len(y_counts) - y_unique_indexes - 1]
-    return 1.0 - 0.5 * np.sum(np.abs(np.diff(right))) / np.mean(left * (n - left))
+    return float(
+        1.0 - 0.5 * np.sum(np.abs(np.diff(right))) / np.mean(left * (n - left))
+    )
 
 
 def concordance_correlation(x: np.ndarray, y: np.ndarray) -> float:
@@ -160,7 +162,7 @@ def concordance_correlation(x: np.ndarray, y: np.ndarray) -> float:
     v = (np.mean(x) - np.mean(y)) ** 2 / (std_x * std_y) ** 0.5
     x_a = 2 / (v**2 + w + 1 / w)
     p = np.corrcoef(x, y)[0][1]
-    return p * x_a
+    return float(p * x_a)
 
 
 def concordance_rate(x: np.ndarray, y: np.ndarray) -> float:
@@ -208,12 +210,15 @@ def concordance_rate(x: np.ndarray, y: np.ndarray) -> float:
     mean_y = np.sum(y) / n
     sem_x = np.std(x, ddof=0) / n**0.5
     sem_y = np.std(y, ddof=0) / n**0.5
-    return (
-        np.sum((x > mean_x + sem_x) & (y > mean_y + sem_y))
-        + np.sum((x < mean_x - sem_x) & (y > mean_y + sem_y))
-        - np.sum((x < mean_x - sem_x) & (y < mean_y - sem_y))
-        - np.sum((x > mean_x + sem_x) & (y < mean_y - sem_y))
-    ) / n
+    return float(
+        (
+            np.sum((x > mean_x + sem_x) & (y > mean_y + sem_y))
+            + np.sum((x < mean_x - sem_x) & (y > mean_y + sem_y))
+            - np.sum((x < mean_x - sem_x) & (y < mean_y - sem_y))
+            - np.sum((x > mean_x + sem_x) & (y < mean_y - sem_y))
+        )
+        / n
+    )
 
 
 def symmetric_chatterjee_xi(x: np.ndarray, y: np.ndarray) -> float:
@@ -275,9 +280,12 @@ def symmetric_chatterjee_xi(x: np.ndarray, y: np.ndarray) -> float:
     right_yx = np.cumsum(x_counts)[x_unique_indexes]
     left_yx = np.cumsum(x_counts[::-1])[len(x_counts) - x_unique_indexes - 1]
     # choose the highest from the two
-    return 1.0 - min(
-        0.5 * np.sum(np.abs(np.diff(right_xy))) / np.mean(left_xy * (n - left_xy)),
-        0.5 * np.sum(np.abs(np.diff(right_yx))) / np.mean(left_yx * (n - left_yx)),
+    return float(
+        1.0
+        - min(
+            0.5 * np.sum(np.abs(np.diff(right_xy))) / np.mean(left_xy * (n - left_xy)),
+            0.5 * np.sum(np.abs(np.diff(right_yx))) / np.mean(left_yx * (n - left_yx)),
+        )
     )
 
 
@@ -321,8 +329,11 @@ def zhang_i(x: np.ndarray, y: np.ndarray) -> float:
     x, y = _prep_arrays(x, y)
     if _check_arrays(x, y):
         return np.nan
-    return max(
-        abs(stats.spearmanr(x, y, nan_policy="omit")[0]), 2.5**0.5 * chatterjee_xi(x, y)
+    return float(
+        max(
+            abs(stats.spearmanr(x, y, nan_policy="omit")[0]),
+            2.5**0.5 * chatterjee_xi(x, y),
+        )
     )
 
 
@@ -366,7 +377,7 @@ def tanimoto_similarity(x: np.ndarray, y: np.ndarray) -> float:
     xy = np.mean(x * y)
     xx = np.mean(x**2)
     yy = np.mean(y**2)
-    return xy / (xx + yy - xy)
+    return float(xy / (xx + yy - xy))
 
 
 def blomqvist_beta(x: np.ndarray, y: np.ndarray) -> float:
@@ -412,7 +423,7 @@ def blomqvist_beta(x: np.ndarray, y: np.ndarray) -> float:
         return np.nan
     med_x = np.median(x)
     med_y = np.median(y)
-    return np.mean(np.sign((x - med_x) * (y - med_y)))
+    return float(np.mean(np.sign((x - med_x) * (y - med_y))))
 
 
 def fechner_correlation(x: np.ndarray, y: np.ndarray) -> float:
@@ -452,7 +463,7 @@ def fechner_correlation(x: np.ndarray, y: np.ndarray) -> float:
         return np.nan
     avg_x = np.mean(x)
     avg_y = np.mean(y)
-    return np.mean(np.sign(x - avg_x) * np.sign(y - avg_y))
+    return float(np.mean(np.sign(x - avg_x) * np.sign(y - avg_y)))
 
 
 def winsorized_correlation(x: np.ndarray, y: np.ndarray, k: float = 0.1) -> float:
@@ -493,7 +504,7 @@ def winsorized_correlation(x: np.ndarray, y: np.ndarray, k: float = 0.1) -> floa
         return np.nan
     x_w = stats.mstats.winsorize(x, (k, k))
     y_w = stats.mstats.winsorize(y, (k, k))
-    return np.corrcoef(x_w, y_w)[0, 1]
+    return float(np.corrcoef(x_w, y_w)[0, 1])
 
 
 def rank_minrelation_coefficient(x: np.ndarray, y: np.ndarray) -> float:
@@ -543,7 +554,7 @@ def rank_minrelation_coefficient(x: np.ndarray, y: np.ndarray) -> float:
     rank_y_dec = -((np.argsort(-y) + 1) ** 2) / n_sq + 0.5
     lower = np.sum((-rank_x_inc < rank_y_inc) * (rank_x_inc + rank_y_inc) ** 2)
     higher = np.sum((rank_x_inc > rank_y_dec) * (rank_x_inc - rank_y_dec) ** 2)
-    return (lower - higher) / (lower + higher)
+    return float((lower - higher) / (lower + higher))
 
 
 def tukey_correlation(x: np.ndarray, y: np.ndarray) -> float:
@@ -585,9 +596,12 @@ def tukey_correlation(x: np.ndarray, y: np.ndarray) -> float:
     s_y = gini_mean_difference(y)
     x_norm = x / s_x
     y_norm = y / s_y
-    return 0.25 * (
-        gini_mean_difference(x_norm + y_norm) ** 2
-        - gini_mean_difference(x_norm - y_norm) ** 2
+    return float(
+        0.25
+        * (
+            gini_mean_difference(x_norm + y_norm) ** 2
+            - gini_mean_difference(x_norm - y_norm) ** 2
+        )
     )
 
 
@@ -626,8 +640,9 @@ def gaussain_rank_correlation(x: np.ndarray, y: np.ndarray) -> float:
     norm_factor = 1 / (n + 1)
     x_ranks_norm = (np.argsort(x) + 1) * norm_factor
     y_ranks_norm = (np.argsort(y) + 1) * norm_factor
-    return np.sum(stats.norm.ppf(x_ranks_norm) * stats.norm.ppf(y_ranks_norm)) / np.sum(
-        stats.norm.ppf(np.arange(1, n + 1) * norm_factor) ** 2
+    return float(
+        np.sum(stats.norm.ppf(x_ranks_norm) * stats.norm.ppf(y_ranks_norm))
+        / np.sum(stats.norm.ppf(np.arange(1, n + 1) * norm_factor) ** 2)
     )
 
 
@@ -670,6 +685,7 @@ def quantile_correlation(x: np.ndarray, y: np.ndarray, q: float = 0.5) -> float:
     x, y = _prep_arrays(x, y)
     if _check_arrays(x, y):
         return np.nan
-    return np.mean((q - (y < np.quantile(y, q=q))) * (x - np.mean(x))) / (
-        ((q - q**2) * np.var(x)) ** 0.5
+    return float(
+        np.mean((q - (y < np.quantile(y, q=q))) * (x - np.mean(x)))
+        / (((q - q**2) * np.var(x)) ** 0.5)
     )

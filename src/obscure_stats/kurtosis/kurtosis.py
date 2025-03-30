@@ -36,7 +36,7 @@ def l_kurt(x: np.ndarray) -> float:
     ]
     l4 = 20 * betas[3] - 30 * betas[2] + 12 * betas[1] - betas[0]
     l2 = 2 * betas[1] - betas[0]
-    return l4 / l2
+    return float(l4 / l2)
 
 
 def moors_kurt(x: np.ndarray) -> float:
@@ -63,7 +63,7 @@ def moors_kurt(x: np.ndarray) -> float:
     The meaning of kurtosis: Darlington reexamined.
     The American Statistician, 40 (4): 283-284,
     """
-    return np.nanvar(stats.zscore(x, nan_policy="omit") ** 2) + 1
+    return float(np.nanvar(stats.zscore(x, nan_policy="omit") ** 2) + 1)
 
 
 def moors_octile_kurt(x: np.ndarray) -> float:
@@ -88,7 +88,7 @@ def moors_octile_kurt(x: np.ndarray) -> float:
     Journal of the Royal Statistical Society. Series D, 37(1):25-32.
     """
     o1, o2, o3, o5, o6, o7 = np.nanquantile(x, [0.125, 0.25, 0.375, 0.625, 0.75, 0.875])
-    return ((o7 - o5) + (o3 - o1)) / (o6 - o2)
+    return float(((o7 - o5) + (o3 - o1)) / (o6 - o2))
 
 
 def hogg_kurt(x: np.ndarray) -> float:
@@ -118,8 +118,9 @@ def hogg_kurt(x: np.ndarray) -> float:
     masked_p05 = np.where(x <= p05, x, np.nan)
     masked_p50g = np.where(x >= p50, x, np.nan)
     masked_p50l = np.where(x <= p50, x, np.nan)
-    return (np.nanmean(masked_p95) - np.nanmean(masked_p05)) / (
-        np.nanmean(masked_p50g) - np.nanmean(masked_p50l)
+    return float(
+        (np.nanmean(masked_p95) - np.nanmean(masked_p05))
+        / (np.nanmean(masked_p50g) - np.nanmean(masked_p50l))
     )
 
 
@@ -148,7 +149,7 @@ def crow_siddiqui_kurt(x: np.ndarray) -> float:
     Journal of the American Statistical Association, 62(318):353-389.
     """
     p025, p25, p75, p975 = np.nanquantile(x, [0.025, 0.25, 0.75, 0.975])
-    return (p975 - p025) / (p75 - p25)
+    return float((p975 - p025) / (p75 - p25))
 
 
 def reza_ma_kurt(x: np.ndarray) -> float:
@@ -175,7 +176,7 @@ def reza_ma_kurt(x: np.ndarray) -> float:
     2016 IEEE 13th International Conference on Signal Processing (ICSP), 1083-1088.
     """
     h1, h7, h9, h15 = np.nanquantile(x, [0.0625, 0.4375, 0.5625, 0.9375])
-    return ((h15 - h9) + (h7 - h1)) / (h15 - h1)
+    return float(((h15 - h9) + (h7 - h1)) / (h15 - h1))
 
 
 def staudte_kurt(x: np.ndarray) -> float:
@@ -203,7 +204,7 @@ def staudte_kurt(x: np.ndarray) -> float:
     Communications in Statistics-Theory and Methods, 46(7), 3148-3163.
     """
     p10, p33, p66, p90 = np.nanquantile(x, [0.1, 1 / 3, 2 / 3, 0.9])
-    return (p90 - p10) / (p66 - p33)
+    return float((p90 - p10) / (p66 - p33))
 
 
 def schmid_trede_peakedness(x: np.ndarray) -> float:
@@ -231,4 +232,4 @@ def schmid_trede_peakedness(x: np.ndarray) -> float:
     Computational Statistics and Data Analysis, 43, 1-12.
     """
     p125, p25, p75, p875 = np.nanquantile(x, [0.125, 0.25, 0.75, 0.875])
-    return (p875 - p125) / (p75 - p25)
+    return float((p875 - p125) / (p75 - p25))
