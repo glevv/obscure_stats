@@ -26,7 +26,7 @@ def studentized_range(x: np.ndarray) -> float:
     std = np.nanstd(x)
     maximum = np.nanmax(x)
     minimum = np.nanmin(x)
-    return (maximum - minimum) / std
+    return float((maximum - minimum) / std)
 
 
 def coefficient_of_lvariation(x: np.ndarray) -> float:
@@ -58,7 +58,7 @@ def coefficient_of_lvariation(x: np.ndarray) -> float:
     common = 1 / special.comb(n - 1, 1) / n
     beta_1 = common * np.nansum(special.comb(np.arange(1, n), 1) * _x[1:])
     l2 = 2 * beta_1 - l1
-    return l2 / l1
+    return float(l2 / l1)
 
 
 def coefficient_of_variation(x: np.ndarray) -> float:
@@ -80,7 +80,7 @@ def coefficient_of_variation(x: np.ndarray) -> float:
     Coefficient of Variation.
     Applied Multivariate Statistics in Geohydrology and Related Sciences. Springer.
     """
-    return np.nanstd(x) / np.nanmean(x)
+    return float(np.nanstd(x) / np.nanmean(x))
 
 
 def robust_coefficient_of_variation(x: np.ndarray) -> float:
@@ -107,7 +107,7 @@ def robust_coefficient_of_variation(x: np.ndarray) -> float:
     """
     med = np.nanmedian(x)
     med_abs_dev = np.nanmedian(np.abs(x - med))
-    return med_abs_dev / med
+    return float(med_abs_dev / med)
 
 
 def quartile_coefficient_of_dispersion(x: np.ndarray) -> float:
@@ -130,7 +130,7 @@ def quartile_coefficient_of_dispersion(x: np.ndarray) -> float:
     Computational Statistics & Data Analysis. 50 (11): 2953-2957.
     """
     q1, q3 = np.nanquantile(x, [0.25, 0.75])
-    return (q3 - q1) / (q3 + q1)
+    return float((q3 - q1) / (q3 + q1))
 
 
 def dispersion_ratio(x: np.ndarray) -> float:
@@ -160,7 +160,7 @@ def dispersion_ratio(x: np.ndarray) -> float:
     """
     _x = np.asarray(x)
     _x = np.where(_x == 0, np.nan, _x)
-    return np.nanmean(x) / stats.gmean(_x, nan_policy="omit")
+    return float(np.nanmean(x) / stats.gmean(_x, nan_policy="omit"))
 
 
 def fisher_index_of_dispersion(x: np.ndarray) -> float:
@@ -185,7 +185,7 @@ def fisher_index_of_dispersion(x: np.ndarray) -> float:
     Statistical methods for research workers.
     Hafner, New York.
     """
-    return (len(x) - 1) * np.nanvar(x) / np.nanmean(x)
+    return float((len(x) - 1) * np.nanvar(x) / np.nanmean(x))
 
 
 def morisita_index_of_dispersion(x: np.ndarray) -> float:
@@ -211,7 +211,7 @@ def morisita_index_of_dispersion(x: np.ndarray) -> float:
     Memoirs of the Faculty of Science, Kyushu University Series e. Biol. 2: 215-235
     """
     x_sum = np.nansum(x)
-    return len(x) * (np.nansum(np.square(x)) - x_sum) / (x_sum**2 - x_sum)
+    return float(len(x) * (np.nansum(np.square(x)) - x_sum) / (x_sum**2 - x_sum))
 
 
 def standard_quantile_absolute_deviation(x: np.ndarray) -> float:
@@ -242,7 +242,7 @@ def standard_quantile_absolute_deviation(x: np.ndarray) -> float:
     k = 1.0 + 0.762 / n + 0.967 / n**2
     # constant value that maximizes efficiency for normal distribution
     q = 0.6826894921370850  # stats.norm.cdf(1) - stats.norm.cdf(-1)
-    return k * np.nanquantile(np.abs(x - med), q=q)
+    return float(k * np.nanquantile(np.abs(x - med), q=q))
 
 
 def shamos_estimator(x: np.ndarray) -> float:
@@ -279,7 +279,7 @@ def shamos_estimator(x: np.ndarray) -> float:
     # of the cartesian product, but in this implementation we use
     # whole matrix, which is equvalent.
     product = np.meshgrid(x, x, sparse=True)
-    return np.nanmedian(np.abs(product[0] - product[1]))
+    return float(np.nanmedian(np.abs(product[0] - product[1])))
 
 
 def coefficient_of_range(x: np.ndarray) -> float:
@@ -303,7 +303,7 @@ def coefficient_of_range(x: np.ndarray) -> float:
     """
     min_ = np.nanmin(x)
     max_ = np.nanmax(x)
-    return (max_ - min_) / (max_ + min_)
+    return float((max_ - min_) / (max_ + min_))
 
 
 def cole_index_of_dispersion(x: np.ndarray) -> float:
@@ -327,7 +327,7 @@ def cole_index_of_dispersion(x: np.ndarray) -> float:
     A theory for analyzing contagiously distributed populations.
     Ecology. 27 (4): 329-341.
     """
-    return np.nansum(np.square(x)) / np.nansum(x) ** 2
+    return float(np.nansum(np.square(x)) / np.nansum(x) ** 2)
 
 
 def gini_mean_difference(x: np.ndarray) -> float:
@@ -358,7 +358,7 @@ def gini_mean_difference(x: np.ndarray) -> float:
     """
     n = len(x)
     product = np.meshgrid(x, x, sparse=True)
-    return np.nansum(np.abs(product[0] - product[1])) / (n * (n - 1))
+    return float(np.nansum(np.abs(product[0] - product[1])) / (n * (n - 1)))
 
 
 def inter_expectile_range(x: np.ndarray) -> float:
@@ -386,4 +386,4 @@ def inter_expectile_range(x: np.ndarray) -> float:
     _x = _x[np.isfinite(_x)]
     if len(_x) <= 1:
         return np.nan
-    return stats.expectile(_x, 0.75) - stats.expectile(_x, 0.25)
+    return float(stats.expectile(_x, 0.75) - stats.expectile(_x, 0.25))

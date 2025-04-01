@@ -46,6 +46,7 @@
     * Bowley Skewness Coefficient;
     * Cumulative Skewness Coefficient;
     * Forhad-Shorna Rank Skewness Coefficient;
+    * Groeneveld Range Skewness Coefficient;
     * Groeneveld Skewness Coefficient;
     * Hossain-Adnan Skewness Coefficient;
     * Kelly Skewness Coefficient;
