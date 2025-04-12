@@ -53,7 +53,7 @@ def test_mock_aggregation_functions(
 
 
 def test_thdm(thdme_test_data: np.ndarray) -> None:
-    """Simple tets case for correctness of Trimmed Harrel Davis median."""
+    """Test the case for correctness of Trimmed Harrel Davis median."""
     result = standard_trimmed_harrell_davis_quantile(thdme_test_data)
     if result != pytest.approx(0.6268, rel=1e-4):
         msg = "Results from the test and paper do not match."
@@ -142,6 +142,18 @@ def test_grenaders_m(x_array_float: np.ndarray) -> None:
         grenanders_m(x_array_float, k=1.5)  # type: ignore[arg-type]
     if not math.isnan(grenanders_m(x_array_float, k=len(x_array_float))):
         msg = "Statistic should return nans."
+        raise ValueError(msg)
+
+
+@pytest.mark.parametrize("func", all_functions)
+@pytest.mark.parametrize("seed", [1, 42, 99])
+def test_sensibility(func: typing.Callable, seed: int) -> None:
+    """Test central tendencies convergence for normal distribution."""
+    rng = np.random.default_rng(seed)
+    normal = rng.normal(size=100)
+    res = func(normal)
+    if res == pytest.approx(0.0):
+        msg = f"Cental tendency for normal distribution should be 0.0, got {res}."
         raise ValueError(msg)
 
 

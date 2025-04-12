@@ -107,7 +107,7 @@ def robust_coefficient_of_variation(x: np.ndarray) -> float:
     """
     med = np.nanmedian(x)
     med_abs_dev = np.nanmedian(np.abs(x - med))
-    return float(med_abs_dev / med)
+    return float(1.4826 * med_abs_dev / med)
 
 
 def quartile_coefficient_of_dispersion(x: np.ndarray) -> float:
@@ -125,42 +125,12 @@ def quartile_coefficient_of_dispersion(x: np.ndarray) -> float:
 
     References
     ----------
-    Bonett, D. G. (2006).
-    Confidence interval for a coefficient of quartile variation.
-    Computational Statistics & Data Analysis. 50 (11): 2953-2957.
+    Shapiro, H. M. (2005).
+    Practical flow cytometry.
+    John Wiley & Sons.
     """
     q1, q3 = np.nanquantile(x, [0.25, 0.75])
-    return float((q3 - q1) / (q3 + q1))
-
-
-def dispersion_ratio(x: np.ndarray) -> float:
-    """Calculate dispersion ratio (Mean / GMean).
-
-    The closer a dispersion ratio is to 1, the lower the dispersion
-    between the observations within an array.
-    In this function geometric mean computed by excluding zeros and
-    missing data points.
-
-    Parameters
-    ----------
-    x : array_like
-        Input array.
-
-    Returns
-    -------
-    dr : float
-        The value of the dispersion ratio.
-
-    References
-    ----------
-    Soobramoney, J.; Chifurira, R.; Zewotir, T. (2022)
-    Selecting key features of online behaviour on South African informative websites
-    prior to unsupervised machine learning.
-    Statistics, Optimization & Information Computing, 11(2), 519-530.
-    """
-    _x = np.asarray(x)
-    _x = np.where(_x == 0, np.nan, _x)
-    return float(np.nanmean(x) / stats.gmean(_x, nan_policy="omit"))
+    return float(0.75 * (q3 - q1) / (q3 + q1))
 
 
 def fisher_index_of_dispersion(x: np.ndarray) -> float:
@@ -310,6 +280,7 @@ def cole_index_of_dispersion(x: np.ndarray) -> float:
     """Calculate Cole's index of dispersion.
 
     Higher values mean higher dispersion.
+    This measure is invariant to multiplication.
 
     Parameters
     ----------

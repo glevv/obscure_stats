@@ -47,7 +47,7 @@ def test_mock_aggregation_functions(
 @pytest.mark.parametrize("func", all_functions)
 @pytest.mark.parametrize("seed", [1, 42, 99])
 def test_kurt_sensibility(func: typing.Callable, seed: int) -> None:
-    """Testing for result correctness."""
+    """Test for result correctness."""
     rng = np.random.default_rng(seed)
     platy = rng.uniform(size=100)
     lepto = rng.laplace(size=100)
@@ -65,6 +65,36 @@ def test_statistic_with_nans(func: typing.Callable, x_array_nan: np.ndarray) -> 
     """Test for different data types."""
     if math.isnan(func(x_array_nan)):
         msg = "Statistic should not return nans."
+        raise ValueError(msg)
+
+
+@pytest.mark.parametrize("func", all_functions)
+def test_invariance_add(func: typing.Callable, x_array_float: np.ndarray) -> None:
+    """Test coefficients for invariance to addition."""
+    res1 = func(x_array_float)
+    res2 = func(x_array_float + 10)
+    if res1 != pytest.approx(res2):
+        msg = f"Statistic should be invariant to addition, got {res1} and {res2}."
+        raise ValueError(msg)
+
+
+@pytest.mark.parametrize("func", all_functions)
+def test_invariance_mult(func: typing.Callable, x_array_float: np.ndarray) -> None:
+    """Test coefficients for invariance to multiplication."""
+    res1 = func(x_array_float)
+    res2 = func(x_array_float * 10)
+    if res1 != pytest.approx(res2):
+        msg = f"Statistic should be invariant to multiplication, got {res1} and {res2}."
+        raise ValueError(msg)
+
+
+@pytest.mark.parametrize("func", all_functions)
+def test_change_sign(func: typing.Callable, x_array_float: np.ndarray) -> None:
+    """Test change of sign of statistic if array changed sign."""
+    res1 = func(x_array_float)
+    res2 = func(-x_array_float)
+    if res1 != pytest.approx(res2):
+        msg = f"Statistic should change sign, got {res1} and {res2}."
         raise ValueError(msg)
 
 

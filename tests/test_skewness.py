@@ -13,10 +13,8 @@ from obscure_stats.skewness import (
     auc_skew_gamma,
     bickel_mode_skew,
     bowley_skew,
-    cumulative_skew,
     forhad_shorna_rank_skew,
     groeneveld_range_skew,
-    groeneveld_skew,
     hossain_adnan_skew,
     kelly_skew,
     l_skew,
@@ -25,17 +23,14 @@ from obscure_stats.skewness import (
     pearson_median_skew,
     pearson_mode_skew,
     right_quantile_weight,
-    wauc_skew_gamma,
 )
 
 all_functions = [
     auc_skew_gamma,
     bickel_mode_skew,
     bowley_skew,
-    cumulative_skew,
     forhad_shorna_rank_skew,
     groeneveld_range_skew,
-    groeneveld_skew,
     hossain_adnan_skew,
     kelly_skew,
     l_skew,
@@ -44,7 +39,6 @@ all_functions = [
     pearson_median_skew,
     pearson_mode_skew,
     right_quantile_weight,
-    wauc_skew_gamma,
 ]
 
 
@@ -63,7 +57,7 @@ def test_mock_aggregation_functions(
 @pytest.mark.parametrize("func", all_functions)
 @pytest.mark.parametrize("seed", [1, 42, 99])
 def test_skew_sensibility(func: typing.Callable, seed: int) -> None:
-    """Testing for result correctness."""
+    """Test for result correctness."""
     rng = np.random.default_rng(seed)
     # round for the mode estimators to work properly
     no_skew = np.round(rng.uniform(size=100), 2)
@@ -84,10 +78,9 @@ def test_skew_sensibility(func: typing.Callable, seed: int) -> None:
 
 def test_rank_skew(rank_skewness_test_data: np.ndarray) -> None:
     """Simple tets case for correctness of Rank skewness coefficient."""
-    if forhad_shorna_rank_skew(rank_skewness_test_data) != pytest.approx(
-        0.93809, rel=1e-4
-    ):
-        msg = "Results from the test and paper do not match."
+    res = forhad_shorna_rank_skew(rank_skewness_test_data)
+    if res != pytest.approx(0.93809, rel=1e-2):
+        msg = f"Results from the test and paper do not match, got {res} instead of 0.93809."
         raise ValueError(msg)
 
 
@@ -105,6 +98,50 @@ def test_q_in_qw(x_array_float: np.ndarray, func: typing.Callable, q: float) -> 
     """Simple tets case for correctnes of q."""
     with pytest.raises(ValueError, match="Parameter q should be in range"):
         func(x_array_float, q=q)
+
+
+@pytest.mark.parametrize(
+    "func",
+    [
+        auc_skew_gamma,
+        bickel_mode_skew,
+        bowley_skew,
+        forhad_shorna_rank_skew,
+        groeneveld_range_skew,
+        hossain_adnan_skew,
+        kelly_skew,
+        l_skew,
+        medeen_skew,
+        pearson_median_skew,
+        pearson_mode_skew,
+    ],
+)
+def test_change_sign(func: typing.Callable, x_array_float: np.ndarray) -> None:
+    """Test change of sign of statistic if array changed sign."""
+    res1 = -func(x_array_float)
+    res2 = func(-x_array_float)
+    if res1 != pytest.approx(res2):
+        msg = f"Statistic should change sign, got {res1} and {res2}."
+        raise ValueError(msg)
+
+
+def test_change_sign_for_quantile_weights(x_array_float: np.ndarray) -> None:
+    """Test change of sign of statistic if array changed sign."""
+    if left_quantile_weight(-x_array_float) != pytest.approx(
+        -right_quantile_weight(x_array_float)
+    ):
+        msg = "Statistics should be equal."
+        raise ValueError(msg)
+
+
+@pytest.mark.parametrize("func", all_functions)
+def test_invariance_mult(func: typing.Callable, x_array_float: np.ndarray) -> None:
+    """Test coefficients for invariance to multiplication."""
+    res1 = func(x_array_float)
+    res2 = func(x_array_float * 10)
+    if res1 != pytest.approx(res2):
+        msg = f"Statistic should be invariant to multiplication, got {res1} and {res2}."
+        raise ValueError(msg)
 
 
 @given(

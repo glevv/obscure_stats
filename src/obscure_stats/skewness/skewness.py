@@ -177,39 +177,6 @@ def bowley_skew(x: np.ndarray) -> float:
     return float((q3 + q1 - 2 * q2) / (q3 - q1))
 
 
-def groeneveld_skew(x: np.ndarray) -> float:
-    """Calculate Groeneveld's skewness coefficinet.
-
-    It is based on quartiles (uncentered, unscaled).
-    It is similar to Bowley skewness coefficient, but tries to
-    reweight distance bwetwen median and quartiles separately.
-    This measure should be more robust than moment based skewness.
-    This is the implementation of 'b3' skewness from the paper.
-
-    Parameters
-    ----------
-    x : array_like
-        Input array.
-
-    Returns
-    -------
-    gsc : float
-        The value of Groeneveld's skewness coefficinet.
-
-    References
-    ----------
-    Groeneveld, R. A.; Meeden, G. (1984).
-    Measuring Skewness and Kurtosis.
-    The Statistician. 33 (4): 391-399.
-    """
-    m = np.nanmedian(x)
-    masked_ml = np.where(x >= m, x, np.nan)
-    masked_mh = np.where(x <= m, x, np.nan)
-    mean_h = np.nanmean(masked_mh)
-    mean_l = np.nanmean(masked_ml)
-    return float((mean_h - mean_l - 2 * m) / (mean_h - mean_l))
-
-
 def groeneveld_range_skew(x: np.ndarray) -> float:
     """Calculate Groeneveld's skewness coefficinet.
 
@@ -321,23 +288,10 @@ def forhad_shorna_rank_skew(x: np.ndarray) -> float:
     _x = np.ravel(x)
     mr = (np.nanmin(_x) + np.nanmax(_x)) * 0.5
     arr = np.r_[_x, mr]
-    arr_ranked = stats.rankdata(arr, method="min", nan_policy="omit")
+    arr_ranked = stats.rankdata(arr, method="average", nan_policy="omit")
     diff = arr_ranked[-1] - arr_ranked
     diff = diff[:-1]
     return float(np.nansum(diff) / np.nansum(np.abs(diff)))
-
-
-def _auc_skew_gamma(x: np.ndarray, dp: float, w: np.ndarray | float) -> float:
-    """Calculate AUC skew."""
-    n = int(1 / dp)
-    half_n = n // 2
-    qs = np.nanquantile(x, np.r_[np.linspace(0, 1, n), 0.5])
-    med = qs[-1]
-    qs = qs[:-1]
-    qs_low = qs[:half_n]
-    qs_high = qs[-half_n:]
-    skews = (qs_low + qs_high - 2 * med) / (qs_high - qs_low) * w
-    return float(integrate.trapezoid(skews, dx=dp))
 
 
 def auc_skew_gamma(x: np.ndarray, dp: float = 0.01) -> float:
@@ -364,73 +318,15 @@ def auc_skew_gamma(x: np.ndarray, dp: float = 0.01) -> float:
     Mean skewness measures.
     arXiv preprint arXiv:1912.06996.
     """
-    w = 1.0
-    return _auc_skew_gamma(x, dp, w)
-
-
-def wauc_skew_gamma(x: np.ndarray, dp: float = 0.01) -> float:
-    """
-    Calculate weighted area under the curve of generalized Bowley skewness coefficients.
-
-    This version use reweightning. It will assign bigger weights to the
-    Bowley skewness coefficients calculated on percentiles far from the median.
-
-    Parameters
-    ----------
-    x : array_like
-        Input array.
-    dp : float, default = 0.01
-        Step used in calculating area under the curve (integrating).
-
-    Returns
-    -------
-    waucbs : float
-        The value of weighted AUC Bowley skewness.
-
-    References
-    ----------
-    Arachchige, C. N.; & Prendergast, L. A. (2019).
-    Mean skewness measures.
-    arXiv preprint arXiv:1912.06996.
-    """
     n = int(1 / dp)
     half_n = n // 2
-    w = (np.arange(half_n) / half_n)[::-1]
-    return _auc_skew_gamma(x, dp, w)
-
-
-def cumulative_skew(x: np.ndarray) -> float:
-    """
-    Calculate cumulative measure of skewness.
-
-    It is based on calculating the cumulative statistics of the Lorenz curve.
-    The array will be flatten before any calculations.
-
-    Parameters
-    ----------
-    x : array_like
-        Input array.
-
-    Returns
-    -------
-    csc : float
-        The value of cumulative skew.
-
-    References
-    ----------
-    Schlemmer, M. (2022).
-    A robust measure of skewness using cumulative statistic calculation.
-    arXiv preprint arXiv:2209.10699.
-    """
-    _x = np.sort(x)
-    n = len(_x)
-    p = np.nancumsum(_x)
-    p = p / p[-1]
-    r = np.arange(n)
-    q = r / n
-    d = q - p
-    w = (2 * r - n) * 3 / n
-    return float(np.sum(d * w) / np.sum(d))
+    qs = np.nanquantile(x, np.r_[np.linspace(0, 1, n), 0.5])
+    med = qs[-1]
+    qs = qs[:-1]
+    qs_low = qs[:half_n]
+    qs_high = qs[-half_n:]
+    skews = (qs_low + qs_high - 2 * med) / (qs_high - qs_low)
+    return float(integrate.trapezoid(skews, dx=dp))
 
 
 def left_quantile_weight(x: np.ndarray, q: float = 0.25) -> float:

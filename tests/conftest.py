@@ -9,13 +9,13 @@ import pytest
 @pytest.fixture(scope="session")
 def x_list_float() -> list[float]:
     """List of floats."""
-    return [2.0, 0.0, 2.0, 3.0, 11.0, 0.0, 1.0]
+    return [-1.0, 2.0, 0.0, -2.0, 3.0, 11.0, 0.0, 1.0]
 
 
 @pytest.fixture(scope="session")
 def x_list_int() -> list[int]:
     """List of ints."""
-    return [2, 0, 2, 3, 11, 0, 1]
+    return [-1, 2, 0, -2, 3, 11, 0, 1]
 
 
 @pytest.fixture(scope="session")
@@ -41,13 +41,13 @@ def x_array_nan(x_array_float: np.ndarray) -> np.ndarray:
 @pytest.fixture(scope="session")
 def y_list_float() -> list[float]:
     """List of floats."""
-    return [1.0, 9.0, 7.0, 0.0, 1.0, 0.0, 1.0]
+    return [-1.0, 1.0, 9.0, 7.0, 0.0, 1.0, 0.0, 1.0]
 
 
 @pytest.fixture(scope="session")
 def y_list_int() -> list[int]:
     """List of ints."""
-    return [1, 9, 7, 0, 1, 0, 1]
+    return [-1, 1, 9, 7, 0, 1, 0, 1]
 
 
 @pytest.fixture(scope="session")
@@ -230,9 +230,3 @@ def hsm_test_data() -> np.ndarray:
 def hls_test_data_big() -> list[int]:
     """Test data from the paper for Hodges-Lehmann-Sen estimator."""
     return [10**100, 10**100, 2, 2, 7, 4, 1, 6]
-
-
-@pytest.fixture(scope="session")
-def corr_test_data() -> np.ndarray:
-    """Test data for correlations."""
-    return np.asarray((0.0, 0.0, 0.0, np.nan, np.nan, np.nan, 0.0))

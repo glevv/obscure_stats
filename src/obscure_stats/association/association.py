@@ -73,7 +73,8 @@ def chatterjee_xi(x: np.ndarray, y: np.ndarray) -> float:
     underlying distributions of the variable.
 
     It ranges from 0 (variables are completely independent) to 1
-    (one is a measurable function of the other).
+    (one is a measurable function of the other). But a lot of the times the maximum
+    value of the coefficient is lower than 1.
 
     This implementation does not break ties at random, instead
     it break ties depending on order. This makes it dependent on
@@ -212,10 +213,10 @@ def concordance_rate(x: np.ndarray, y: np.ndarray) -> float:
     sem_y = np.std(y, ddof=0) / n**0.5
     return float(
         (
-            np.sum((x > mean_x + sem_x) & (y > mean_y + sem_y))
-            + np.sum((x < mean_x - sem_x) & (y > mean_y + sem_y))
-            - np.sum((x < mean_x - sem_x) & (y < mean_y - sem_y))
-            - np.sum((x > mean_x + sem_x) & (y < mean_y - sem_y))
+            np.sum((x >= mean_x + sem_x) & (y >= mean_y + sem_y))
+            - np.sum((x <= mean_x - sem_x) & (y >= mean_y + sem_y))
+            + np.sum((x <= mean_x - sem_x) & (y <= mean_y - sem_y))
+            - np.sum((x >= mean_x + sem_x) & (y <= mean_y - sem_y))
         )
         / n
     )
@@ -228,7 +229,8 @@ def symmetric_chatterjee_xi(x: np.ndarray, y: np.ndarray) -> float:
     underlying distributions of the variable.
 
     It ranges from 0 (variables are completely independent) to 1
-    (one is a measurable function of the other).
+    (one is a measurable function of the other). But a lot of the times the maximum
+    value of the coefficient is lower than 1.
 
     This implementation does not break ties at random, instead
     it break ties depending on order. This makes it dependent on
@@ -311,18 +313,14 @@ def zhang_i(x: np.ndarray, y: np.ndarray) -> float:
 
     References
     ----------
-    Zhang, Q. (2023).
-    On relationships between Chatterjee's and Spearman's correlation coefficients.
-    arXiv preprint arXiv:2302.10131.
-
-    Notes
-    -----
-    This measure is assymetric: (x, y) != (y, x).
+    Zhang, Q. (2025).
+    On the extensions of the Chatterjee-Spearman test.
+    Journal of Nonparametric Statistics, 1-30.
 
     See Also
     --------
     scipy.stats.spearmanr - Spearman R coefficient.
-    obscure_stats.associaton.chatterjee_xi - Chatterjee Xi coefficient.
+    obscure_stats.associaton.symmetric_chatterjee_xi - Chatterjee Xi coefficient.
     """
     if _check_arrays(x, y):
         return np.nan
@@ -330,9 +328,12 @@ def zhang_i(x: np.ndarray, y: np.ndarray) -> float:
     if _check_arrays(x, y):
         return np.nan
     return float(
-        max(
-            abs(stats.spearmanr(x, y, nan_policy="omit")[0]),
-            2.5**0.5 * chatterjee_xi(x, y),
+        min(
+            1.0,
+            max(
+                abs(stats.spearmanr(x, y, nan_policy="omit")[0]),
+                2.5**0.5 * symmetric_chatterjee_xi(x, y),
+            ),
         )
     )
 
@@ -596,13 +597,11 @@ def tukey_correlation(x: np.ndarray, y: np.ndarray) -> float:
     s_y = gini_mean_difference(y)
     x_norm = x / s_x
     y_norm = y / s_y
-    return float(
-        0.25
-        * (
-            gini_mean_difference(x_norm + y_norm) ** 2
-            - gini_mean_difference(x_norm - y_norm) ** 2
-        )
+    coef = 0.25 * (
+        gini_mean_difference(x_norm + y_norm) ** 2
+        - gini_mean_difference(x_norm - y_norm) ** 2
     )
+    return float(max(min(coef, 1.0), -1.0))
 
 
 def gaussain_rank_correlation(x: np.ndarray, y: np.ndarray) -> float:
@@ -640,10 +639,10 @@ def gaussain_rank_correlation(x: np.ndarray, y: np.ndarray) -> float:
     norm_factor = 1 / (n + 1)
     x_ranks_norm = (np.argsort(x) + 1) * norm_factor
     y_ranks_norm = (np.argsort(y) + 1) * norm_factor
-    return float(
-        np.sum(stats.norm.ppf(x_ranks_norm) * stats.norm.ppf(y_ranks_norm))
-        / np.sum(stats.norm.ppf(np.arange(1, n + 1) * norm_factor) ** 2)
+    coef = np.sum(stats.norm.ppf(x_ranks_norm) * stats.norm.ppf(y_ranks_norm)) / np.sum(
+        stats.norm.ppf(np.arange(1, n + 1) * norm_factor) ** 2
     )
+    return float((coef - 0.5) * 2)
 
 
 def quantile_correlation(x: np.ndarray, y: np.ndarray, q: float = 0.5) -> float:
@@ -688,4 +687,83 @@ def quantile_correlation(x: np.ndarray, y: np.ndarray, q: float = 0.5) -> float:
     return float(
         np.mean((q - (y < np.quantile(y, q=q))) * (x - np.mean(x)))
         / (((q - q**2) * np.var(x)) ** 0.5)
+    )
+
+
+def normalized_chatterjee_xi(x: np.ndarray, y: np.ndarray) -> float:
+    """Calculate normalizd Xi correlation coefficient.
+
+    Another variation of rank correlation which does not make any assumptions about
+    underlying distributions of the variable.
+
+    It ranges from 0 (variables are completely independent) to 1
+    (one is a measurable function of the other). This variant normalizes Chatterjee Xi,
+    so it's maximum will always be 1.0.
+
+    This implementation does not break ties at random, instead
+    it break ties depending on order. This makes it dependent on
+    data sorting, which could be useful in application like time
+    series.
+
+    The arrays will be flatten before any calculations.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+    y : array_like
+        Input array.
+
+    Returns
+    -------
+    nxi : float.
+        The value of the normalized xi correlation coefficient.
+
+    References
+    ----------
+    Dalitz, C.; Arning, J.; Goebbels, S. (2024).
+    A Simple Bias Reduction for Chatterjee's Correlation.
+    J Stat Theory Pract 18, 51.
+
+    Notes
+    -----
+    This measure is assymetric: (x, y) != (y, x).
+    """
+    if _check_arrays(x, y):
+        return np.nan
+    x, y = _prep_arrays(x, y)
+    if _check_arrays(x, y):
+        return np.nan
+    n = len(x)
+    # y ~ f(x)
+    y_forward_ordered = y[np.argsort(x)]
+    _, y_unique_indexes, y_counts = np.unique(
+        y_forward_ordered, return_inverse=True, return_counts=True
+    )
+    right_xy = np.cumsum(y_counts)[y_unique_indexes]
+    left_xy = np.cumsum(y_counts[::-1])[len(y_counts) - y_unique_indexes - 1]
+    # y ~ f(y)
+    y_ordered = y[np.argsort(y)]
+    _, y_unique_indexes, y_counts = np.unique(
+        y_ordered, return_inverse=True, return_counts=True
+    )
+    right_yy = np.cumsum(y_counts)[y_unique_indexes]
+    left_yy = np.cumsum(y_counts[::-1])[len(y_counts) - y_unique_indexes - 1]
+    # divide one by another
+    return float(
+        max(
+            -1,
+            (
+                1
+                - 0.5
+                * np.sum(np.abs(np.diff(right_xy)))
+                / np.mean(left_xy * (n - left_xy))
+            )
+            / (
+                1
+                - 0.5
+                * np.sum(np.abs(np.diff(right_yy)))
+                / np.mean(left_yy * (n - left_yy)),
+            ),
+        )
     )
