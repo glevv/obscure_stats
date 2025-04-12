@@ -273,7 +273,7 @@ def half_sample_mode(x: np.ndarray) -> float:
             return float(np.mean(y[0:1]))
         if z > 0:
             return float(np.mean(y[1:2]))
-        return y[1]
+        return float(y[1])
     return float(np.mean(y))
 
 

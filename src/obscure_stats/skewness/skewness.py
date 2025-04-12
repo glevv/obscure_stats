@@ -93,7 +93,7 @@ def bickel_mode_skew(x: np.ndarray) -> float:
     Computational Statistics & Data Analysis, Elsevier, 39(2), 153-163.
     """
     mode = half_sample_mode(x)
-    return float(np.nanmean(np.sign(x - mode)))
+    return float(np.nanmean(np.sign(np.asarray(x) - mode)))
 
 
 def pearson_median_skew(x: np.ndarray) -> float:
