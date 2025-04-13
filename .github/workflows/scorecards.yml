@@ -10,7 +10,7 @@ on:
   # To guarantee Maintained check is occasionally updated. See
   # https://github.com/ossf/scorecard/blob/main/docs/checks.md#maintained
   schedule:
-    - cron: '20 7 * * 2'
+    - cron: "20 7 * * 2"
   push:
     branches: ["main"]
 
@@ -33,6 +33,7 @@ jobs:
       - name: Harden Runner
         uses: step-security/harden-runner@c6295a65d1254861815972266d5933fd6e532bdf # v2.11.1
         with:
+          disable-sudo: true
           egress-policy: audit
 
       - name: "Checkout code"
