@@ -30,6 +30,7 @@ jobs:
       - name: Harden Runner
         uses: step-security/harden-runner@c6295a65d1254861815972266d5933fd6e532bdf # v2.11.1
         with:
+          disable-sudo: true
           egress-policy: audit
 
       - name: Check out repository
@@ -82,7 +83,7 @@ jobs:
         with:
           flags: smart-tests
           verbose: true
-          file: ./coverage.xml
+          files: ./coverage.xml
           fail_ci_if_error: true
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

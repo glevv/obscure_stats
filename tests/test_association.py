@@ -16,6 +16,7 @@ from obscure_stats.association import (
     concordance_rate,
     fechner_correlation,
     gaussain_rank_correlation,
+    normalized_chatterjee_xi,
     quantile_correlation,
     rank_minrelation_coefficient,
     symmetric_chatterjee_xi,
@@ -32,6 +33,7 @@ all_functions = [
     concordance_rate,
     fechner_correlation,
     gaussain_rank_correlation,
+    normalized_chatterjee_xi,
     quantile_correlation,
     rank_minrelation_coefficient,
     symmetric_chatterjee_xi,
@@ -65,6 +67,7 @@ def test_mock_association_functions(
         concordance_correlation,
         concordance_rate,
         fechner_correlation,
+        gaussain_rank_correlation,
         quantile_correlation,
         rank_minrelation_coefficient,
         tanimoto_similarity,
@@ -75,20 +78,18 @@ def test_mock_association_functions(
 def test_signed_corr_sensibility(
     func: typing.Callable, y_array_float: np.ndarray
 ) -> None:
-    """Testing for result correctness."""
+    """Test for result correctness."""
     res = func(-2 * y_array_float, y_array_float)
     if res > 0:
         msg = f"Corr coeff should be negative, got {res}"
         raise ValueError(msg)
 
 
-@pytest.mark.parametrize(
-    "func", [chatterjee_xi, gaussain_rank_correlation, symmetric_chatterjee_xi, zhang_i]
-)
+@pytest.mark.parametrize("func", [chatterjee_xi, symmetric_chatterjee_xi, zhang_i])
 def test_unsigned_corr_sensibility(
     func: typing.Callable, y_array_float: np.ndarray
 ) -> None:
-    """Testing for result correctness."""
+    """Test for result correctness."""
     w = np.ones(shape=len(y_array_float))
     w[0] = 2
     res_ideal = func(y_array_float, -y_array_float)
@@ -107,6 +108,7 @@ def test_unsigned_corr_sensibility(
         concordance_rate,
         fechner_correlation,
         gaussain_rank_correlation,
+        normalized_chatterjee_xi,
         quantile_correlation,
         rank_minrelation_coefficient,
         tukey_correlation,
@@ -116,7 +118,7 @@ def test_unsigned_corr_sensibility(
     ],
 )
 def test_const(func: typing.Callable, y_array_float: np.ndarray) -> None:
-    """Testing for constant input."""
+    """Test for constant input."""
     x = np.ones(shape=(len(y_array_float),))
     with pytest.warns(match="is constant"):
         res = func(x, y_array_float)
@@ -126,10 +128,10 @@ def test_const(func: typing.Callable, y_array_float: np.ndarray) -> None:
 
 
 @pytest.mark.parametrize("func", all_functions)
-def test_const_after_prep(
-    func: typing.Callable, corr_test_data: np.ndarray, x_array_float: np.ndarray
-) -> None:
-    """Testing for constant input."""
+def test_const_after_prep(func: typing.Callable, x_array_float: np.ndarray) -> None:
+    """Test the second prep edge case input."""
+    corr_test_data = np.ones(shape=len(x_array_float))
+    corr_test_data[0] = np.nan
     res = func(x_array_float, corr_test_data)
     if not math.isnan(res):
         msg = f"Corr coef should be 0 with constant input, got {res}"
@@ -152,7 +154,7 @@ def test_const_after_prep(
 def test_invariance(
     func: typing.Callable, x_array_float: np.ndarray, y_array_float: np.ndarray
 ) -> None:
-    """Testing for invariance."""
+    """Test for invariance."""
     xy = func(x_array_float, y_array_float)
     yx = func(y_array_float, x_array_float)
     if pytest.approx(xy) != pytest.approx(yx):
@@ -191,7 +193,7 @@ def test_unequal_arrays(
 
 @pytest.mark.parametrize("func", all_functions)
 def test_corr_boundaries(func: typing.Callable, y_array_float: np.ndarray) -> None:
-    """Testing for result correctness."""
+    """Test for result correctness."""
     res = func(y_array_float, -y_array_float)
     if abs(res) > 1:
         msg = f"Corr coeff should not be higher than 1, got {res}"

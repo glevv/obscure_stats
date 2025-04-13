@@ -196,7 +196,7 @@ def avdev(x: np.ndarray) -> float:
     return float(1 - (np.sum(np.abs(freq - mean)) / (2 * mean * max(k - 1, 1))))
 
 
-def renyi_entropy(x: np.ndarray, alpha: float = 2) -> float:
+def renyi_entropy(x: np.ndarray, alpha: float = 2, *, normalize: bool = False) -> float:
     """Calculate Renyi entropy (bits).
 
     Rényi entropy is a quantity that generalizes various notions of entropy,
@@ -210,7 +210,9 @@ def renyi_entropy(x: np.ndarray, alpha: float = 2) -> float:
     x : array_like
         Input array.
     alpha : float, default = 2
-        Order of the Rényi entropy
+        Order of the Rényi entropy.
+    normalize : bool, default = False
+        Whether to normalize the result.
 
     Returns
     -------
@@ -228,10 +230,15 @@ def renyi_entropy(x: np.ndarray, alpha: float = 2) -> float:
         msg = "Parameter alpha should be positive!"
         raise ValueError(msg)
     freq = np.unique(x, return_counts=True, equal_nan=True)[1] / len(x)
+    n = len(freq)
+    if n <= 1:
+        # return 0 if an array is constant
+        return 0.0
+    normalizer = math.log2(n) if normalize else 1.0
     if alpha == 1:
         # return Shannon entropy to avoid division by 0
-        return -np.sum(freq * np.log2(freq))
-    return float(1 / (1 - alpha) * math.log2(np.sum(freq**alpha)))
+        return float(-np.sum(freq * np.log2(freq)) / normalizer)
+    return float(1 / (1 - alpha) * math.log2(np.sum(freq**alpha)) / normalizer)
 
 
 def negative_extropy(x: np.ndarray) -> float:

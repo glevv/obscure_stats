@@ -210,7 +210,7 @@ def standard_trimmed_harrell_davis_quantile(x: np.ndarray, q: float = 0.5) -> fl
     if n == 0:
         return np.nan
     if n == 1:
-        return _x[0]
+        return float(_x[0])
     n_calculated = 1 / n**0.5  # heuristic suggested by the author
     a = (n + 1) * q
     b = (n + 1) * (1.0 - q)
@@ -265,15 +265,15 @@ def half_sample_mode(x: np.ndarray) -> float:
                 w_min = w
                 j = i
         if w == 0:
-            return y[j]
+            return float(y[j])
         y = y[j : (j + half_y - 1)]
     if len(y) == _corner_cases[1]:
         z = 2 * y[1] - y[0] - y[2]
         if z < 0:
-            return np.mean(y[0:1])
+            return float(np.mean(y[0:1]))
         if z > 0:
-            return np.mean(y[1:2])
-        return y[1]
+            return float(np.mean(y[1:2]))
+        return float(y[1])
     return float(np.mean(y))
 
 
@@ -356,7 +356,7 @@ def grenanders_m(x: np.ndarray, p: float = 1.001, k: int = 2) -> float:
     diff = x_sort[k:] - x_sort[:-k]
     # if the diffs are constant - return the value
     if diff.sum() == 0.0:
-        return x_sort[0]
+        return float(x_sort[0])
     # to avoid division by zero
     diff[diff == 0.0] = np.nan
 

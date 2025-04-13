@@ -2,6 +2,7 @@
 
 import math
 import typing
+from functools import partial
 
 import numpy as np
 import pytest
@@ -31,6 +32,7 @@ all_functions = [
     negative_extropy,
     range_vr,
     renyi_entropy,
+    partial(renyi_entropy, normalize=True),
 ]
 
 
@@ -47,7 +49,7 @@ def test_mock_variation_functions(
 @pytest.mark.parametrize("func", all_functions)
 @pytest.mark.parametrize("seed", [1, 42, 99])
 def test_var_sensibility_higher_better(func: typing.Callable, seed: int) -> None:
-    """Testing for result correctness."""
+    """Test for result correctness."""
     rng = np.random.default_rng(seed)
     low_var = rng.choice(["a", "b", "c", "d"], p=[0.25, 0.25, 0.25, 0.25], size=100)
     high_var = rng.choice(["a", "b", "c", "d"], p=[0.75, 0.15, 0.05, 0.05], size=100)
@@ -77,6 +79,14 @@ def test_renyi_entropy_edgecases(c_array_obj: np.ndarray) -> None:
     renyi_1 = renyi_entropy(c_array_obj, alpha=1)
     if renyi_1 != pytest.approx(2.040373):
         msg = f"Results from the test and paper do not match, got {renyi_1}"
+        raise ValueError(msg)
+    renyi_2 = renyi_entropy(np.arange(10), normalize=True)
+    if renyi_2 != pytest.approx(1.0):
+        msg = f"For uniformly distributed array normalized entropy should be 1.0, got {renyi_2}"
+        raise ValueError(msg)
+    renyi_3 = renyi_entropy(c_array_obj[0], normalize=True)
+    if renyi_3 != pytest.approx(0.0):
+        msg = f"For constant array entropy should be 0.0, got {renyi_3}"
         raise ValueError(msg)
 
 

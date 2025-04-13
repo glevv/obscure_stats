@@ -29,7 +29,6 @@
     * Coefficient of Range;
     * Coefficient of Variation;
     * Cole's Index of Dispersion;
-    * Dispersion Ratio;
     * Fisher's Index of Dispersion;
     * Gini Mean Difference;
     * Linear Coefficient of Variation;
@@ -41,13 +40,11 @@
     * Standard Quantile Absolute Deviation;
     * Studentized Range.
 - Collection of measures of skewness - `obscure_stats/skewness`:
-    * Area Under the Skewness Curve (weighted and unweighted);
+    * Area Under the Skewness Curve;
     * Bickel Mode Skewness Coefficient;
     * Bowley Skewness Coefficient;
-    * Cumulative Skewness Coefficient;
     * Forhad-Shorna Rank Skewness Coefficient;
     * Groeneveld Range Skewness Coefficient;
-    * Groeneveld Skewness Coefficient;
     * Hossain-Adnan Skewness Coefficient;
     * Kelly Skewness Coefficient;
     * L-Skewness Coefficient;
@@ -67,13 +64,15 @@
     * Staudte Kurtosis.
 - Collection of measures of association - `obscure_stats/association`:
     * Blomqvist's Beta;
-    * Chatterjee Xi Correlation Coefficient (original and symmetric versions);
+    * Chatterjee Xi Correlation Coefficient;
     * Concordance Correlation Coefficient;
     * Concordance Rate;
     * Fechner Correlation Coefficient;
     * Gaussian Rank Correlation Coefficient;
+    * Normalized Chatterjee Xi Correlation Coefficient;
     * Quantile Correlation Coefficient;
     * Rank Minrelation Coefficient;
+    * Symmetric Chatterjee Xi Correlation Coefficient;
     * Tanimoto Similarity;
     * Tukey's Correlation Coefficient;
     * Winsorized Correlation Coefficient;
