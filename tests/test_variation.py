@@ -5,6 +5,7 @@ import typing
 
 import numpy as np
 import pytest
+from functools import partial
 from hypothesis import given
 from hypothesis import strategies as st
 from hypothesis.extra.numpy import array_shapes, arrays
@@ -31,6 +32,7 @@ all_functions = [
     negative_extropy,
     range_vr,
     renyi_entropy,
+    partial(renyi_entropy, normalize=True)
 ]
 
 
@@ -78,9 +80,13 @@ def test_renyi_entropy_edgecases(c_array_obj: np.ndarray) -> None:
     if renyi_1 != pytest.approx(2.040373):
         msg = f"Results from the test and paper do not match, got {renyi_1}"
         raise ValueError(msg)
-    renyi_2 = renyi_entropy(np.arange(10), alpha=1, normalize=True)
-    if renyi_2 != 1.0:
+    renyi_2 = renyi_entropy(np.arange(10), normalize=True)
+    if renyi_2 != pytest.approx(1.0):
         msg = f"Results from the test and paper do not match, got {renyi_2}"
+        raise ValueError(msg)
+    renyi_3 = renyi_entropy([1], normalize=True)
+    if renyi_3 != pytest.approx(0.0):
+        msg = f"Results from the test and paper do not match, got {renyi_3}"
         raise ValueError(msg)
 
 

@@ -230,7 +230,11 @@ def renyi_entropy(x: np.ndarray, alpha: float = 2, *, normalize: bool = False) -
         msg = "Parameter alpha should be positive!"
         raise ValueError(msg)
     freq = np.unique(x, return_counts=True, equal_nan=True)[1] / len(x)
-    normalizer = math.log2(len(freq)) if normalize else 1.0
+    n = len(freq)
+    if n < 2:
+        # return 0 if an array is constant
+        return 0.0
+    normalizer = math.log2(n) if normalize else 1.0
     if alpha == 1:
         # return Shannon entropy to avoid division by 0
         return float(-np.sum(freq * np.log2(freq)) / normalizer)
