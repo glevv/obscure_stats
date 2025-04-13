@@ -549,10 +549,10 @@ def rank_minrelation_coefficient(x: np.ndarray, y: np.ndarray) -> float:
     x, y = _prep_arrays(x, y)
     if _check_arrays(x, y):
         return np.nan
-    n_sq = len(x) ** 2
-    rank_x_inc = (np.argsort(x) + 1) ** 2 / n_sq - 0.5
-    rank_y_inc = (np.argsort(y) + 1) ** 2 / n_sq - 0.5
-    rank_y_dec = -((np.argsort(-y) + 1) ** 2) / n_sq + 0.5
+    n_sq = len(x) ** 2 + 1
+    rank_x_inc = (stats.rankdata(x) ** 2) / n_sq - 0.5
+    rank_y_inc = (stats.rankdata(y) ** 2) / n_sq - 0.5
+    rank_y_dec = -(stats.rankdata(-y) ** 2) / n_sq + 0.5
     lower = np.sum((-rank_x_inc < rank_y_inc) * (rank_x_inc + rank_y_inc) ** 2)
     higher = np.sum((rank_x_inc > rank_y_dec) * (rank_x_inc - rank_y_dec) ** 2)
     return float((lower - higher) / (lower + higher))
@@ -637,12 +637,12 @@ def gaussain_rank_correlation(x: np.ndarray, y: np.ndarray) -> float:
         return np.nan
     n = len(x)
     norm_factor = 1 / (n + 1)
-    x_ranks_norm = (np.argsort(x) + 1) * norm_factor
-    y_ranks_norm = (np.argsort(y) + 1) * norm_factor
+    x_ranks_norm = stats.rankdata(x) * norm_factor
+    y_ranks_norm = stats.rankdata(y) * norm_factor
     coef = np.sum(stats.norm.ppf(x_ranks_norm) * stats.norm.ppf(y_ranks_norm)) / np.sum(
         stats.norm.ppf(np.arange(1, n + 1) * norm_factor) ** 2
     )
-    return float((coef - 0.5) * 2)
+    return float(max(min(coef, 1.0), -1.0))
 
 
 def quantile_correlation(x: np.ndarray, y: np.ndarray, q: float = 0.5) -> float:
