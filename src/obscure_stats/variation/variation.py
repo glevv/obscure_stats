@@ -231,7 +231,7 @@ def renyi_entropy(x: np.ndarray, alpha: float = 2, *, normalize: bool = False) -
         raise ValueError(msg)
     freq = np.unique(x, return_counts=True, equal_nan=True)[1] / len(x)
     n = len(freq)
-    if n < 2:
+    if n <= 1:
         # return 0 if an array is constant
         return 0.0
     normalizer = math.log2(n) if normalize else 1.0
