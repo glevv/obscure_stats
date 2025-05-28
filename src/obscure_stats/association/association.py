@@ -5,12 +5,13 @@ from __future__ import annotations
 import warnings
 
 import numpy as np
+import numpy.typing as npt
 from scipy import stats  # type: ignore[import-untyped]
 
 from obscure_stats.dispersion import gini_mean_difference
 
 
-def _check_arrays(x: np.ndarray, y: np.ndarray) -> bool:
+def _check_arrays(x: npt.NDArray, y: npt.NDArray) -> bool:
     """Check arrays.
 
     - Equal lenghts of the arrays;
@@ -31,7 +32,7 @@ def _check_arrays(x: np.ndarray, y: np.ndarray) -> bool:
             stacklevel=2,
         )
         return True
-    if all(np.isclose(_x, np.nanmin(_x), equal_nan=False)) or all(
+    if np.all(np.isclose(_x, np.nanmin(_x), equal_nan=False)) or np.all(
         np.isclose(_y, np.nanmin(_y), equal_nan=False)
     ):
         warnings.warn(
@@ -40,7 +41,7 @@ def _check_arrays(x: np.ndarray, y: np.ndarray) -> bool:
             stacklevel=2,
         )
         return True
-    if any(np.isinf(_x)) or any(np.isinf(_y)):
+    if np.any(np.isinf(_x)) or np.any(np.isinf(_y)):
         warnings.warn(
             "One of the input arrays contains inf, please check the array.",
             stacklevel=2,
@@ -56,7 +57,7 @@ def _check_arrays(x: np.ndarray, y: np.ndarray) -> bool:
     return False
 
 
-def _prep_arrays(x: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+def _prep_arrays(x: npt.NDArray, y: npt.NDArray) -> tuple[npt.NDArray, npt.NDArray]:
     """Prepare data for downstream task."""
     _x = np.ravel(x)
     _y = np.ravel(y)
@@ -66,7 +67,7 @@ def _prep_arrays(x: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     return _x, _y
 
 
-def chatterjee_xi(x: np.ndarray, y: np.ndarray) -> float:
+def chatterjee_xi(x: npt.NDArray, y: npt.NDArray) -> float:
     """Calculate Xi correlation coefficient.
 
     Another variation of rank correlation which does not make any assumptions about
@@ -123,7 +124,7 @@ def chatterjee_xi(x: np.ndarray, y: np.ndarray) -> float:
     )
 
 
-def concordance_correlation(x: np.ndarray, y: np.ndarray) -> float:
+def concordance_correlation(x: npt.NDArray, y: npt.NDArray) -> float:
     """Calculate concordance correlation coefficient.
 
     The main difference between Pearson's R and CCC is that CCC
@@ -131,6 +132,9 @@ def concordance_correlation(x: np.ndarray, y: np.ndarray) -> float:
 
     CCC measures the agreement between two variables, e.g.,
     to evaluate reproducibility or for inter-rater reliability.
+
+    This measure will be sensetive to any perturbation in the arrays,
+    i.e. it is not addition or multiplication invariant.
 
     The arrays will be flatten before any calculations.
 
@@ -166,7 +170,7 @@ def concordance_correlation(x: np.ndarray, y: np.ndarray) -> float:
     return float(p * x_a)
 
 
-def concordance_rate(x: np.ndarray, y: np.ndarray) -> float:
+def concordance_rate(x: npt.NDArray, y: npt.NDArray) -> float:
     """Calculate conventional concordance rate.
 
     Also known as quadrant count ratio.
@@ -222,7 +226,7 @@ def concordance_rate(x: np.ndarray, y: np.ndarray) -> float:
     )
 
 
-def symmetric_chatterjee_xi(x: np.ndarray, y: np.ndarray) -> float:
+def symmetric_chatterjee_xi(x: npt.NDArray, y: npt.NDArray) -> float:
     """Calculate symmetric Xi correlation coefficient.
 
     Another variation of rank correlation which does not make any assumptions about
@@ -291,7 +295,7 @@ def symmetric_chatterjee_xi(x: np.ndarray, y: np.ndarray) -> float:
     )
 
 
-def zhang_i(x: np.ndarray, y: np.ndarray) -> float:
+def zhang_i(x: npt.NDArray, y: npt.NDArray) -> float:
     """Calculate I correlation coefficient proposed by Q. Zhang.
 
     This coefficient combines Spearman and Chatterjee rank correlation coefficients
@@ -338,12 +342,14 @@ def zhang_i(x: np.ndarray, y: np.ndarray) -> float:
     )
 
 
-def tanimoto_similarity(x: np.ndarray, y: np.ndarray) -> float:
+def tanimoto_similarity(x: npt.NDArray, y: npt.NDArray) -> float:
     """Calculate Tanimoto similarity.
 
     It is very similar to Jaccard or Cosine similarity but differs in how
     dot product is normalized.
     This version is designed for numeric values, instead of sets.
+
+    This measure is not adddition invariant.
 
     The arrays will be flatten before any calculations.
 
@@ -381,7 +387,7 @@ def tanimoto_similarity(x: np.ndarray, y: np.ndarray) -> float:
     return float(xy / (xx + yy - xy))
 
 
-def blomqvist_beta(x: np.ndarray, y: np.ndarray) -> float:
+def blomqvist_beta(x: npt.NDArray, y: npt.NDArray) -> float:
     """Calculate Blomqvist's beta.
 
     Also known as medial correlation. It is similar to Spearman Rho
@@ -427,7 +433,7 @@ def blomqvist_beta(x: np.ndarray, y: np.ndarray) -> float:
     return float(np.mean(np.sign((x - med_x) * (y - med_y))))
 
 
-def fechner_correlation(x: np.ndarray, y: np.ndarray) -> float:
+def fechner_correlation(x: npt.NDArray, y: npt.NDArray) -> float:
     """Calculate Fechner correlation.
 
     It is similar to Bloomqvist beta and Pearson correlation.
@@ -467,7 +473,7 @@ def fechner_correlation(x: np.ndarray, y: np.ndarray) -> float:
     return float(np.mean(np.sign(x - avg_x) * np.sign(y - avg_y)))
 
 
-def winsorized_correlation(x: np.ndarray, y: np.ndarray, k: float = 0.1) -> float:
+def winsorized_correlation(x: npt.NDArray, y: npt.NDArray, k: float = 0.1) -> float:
     """Calculate winsorized correlation coefficient.
 
     This correlation is a robust alternative of the Pearson correlation.
@@ -508,7 +514,7 @@ def winsorized_correlation(x: np.ndarray, y: np.ndarray, k: float = 0.1) -> floa
     return float(np.corrcoef(x_w, y_w)[0, 1])
 
 
-def rank_minrelation_coefficient(x: np.ndarray, y: np.ndarray) -> float:
+def rank_minrelation_coefficient(x: npt.NDArray, y: npt.NDArray) -> float:
     """Calculate rank minrelation coefficient.
 
     This measure estimates p(y > x) when x and y are continuous random variables.
@@ -558,7 +564,7 @@ def rank_minrelation_coefficient(x: np.ndarray, y: np.ndarray) -> float:
     return float((lower - higher) / (lower + higher))
 
 
-def tukey_correlation(x: np.ndarray, y: np.ndarray) -> float:
+def tukey_correlation(x: npt.NDArray, y: npt.NDArray) -> float:
     """Calculate Tukey's correlation coefficient.
 
     It is not quite as robust as rank correlations, but it is more
@@ -604,7 +610,7 @@ def tukey_correlation(x: np.ndarray, y: np.ndarray) -> float:
     return float(max(min(coef, 1.0), -1.0))
 
 
-def gaussain_rank_correlation(x: np.ndarray, y: np.ndarray) -> float:
+def gaussain_rank_correlation(x: npt.NDArray, y: npt.NDArray) -> float:
     """Calculate Gaussian rank correlation coefficient.
 
     The Gaussian rank correlation equals the usual correlation coefficient
@@ -645,7 +651,7 @@ def gaussain_rank_correlation(x: np.ndarray, y: np.ndarray) -> float:
     return float(max(min(coef, 1.0), -1.0))
 
 
-def quantile_correlation(x: np.ndarray, y: np.ndarray, q: float = 0.5) -> float:
+def quantile_correlation(x: npt.NDArray, y: npt.NDArray, q: float = 0.5) -> float:
     """Calculate quantile correlation.
 
     This function measures linear association between two
@@ -690,7 +696,7 @@ def quantile_correlation(x: np.ndarray, y: np.ndarray, q: float = 0.5) -> float:
     )
 
 
-def normalized_chatterjee_xi(x: np.ndarray, y: np.ndarray) -> float:
+def normalized_chatterjee_xi(x: npt.NDArray, y: npt.NDArray) -> float:
     """Calculate normalizd Xi correlation coefficient.
 
     Another variation of rank correlation which does not make any assumptions about
@@ -765,5 +771,98 @@ def normalized_chatterjee_xi(x: np.ndarray, y: np.ndarray) -> float:
                 * np.sum(np.abs(np.diff(right_yy)))
                 / np.mean(left_yy * (n - left_yy)),
             ),
+        )
+    )
+
+
+def morisita_horn_similarity(x: npt.NDArray, y: npt.NDArray) -> float:
+    """Calculate Morisita-Horn similarity.
+
+    It is very similar to Jaccard or Cosine similarity but differs in how
+    dot product is normalized.
+    This version is designed for numeric values, instead of sets.
+
+    This measure is not adddition invariant.
+
+    The arrays will be flatten before any calculations.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+    y : array_like
+        Input array.
+
+    Returns
+    -------
+    mhs : float.
+        The value of the Morisita-Horn similarity.
+
+    References
+    ----------
+    Magurran A.E. (2005).
+    Biological diversity.
+    Curr Biol 15:R116-8.
+
+    See Also
+    --------
+    obscure_stats.association.tanimoto_similarity - Tanimoto Similarity.
+    """
+    if _check_arrays(x, y):
+        return np.nan
+    x, y = _prep_arrays(x, y)
+    if _check_arrays(x, y):
+        return np.nan
+    mean_x = np.mean(x)
+    mean_y = np.mean(y)
+    return float(
+        np.sum(2 * x * y) / np.sum(x**2 * mean_y / mean_x + y**2 * mean_x / mean_y)
+    )
+
+
+def rank_divergence(x: npt.NDArray, y: npt.NDArray, a: float = 2.0) -> float:
+    """Calculate Rank-Turbulence divergence.
+
+    It is a rank based divergency measure.
+    As a → 0, high ranked types are increasingly dampened relative to low ranked ones.
+    At the other end of the dial, a → ∞, high rank types will dominate.
+
+    This measure is unnormalized.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+    y : array_like
+        Input array.
+    a : float, default = 2
+        Weighting parameter.
+
+    Returns
+    -------
+    rtd : float.
+        The value of the rank-turbulence divergence.
+
+    References
+    ----------
+    Dodds, P.S.; Minot, J.R.; Arnold, M.V. (2023).
+    Allotaxonometry and rank-turbulence divergence:
+    a universal instrument for comparing complex systems.
+    EPJ Data Sci. 12, 37.
+    """
+    if _check_arrays(x, y):
+        return np.nan
+    x, y = _prep_arrays(x, y)
+    if _check_arrays(x, y):
+        return np.nan
+    if a <= 0:
+        msg = "Parameter a should be > 0."
+        raise ValueError(msg)
+    return float(
+        (a + 1.0)
+        / a
+        * np.mean(
+            np.abs(1.0 / stats.rankdata(x) ** a - 1.0 / stats.rankdata(y) ** a)
+            ** (1.0 / (a + 1.0))
         )
     )

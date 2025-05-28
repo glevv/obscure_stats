@@ -4,6 +4,7 @@ import math
 import typing
 
 import numpy as np
+import numpy.typing as npt
 import pytest
 from hypothesis import given
 from hypothesis import strategies as st
@@ -61,7 +62,7 @@ def test_kurt_sensibility(func: typing.Callable, seed: int) -> None:
 
 
 @pytest.mark.parametrize("func", all_functions)
-def test_statistic_with_nans(func: typing.Callable, x_array_nan: np.ndarray) -> None:
+def test_statistic_with_nans(func: typing.Callable, x_array_nan: npt.NDArray) -> None:
     """Test for different data types."""
     if math.isnan(func(x_array_nan)):
         msg = "Statistic should not return nans."
@@ -69,7 +70,7 @@ def test_statistic_with_nans(func: typing.Callable, x_array_nan: np.ndarray) -> 
 
 
 @pytest.mark.parametrize("func", all_functions)
-def test_invariance_add(func: typing.Callable, x_array_float: np.ndarray) -> None:
+def test_invariance_add(func: typing.Callable, x_array_float: npt.NDArray) -> None:
     """Test coefficients for invariance to addition."""
     res1 = func(x_array_float)
     res2 = func(x_array_float + 10)
@@ -79,7 +80,7 @@ def test_invariance_add(func: typing.Callable, x_array_float: np.ndarray) -> Non
 
 
 @pytest.mark.parametrize("func", all_functions)
-def test_invariance_mult(func: typing.Callable, x_array_float: np.ndarray) -> None:
+def test_invariance_mult(func: typing.Callable, x_array_float: npt.NDArray) -> None:
     """Test coefficients for invariance to multiplication."""
     res1 = func(x_array_float)
     res2 = func(x_array_float * 10)
@@ -89,7 +90,7 @@ def test_invariance_mult(func: typing.Callable, x_array_float: np.ndarray) -> No
 
 
 @pytest.mark.parametrize("func", all_functions)
-def test_change_sign(func: typing.Callable, x_array_float: np.ndarray) -> None:
+def test_change_sign(func: typing.Callable, x_array_float: npt.NDArray) -> None:
     """Test change of sign of statistic if array changed sign."""
     res1 = func(x_array_float)
     res2 = func(-x_array_float)
@@ -106,6 +107,6 @@ def test_change_sign(func: typing.Callable, x_array_float: np.ndarray) -> None:
     )
 )
 @pytest.mark.parametrize("func", all_functions)
-def test_fuzz_kurtosises(func: typing.Callable, data: np.ndarray) -> None:
+def test_fuzz_kurtosises(func: typing.Callable, data: npt.NDArray) -> None:
     """Test all functions with fuzz."""
     func(data)
