@@ -5,6 +5,7 @@ import typing
 from functools import partial
 
 import numpy as np
+import numpy.typing as npt
 import pytest
 from hypothesis import given
 from hypothesis import strategies as st
@@ -61,14 +62,14 @@ def test_var_sensibility_higher_better(func: typing.Callable, seed: int) -> None
 
 
 @pytest.mark.parametrize("func", all_functions)
-def test_statistic_with_nans(func: typing.Callable, c_array_nan: np.ndarray) -> None:
+def test_statistic_with_nans(func: typing.Callable, c_array_nan: npt.NDArray) -> None:
     """Test for different data types."""
     if math.isnan(func(c_array_nan)):
         msg = "Statistic should not return nans."
         raise ValueError(msg)
 
 
-def test_renyi_entropy_edgecases(c_array_obj: np.ndarray) -> None:
+def test_renyi_entropy_edgecases(c_array_obj: npt.NDArray) -> None:
     """Test for different edgecases of Renyi entropy."""
     with pytest.raises(ValueError, match="alpha should be positive"):
         renyi_entropy(c_array_obj, alpha=-1)
@@ -98,6 +99,6 @@ def test_renyi_entropy_edgecases(c_array_obj: np.ndarray) -> None:
     )
 )
 @pytest.mark.parametrize("func", all_functions)
-def test_fuzz_variations(func: typing.Callable, data: np.ndarray) -> None:
+def test_fuzz_variations(func: typing.Callable, data: npt.NDArray) -> None:
     """Test all functions with fuzz."""
     func(data)

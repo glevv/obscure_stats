@@ -12,6 +12,7 @@ Authors of `obscure_stats` library take the security of the open source code rep
 | 0.2.x   | :x:                |
 | 0.3.x   | :white_check_mark: |
 | 0.4.x   | :white_check_mark: |
+| 0.5.x   | :white_check_mark: |
 
 ## Reporting a Vulnerability
 

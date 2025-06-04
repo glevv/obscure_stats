@@ -1,10 +1,11 @@
 """Module for measures of kurtosis."""
 
 import numpy as np
+import numpy.typing as npt
 from scipy import special, stats  # type: ignore[import-untyped]
 
 
-def l_kurt(x: np.ndarray) -> float:
+def l_kurt(x: npt.NDArray) -> float:
     """Calculate standardized linear kurtosis.
 
     This measure is a 4th linear moment, which is an
@@ -39,7 +40,7 @@ def l_kurt(x: np.ndarray) -> float:
     return float(l4 / l2)
 
 
-def moors_kurt(x: np.ndarray) -> float:
+def moors_kurt(x: npt.NDArray) -> float:
     """Calculate Moor's vision of kurtosis, based on Z score.
 
     The kurtosis can now be seen as a measure of the dispersion of
@@ -66,7 +67,7 @@ def moors_kurt(x: np.ndarray) -> float:
     return float(np.nanvar(stats.zscore(x, nan_policy="omit") ** 2) + 1)
 
 
-def moors_octile_kurt(x: np.ndarray) -> float:
+def moors_octile_kurt(x: npt.NDArray) -> float:
     """Calculate Moors measure of kurtosis based on octiles (uncentered, unscaled).
 
     This measure should be more robust than moment based kurtosis.
@@ -91,7 +92,7 @@ def moors_octile_kurt(x: np.ndarray) -> float:
     return float(((o7 - o5) + (o3 - o1)) / (o6 - o2))
 
 
-def hogg_kurt(x: np.ndarray) -> float:
+def hogg_kurt(x: npt.NDArray) -> float:
     """Calculatie Hogg's kurtosis coefficient.
 
     It is based on means of values between different percentiles (uncentered, unscaled).
@@ -124,7 +125,7 @@ def hogg_kurt(x: np.ndarray) -> float:
     )
 
 
-def crow_siddiqui_kurt(x: np.ndarray) -> float:
+def crow_siddiqui_kurt(x: npt.NDArray) -> float:
     """Calculate Crow & Siddiqui kurtosis coefficient.
 
     It is based on quartiles and percentiles (uncentered, unscaled) and
@@ -152,7 +153,7 @@ def crow_siddiqui_kurt(x: np.ndarray) -> float:
     return float((p975 - p025) / (p75 - p25))
 
 
-def reza_ma_kurt(x: np.ndarray) -> float:
+def reza_ma_kurt(x: npt.NDArray) -> float:
     """Calculatie Reza & Ma kurtosis coefficient.
 
     It is based on hexadeciles (uncentered, unscaled) and is very
@@ -179,7 +180,7 @@ def reza_ma_kurt(x: np.ndarray) -> float:
     return float(((h15 - h9) + (h7 - h1)) / (h15 - h1))
 
 
-def staudte_kurt(x: np.ndarray) -> float:
+def staudte_kurt(x: npt.NDArray) -> float:
     """Calculate Staudte kurtosis coefficient.
 
     It is based on inter-percentile ranges (uncentered, unscaled) and
@@ -207,7 +208,7 @@ def staudte_kurt(x: np.ndarray) -> float:
     return float((p90 - p10) / (p66 - p33))
 
 
-def schmid_trede_peakedness(x: np.ndarray) -> float:
+def schmid_trede_peakedness(x: npt.NDArray) -> float:
     """Calculate Schmid and Trder measure of peakedness P.
 
     It is based on inter-percentile ranges (uncentered, unscaled) and

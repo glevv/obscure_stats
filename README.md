@@ -13,80 +13,83 @@
 
 ## Current API list
 
-- Collection of measures of central tendency - `obscure_stats/central_tendency`:
-    * Contraharmonic Mean;
-    * Gastwirth's Location;
-    * Grenander's Mode;
-    * Half-Sample Mode;
-    * Hodges-Lehmann-Sen Location;
-    * Midhinge;
-    * Midmean;
-    * Midrange;
-    * Standard Trimmed Harrell-Davis Quantile;
-    * Tau Measure of Location;
-    * Trimean.
-- Collection of measures of dispersion - `obscure_stats/dispersion`:
-    * Coefficient of Range;
-    * Coefficient of Variation;
-    * Cole's Index of Dispersion;
-    * Fisher's Index of Dispersion;
-    * Gini Mean Difference;
-    * Linear Coefficient of Variation;
-    * Inter-expectile Range;
-    * Morisita Index of Dispersion;
-    * Quartile Coefficient of Dispersion;
-    * Robust Coefficient of Variation;
-    * Shamos Estimator;
-    * Standard Quantile Absolute Deviation;
-    * Studentized Range.
-- Collection of measures of skewness - `obscure_stats/skewness`:
-    * Area Under the Skewness Curve;
-    * Bickel Mode Skewness Coefficient;
-    * Bowley Skewness Coefficient;
-    * Forhad-Shorna Rank Skewness Coefficient;
-    * Groeneveld Range Skewness Coefficient;
-    * Hossain-Adnan Skewness Coefficient;
-    * Kelly Skewness Coefficient;
-    * L-Skewness Coefficient;
-    * Left Quantile Weight;
-    * Medeen Skewness Coefficient;
-    * Pearson Median Skewness Coefficient;
-    * Pearson Mode Skewness Coefficient;
-    * Right Quantile Weight;
-- Collection of measures of kurtosis - `obscure_stats/kurtosis`:
-    * Crow-Siddiqui Kurtosis;
-    * L-Kurtosis;
-    * Hogg Kurtosis;
-    * Moors Kurtosis;
-    * Moors Octile Kurtosis;
-    * Reza-Ma Kurtosis;
-    * Schmid-Trede measure of Peakedness;
-    * Staudte Kurtosis.
-- Collection of measures of association - `obscure_stats/association`:
-    * Blomqvist's Beta;
-    * Chatterjee Xi Correlation Coefficient;
-    * Concordance Correlation Coefficient;
-    * Concordance Rate;
-    * Fechner Correlation Coefficient;
-    * Gaussian Rank Correlation Coefficient;
-    * Normalized Chatterjee Xi Correlation Coefficient;
-    * Quantile Correlation Coefficient;
-    * Rank Minrelation Coefficient;
-    * Symmetric Chatterjee Xi Correlation Coefficient;
-    * Tanimoto Similarity;
-    * Tukey's Correlation Coefficient;
-    * Winsorized Correlation Coefficient;
-    * Zhang I Correlation Coefficient.
-- Collection of measures of qualitative variation - `obscure_stats/variation`:
-    * AVDev;
-    * B Index;
-    * Gibbs M1;
-    * Gibbs M2;
-    * McIntosh's D;
-    * ModVR;
-    * Negative Extropy;
-    * RanVR;
-    * Rényi entropy.
+- Collection of measures of central tendency - `obscure_stats.central_tendency`:
+    * Contraharmonic Mean - `contraharmonic_mean`;
+    * Gastwirth's Location - `gastwirth_location`;
+    * Grenander's Mode - `grenanders_m`;
+    * Half-Sample Mode - `half_sample_mode`;
+    * Hodges-Lehmann-Sen Location - `hodges_lehmann_sen_location`;
+    * Midhinge - `midhinge`;
+    * Midmean - `midmean`;
+    * Midrange - `midrange`;
+    * Standard Trimmed Harrell-Davis Quantile - `standard_trimmed_harrell_davis_quantile`;
+    * Tau Measure of Location - `tau_location`;
+    * Trimean - `trimean`.
+- Collection of measures of dispersion - `obscure_stats.dispersion`:
+    * Coefficient of Range - `coefficient_of_range`;
+    * Coefficient of Variation - `coefficient_of_variation`;
+    * Cole's Index of Dispersion - `cole_index_of_dispersion`;
+    * Fisher's Index of Dispersion - `fisher_index_of_dispersion`;
+    * Gini Mean Difference - `gini_mean_difference`;
+    * Linear Coefficient of Variation - `coefficient_of_lvariation`;
+    * Inter-expectile Range - `inter_expectile_range`;
+    * Morisita Index of Dispersion - `morisita_index_of_dispersion`;
+    * Quartile Coefficient of Dispersion - `quartile_coefficient_of_dispersion`;
+    * Robust Coefficient of Variation - `robust_coefficient_of_variation`;
+    * Shamos Estimator - `shamos_estimator`;
+    * Standard Quantile Absolute Deviation - `standard_quantile_absolute_deviation`;
+    * Studentized Range - `studentized_range`.
+- Collection of measures of skewness - `obscure_stats.skewness`:
+    * Area Under the Skewness Curve - `auc_skew_gamma`;
+    * Bickel Mode Skewness Coefficient - `bickel_mode_skew`;
+    * Bowley Skewness Coefficient - `bowley_skew`;
+    * Cumulative Skewness Coefficient - `cumulative_skew`;
+    * Forhad-Shorna Rank Skewness Coefficient - `forhad_shorna_rank_skew`;
+    * Groeneveld Range Skewness Coefficient - `groeneveld_range_skew`;
+    * Hossain-Adnan Skewness Coefficient - `hossain_adnan_skew`;
+    * Kelly Skewness Coefficient - `kelly_skew`;
+    * Linear Skewness Coefficient - `l_skew`;
+    * Left Quantile Weight - `left_quantile_weight`;
+    * Medeen Skewness Coefficient - `medeen_skew`;
+    * Pearson Median Skewness Coefficient - `pearson_median_skew`;
+    * Pearson Mode Skewness Coefficient - `pearson_mode_skew`;
+    * Right Quantile Weight - `right_quantile_weight`.
+- Collection of measures of kurtosis - `obscure_stats.kurtosis`:
+    * Crow-Siddiqui Kurtosis Coefficient - `crow_siddiqui_kurt`;
+    * Hogg Kurtosis Coefficient - `hogg_kurt`;
+    * Linear Kurtosis Coefficient - `l_kurt`;
+    * Moors Kurtosis Coefficient - `moors_kurt`;
+    * Moors Octile Kurtosis Coefficient - `moors_octile_kurt`;
+    * Reza-Ma Kurtosis Coefficient - `reza_ma_kurt`;
+    * Schmid-Trede measure of Peakedness - `schmid_trede_peakedness`;
+    * Staudte Kurtosis Coefficient - `staudte_kurt`.
+- Collection of measures of association - `obscure_stats.association`:
+    * Blomqvist's Beta - `blomqvist_beta`;
+    * Chatterjee Xi Correlation Coefficient - `chatterjee_xi`;
+    * Concordance Correlation Coefficient - `concordance_correlation`;
+    * Concordance Rate - `concordance_rate`;
+    * Fechner Correlation Coefficient - `fechner_correlation`;
+    * Gaussian Rank Correlation Coefficient - `gaussain_rank_correlation`;
+    * Morisita-Horn Similarity - `morisita_horn_similarity`;
+    * Normalized Chatterjee Xi Correlation Coefficient - `normalized_chatterjee_xi`;
+    * Quantile Correlation Coefficient - `quantile_correlation`;
+    * Rank Minrelation Coefficient - `rank_minrelation_coefficient`;
+    * Rank-Turbulence Divergence - `rank_divergence`;
+    * Symmetric Chatterjee Xi Correlation Coefficient - `symmetric_chatterjee_xi`;
+    * Tanimoto Similarity - `tanimoto_similarity`;
+    * Tukey's Correlation Coefficient - `tukey_correlation`;
+    * Winsorized Correlation Coefficient - `winsorized_correlation`;
+    * Zhang I Correlation Coefficient - `zhang_i`.
+- Collection of measures of qualitative variation - `obscure_stats.variation`:
+    * AVDev - `avdev`;
+    * B Index - `b_index`;
+    * Gibbs M1 - `gibbs_m1`;
+    * Gibbs M2 - `gibbs_m2`;
+    * McIntosh's D - `mcintosh_d`;
+    * ModVR - `mod_vr`;
+    * Negative Extropy - `negative_extropy`;
+    * RanVR - `range_vr`;
+    * Rényi entropy - `renyi_entropy`.
 
 ## Installation
 
