@@ -760,17 +760,19 @@ def normalized_chatterjee_xi(x: npt.NDArray, y: npt.NDArray) -> float:
         max(
             -1,
             (
-                1
-                - 0.5
-                * np.sum(np.abs(np.diff(right_xy)))
-                / np.mean(left_xy * (n - left_xy))
-            )
-            / (
-                1
-                - 0.5
-                * np.sum(np.abs(np.diff(right_yy)))
-                / np.mean(left_yy * (n - left_yy)),
-            ),
+                (
+                    1
+                    - 0.5
+                    * np.sum(np.abs(np.diff(right_xy)))
+                    / np.mean(left_xy * (n - left_xy))
+                )
+                / (
+                    1
+                    - 0.5
+                    * np.sum(np.abs(np.diff(right_yy)))
+                    / np.mean(left_yy * (n - left_yy)),
+                )
+            ).item(),
         )
     )
 
