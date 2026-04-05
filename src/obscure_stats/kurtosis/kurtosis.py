@@ -2,42 +2,7 @@
 
 import numpy as np
 import numpy.typing as npt
-from scipy import special, stats  # type: ignore[import-untyped]
-
-
-def l_kurt(x: npt.NDArray) -> float:
-    """Calculate standardized linear kurtosis.
-
-    This measure is a 4th linear moment, which is an
-    alternative to conventional moments.
-
-    Parameters
-    ----------
-    x : array_like
-        Input array.
-
-    Returns
-    -------
-    lkr : float
-        The value of L-Kurtosis.
-
-    References
-    ----------
-    Hosking, J. R. M. (1990).
-    L-moments: analysis and estimation of distributions
-    using linear combinations of order statistics.
-    Journal of the Royal Statistical Society, Series B. 52 (1): 105-124.
-    """
-    _x = np.sort(x)
-    n = len(_x)
-    common = 1 / special.comb(n - 1, (0, 1, 2, 4)) / n
-    betas = [
-        common[i] * np.nansum(special.comb(np.arange(i, n), i) * _x[i:])
-        for i in range(4)
-    ]
-    l4 = 20 * betas[3] - 30 * betas[2] + 12 * betas[1] - betas[0]
-    l2 = 2 * betas[1] - betas[0]
-    return float(l4 / l2)
+from scipy import stats  # type: ignore[import-untyped]
 
 
 def moors_kurt(x: npt.NDArray) -> float:
@@ -45,7 +10,7 @@ def moors_kurt(x: npt.NDArray) -> float:
 
     The kurtosis can now be seen as a measure of the dispersion of
     squared Z around its expectation.
-    Alternatively it can be seen to be a measure of the dispersion
+    Alternatively, it can be seen to be a measure of the dispersion
     of Z around +1 and -1.
 
     Parameters

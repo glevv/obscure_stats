@@ -4,44 +4,9 @@ from __future__ import annotations
 
 import numpy as np
 import numpy.typing as npt
-from scipy import integrate, special, stats  # type: ignore[import-untyped]
+from scipy import integrate, stats  # type: ignore[import-untyped]
 
 from obscure_stats.central_tendency import half_sample_mode
-
-
-def l_skew(x: npt.NDArray) -> float:
-    """Calculate standardized linear skewness.
-
-    This measure is a 3rd linear moment, which is an
-    alternative to conventional moments.
-
-    Parameters
-    ----------
-    x : array_like
-        Input array.
-
-    Returns
-    -------
-    lsk : float.
-        The value of L-Skewness.
-
-    References
-    ----------
-    Hosking, J. R. M. (1990).
-    L-moments: analysis and estimation of distributions
-    using linear combinations of order statistics.
-    Journal of the Royal Statistical Society, Series B. 52 (1): 105-124.
-    """
-    _x = np.sort(x)
-    n = len(_x)
-    common = 1 / special.comb(n - 1, (0, 1, 2)) / n
-    betas = [
-        common[i] * np.nansum(special.comb(np.arange(i, n), i) * _x[i:])
-        for i in range(3)
-    ]
-    l3 = 6 * betas[2] - 6 * betas[1] + betas[0]
-    l2 = 2 * betas[1] - betas[0]
-    return float(l3 / l2)
 
 
 def pearson_mode_skew(x: npt.NDArray) -> float:
@@ -98,7 +63,7 @@ def bickel_mode_skew(x: npt.NDArray) -> float:
 
 
 def pearson_median_skew(x: npt.NDArray) -> float:
-    """Calculatie Pearson's median skew coefficient.
+    """Calculate Pearson's median skew coefficient.
 
     Parameters
     ----------

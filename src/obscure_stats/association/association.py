@@ -14,8 +14,8 @@ from obscure_stats.dispersion import gini_mean_difference
 def _check_arrays(x: npt.NDArray, y: npt.NDArray) -> bool:
     """Check arrays.
 
-    - Equal lenghts of the arrays;
-    - Enough lenghts of the arrays;
+    - Equal lengths of the arrays;
+    - Enough lengths of the arrays;
     - Constant input;
     - Contains inf.
     """
@@ -23,12 +23,12 @@ def _check_arrays(x: npt.NDArray, y: npt.NDArray) -> bool:
     _y = np.ravel(y)
     if len(_x) != len(_y):
         warnings.warn(
-            "Lenghts of the inputs do not match, please check the arrays.", stacklevel=2
+            "Lengths of the inputs do not match, please check the arrays.", stacklevel=2
         )
         return True
     if len(_x) <= 1:
         warnings.warn(
-            "Lenghts of the inputs are too small, please check the arrays.",
+            "Lengths of the inputs are too small, please check the arrays.",
             stacklevel=2,
         )
         return True
@@ -67,63 +67,6 @@ def _prep_arrays(x: npt.NDArray, y: npt.NDArray) -> tuple[npt.NDArray, npt.NDArr
     return _x, _y
 
 
-def chatterjee_xi(x: npt.NDArray, y: npt.NDArray) -> float:
-    """Calculate Xi correlation coefficient.
-
-    Another variation of rank correlation which does not make any assumptions about
-    underlying distributions of the variable.
-
-    It ranges from 0 (variables are completely independent) to 1
-    (one is a measurable function of the other). But a lot of the times the maximum
-    value of the coefficient is lower than 1.
-
-    This implementation does not break ties at random, instead
-    it break ties depending on order. This makes it dependent on
-    data sorting, which could be useful in application like time
-    series.
-
-    The arrays will be flatten before any calculations.
-
-    Parameters
-    ----------
-    x : array_like
-        Input array.
-    y : array_like
-        Input array.
-
-    Returns
-    -------
-    xi : float.
-        The value of the xi correlation coefficient.
-
-    References
-    ----------
-    Chatterjee, S. (2021).
-    A new coefficient of correlation.
-    Journal of the American Statistical Association, 116(536), 2009-2022.
-
-    Notes
-    -----
-    This measure is assymetric: (x, y) != (y, x).
-    """
-    if _check_arrays(x, y):
-        return np.nan
-    x, y = _prep_arrays(x, y)
-    if _check_arrays(x, y):
-        return np.nan
-    # heavily inspired by https://github.com/czbiohub-sf/xicor/issues/17#issue-965635013
-    n = len(x)
-    y_forward_ordered = y[np.argsort(x)]
-    _, y_unique_indexes, y_counts = np.unique(
-        y_forward_ordered, return_inverse=True, return_counts=True
-    )
-    right = np.cumsum(y_counts)[y_unique_indexes]
-    left = np.cumsum(y_counts[::-1])[len(y_counts) - y_unique_indexes - 1]
-    return float(
-        1.0 - 0.5 * np.sum(np.abs(np.diff(right))) / np.mean(left * (n - left))
-    )
-
-
 def concordance_correlation(x: npt.NDArray, y: npt.NDArray) -> float:
     """Calculate concordance correlation coefficient.
 
@@ -133,7 +76,7 @@ def concordance_correlation(x: npt.NDArray, y: npt.NDArray) -> float:
     CCC measures the agreement between two variables, e.g.,
     to evaluate reproducibility or for inter-rater reliability.
 
-    This measure will be sensetive to any perturbation in the arrays,
+    This measure will be sensitive to any perturbation in the arrays,
     i.e. it is not addition or multiplication invariant.
 
     The arrays will be flatten before any calculations.
@@ -178,7 +121,7 @@ def concordance_rate(x: npt.NDArray, y: npt.NDArray) -> float:
 
     It differs from quadrant count ratio by adding and exclusion zone
     variation has an option for an exclusion zone. It is based on the
-    standard error of the mean and will exlucde points that are in the
+    standard error of the mean and will exclude points that are in the
     range of mean+-sem.
 
     The arrays will be flatten before any calculations.
@@ -233,7 +176,7 @@ def symmetric_chatterjee_xi(x: npt.NDArray, y: npt.NDArray) -> float:
     underlying distributions of the variable.
 
     It ranges from 0 (variables are completely independent) to 1
-    (one is a measurable function of the other). But a lot of the times the maximum
+    (one is a measurable function of the other). But a lot of the time the maximum
     value of the coefficient is lower than 1.
 
     This implementation does not break ties at random, instead
@@ -263,35 +206,13 @@ def symmetric_chatterjee_xi(x: npt.NDArray, y: npt.NDArray) -> float:
 
     See Also
     --------
-    obscure_stats.associaton.chatterjee_xi - Chatterjee Xi coefficient.
+    scipy.stats.chatterjee_xi - Chatterjee Xi coefficient.
     """
     if _check_arrays(x, y):
         return np.nan
-    x, y = _prep_arrays(x, y)
-    if _check_arrays(x, y):
-        return np.nan
-    n = len(x)
-    # y ~ f(x)
-    y_forward_ordered = y[np.argsort(x)]
-    _, y_unique_indexes, y_counts = np.unique(
-        y_forward_ordered, return_inverse=True, return_counts=True
-    )
-    right_xy = np.cumsum(y_counts)[y_unique_indexes]
-    left_xy = np.cumsum(y_counts[::-1])[len(y_counts) - y_unique_indexes - 1]
-    # x ~ f(y)
-    x_forward_ordered = x[np.argsort(y)]
-    _, x_unique_indexes, x_counts = np.unique(
-        x_forward_ordered, return_inverse=True, return_counts=True
-    )
-    right_yx = np.cumsum(x_counts)[x_unique_indexes]
-    left_yx = np.cumsum(x_counts[::-1])[len(x_counts) - x_unique_indexes - 1]
-    # choose the highest from the two
-    return float(
-        1.0
-        - min(
-            0.5 * np.sum(np.abs(np.diff(right_xy))) / np.mean(left_xy * (n - left_xy)),
-            0.5 * np.sum(np.abs(np.diff(right_yx))) / np.mean(left_yx * (n - left_yx)),
-        )
+    return max(
+        stats.chatterjeexi(x, y, nan_policy="omit")[0],
+        stats.chatterjeexi(y, x, nan_policy="omit")[0],
     )
 
 
@@ -299,7 +220,7 @@ def zhang_i(x: npt.NDArray, y: npt.NDArray) -> float:
     """Calculate I correlation coefficient proposed by Q. Zhang.
 
     This coefficient combines Spearman and Chatterjee rank correlation coefficients
-    to get higher sensetivity to complex nonlinear relationships between variables.
+    to get higher sensitivity to complex nonlinear relationships between variables.
 
     The arrays will be flatten before any calculations.
 
@@ -349,7 +270,7 @@ def tanimoto_similarity(x: npt.NDArray, y: npt.NDArray) -> float:
     dot product is normalized.
     This version is designed for numeric values, instead of sets.
 
-    This measure is not adddition invariant.
+    This measure is not addition invariant.
 
     The arrays will be flatten before any calculations.
 
@@ -543,7 +464,7 @@ def rank_minrelation_coefficient(x: npt.NDArray, y: npt.NDArray) -> float:
 
     Notes
     -----
-    This measure is assymetric: (x, y) != (y, x).
+    This measure is asymmetric: (x, y) != (y, x).
 
     See Also
     --------
@@ -592,7 +513,7 @@ def tukey_correlation(x: npt.NDArray, y: npt.NDArray) -> float:
 
     Notes
     -----
-    This measure is assymetric: (x, y) != (y, x).
+    This measure is asymmetric: (x, y) != (y, x).
     """
     if _check_arrays(x, y):
         return np.nan
@@ -683,7 +604,7 @@ def quantile_correlation(x: npt.NDArray, y: npt.NDArray, q: float = 0.5) -> floa
 
     Notes
     -----
-    This measure is assymetric: (x, y) != (y, x).
+    This measure is asymmetric: (x, y) != (y, x).
     """
     if _check_arrays(x, y):
         return np.nan
@@ -697,7 +618,7 @@ def quantile_correlation(x: npt.NDArray, y: npt.NDArray, q: float = 0.5) -> floa
 
 
 def normalized_chatterjee_xi(x: npt.NDArray, y: npt.NDArray) -> float:
-    """Calculate normalizd Xi correlation coefficient.
+    """Calculate normalized Xi correlation coefficient.
 
     Another variation of rank correlation which does not make any assumptions about
     underlying distributions of the variable.
@@ -733,47 +654,13 @@ def normalized_chatterjee_xi(x: npt.NDArray, y: npt.NDArray) -> float:
 
     Notes
     -----
-    This measure is assymetric: (x, y) != (y, x).
+    This measure is asymmetric: (x, y) != (y, x).
     """
     if _check_arrays(x, y):
         return np.nan
-    x, y = _prep_arrays(x, y)
-    if _check_arrays(x, y):
-        return np.nan
-    n = len(x)
-    # y ~ f(x)
-    y_forward_ordered = y[np.argsort(x)]
-    _, y_unique_indexes, y_counts = np.unique(
-        y_forward_ordered, return_inverse=True, return_counts=True
-    )
-    right_xy = np.cumsum(y_counts)[y_unique_indexes]
-    left_xy = np.cumsum(y_counts[::-1])[len(y_counts) - y_unique_indexes - 1]
-    # y ~ f(y)
-    y_ordered = y[np.argsort(y)]
-    _, y_unique_indexes, y_counts = np.unique(
-        y_ordered, return_inverse=True, return_counts=True
-    )
-    right_yy = np.cumsum(y_counts)[y_unique_indexes]
-    left_yy = np.cumsum(y_counts[::-1])[len(y_counts) - y_unique_indexes - 1]
-    # divide one by another
-    return float(
-        max(
-            -1,
-            (
-                (
-                    1
-                    - 0.5
-                    * np.sum(np.abs(np.diff(right_xy)))
-                    / np.mean(left_xy * (n - left_xy))
-                )
-                / (
-                    1
-                    - 0.5
-                    * np.sum(np.abs(np.diff(right_yy)))
-                    / np.mean(left_yy * (n - left_yy)),
-                )
-            ).item(),
-        )
+    return (
+        stats.chatterjeexi(x, y, nan_policy="omit")[0]
+        / stats.chatterjeexi(y, y, nan_policy="omit")[0]
     )
 
 
@@ -784,7 +671,7 @@ def morisita_horn_similarity(x: npt.NDArray, y: npt.NDArray) -> float:
     dot product is normalized.
     This version is designed for numeric values, instead of sets.
 
-    This measure is not adddition invariant.
+    This measure is not addition invariant.
 
     The arrays will be flatten before any calculations.
 
@@ -829,7 +716,7 @@ def rank_divergence(x: npt.NDArray, y: npt.NDArray, a: float = 2.0) -> float:
     As a → 0, high ranked types are increasingly dampened relative to low ranked ones.
     At the other end of the dial, a → ∞, high rank types will dominate.
 
-    This measure is unnormalized.
+    This measure is not normalized.
 
     Parameters
     ----------
@@ -868,3 +755,43 @@ def rank_divergence(x: npt.NDArray, y: npt.NDArray, a: float = 2.0) -> float:
             ** (1.0 / (a + 1.0))
         )
     )
+
+
+def symmetric_normalized_chatterjee_xi(x: npt.NDArray, y: npt.NDArray) -> float:
+    """Calculate symmetric normalized Xi correlation coefficient.
+
+    Another variation of rank correlation which does not make any assumptions about
+    underlying distributions of the variable.
+
+    It ranges from 0 (variables are completely independent) to 1
+    (one is a measurable function of the other). This variant normalizes Chatterjee Xi,
+    so it's maximum will always be 1.0.
+
+    This implementation does not break ties at random, instead
+    it break ties depending on order. This makes it dependent on
+    data sorting, which could be useful in application like time
+    series.
+
+    The arrays will be flatten before any calculations.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+    y : array_like
+        Input array.
+
+    Returns
+    -------
+    snxi : float.
+        The value of the symmetric normalized xi correlation coefficient.
+
+    References
+    ----------
+    Dalitz, C.; Arning, J.; Goebbels, S. (2024).
+    A Simple Bias Reduction for Chatterjee's Correlation.
+    J Stat Theory Pract 18, 51.
+    """
+    if _check_arrays(x, y):
+        return np.nan
+    return max(normalized_chatterjee_xi(x, y), normalized_chatterjee_xi(y, x))

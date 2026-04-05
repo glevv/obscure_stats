@@ -12,8 +12,9 @@ Authors of `obscure_stats` library take the security of the open source code rep
 | 0.2.x   | :x:                |
 | 0.3.x   | :x:                |
 | 0.4.x   | :x:                |
-| 0.5.x   | :white_check_mark: |
+| 0.5.x   | :x:                |
 | 0.6.x   | :white_check_mark: |
+| 0.7.x   | :white_check_mark: |
 
 ## Reporting a Vulnerability
 
@@ -21,7 +22,7 @@ If you believe you have found a security vulnerability in this repository, pleas
 
 Please do not report security vulnerabilities through public GitHub issues, discussions, or pull requests.
 
-Instead, please send an email to securityobscurestats.cer9a@slmail.me
+Instead, please email securityobscurestats.cer9a@slmail.me
 
 Please include as much of the information listed below as you can to help us better understand and resolve the issue:
 

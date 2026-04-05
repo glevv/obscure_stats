@@ -12,7 +12,6 @@ from hypothesis.extra.numpy import array_shapes, arrays
 
 from obscure_stats.association import (
     blomqvist_beta,
-    chatterjee_xi,
     concordance_correlation,
     concordance_rate,
     fechner_correlation,
@@ -23,6 +22,7 @@ from obscure_stats.association import (
     rank_divergence,
     rank_minrelation_coefficient,
     symmetric_chatterjee_xi,
+    symmetric_normalized_chatterjee_xi,
     tanimoto_similarity,
     tukey_correlation,
     winsorized_correlation,
@@ -31,7 +31,6 @@ from obscure_stats.association import (
 
 all_functions = [
     blomqvist_beta,
-    chatterjee_xi,
     concordance_correlation,
     concordance_rate,
     fechner_correlation,
@@ -42,6 +41,7 @@ all_functions = [
     rank_minrelation_coefficient,
     rank_divergence,
     symmetric_chatterjee_xi,
+    symmetric_normalized_chatterjee_xi,
     tanimoto_similarity,
     tukey_correlation,
     winsorized_correlation,
@@ -93,10 +93,10 @@ def test_signed_corr_sensibility(
 @pytest.mark.parametrize(
     "func",
     [
-        chatterjee_xi,
         morisita_horn_similarity,
         rank_divergence,
         symmetric_chatterjee_xi,
+        symmetric_normalized_chatterjee_xi,
         zhang_i,
     ],
 )
@@ -117,7 +117,6 @@ def test_unsigned_corr_sensibility(
     "func",
     [
         blomqvist_beta,
-        chatterjee_xi,
         concordance_correlation,
         concordance_rate,
         fechner_correlation,
@@ -128,6 +127,7 @@ def test_unsigned_corr_sensibility(
         rank_divergence,
         tukey_correlation,
         symmetric_chatterjee_xi,
+        symmetric_normalized_chatterjee_xi,
         winsorized_correlation,
         zhang_i,
     ],
@@ -137,9 +137,9 @@ def test_const(func: typing.Callable, y_array_float: npt.NDArray) -> None:
     x = np.ones(shape=(len(y_array_float),))
     with pytest.warns(match="is constant"):
         res = func(x, y_array_float)
-        if not math.isnan(res):
-            msg = f"Corr coef should be 0 with constant input, got {res}"
-            raise ValueError(msg)
+    if not math.isnan(res):
+        msg = f"Corr coef should be 0 with constant input, got {res}"
+        raise ValueError(msg)
 
 
 @pytest.mark.parametrize("func", all_functions)
@@ -165,6 +165,7 @@ def test_const_after_prep(func: typing.Callable, x_array_float: npt.NDArray) -> 
         rank_divergence,
         tanimoto_similarity,
         symmetric_chatterjee_xi,
+        symmetric_normalized_chatterjee_xi,
         winsorized_correlation,
     ],
 )
@@ -187,16 +188,17 @@ def test_notfinite_association(
     y_array_inf: npt.NDArray,
     y_array_int: npt.NDArray,
 ) -> None:
-    """Test for correct nan behaviour."""
+    """Test for correct NaN behavior."""
     if math.isnan(func(x_array_nan, y_array_int)):
         msg = "Corr coef should support nans."
         raise ValueError(msg)
     with pytest.warns(match="too many missing values"):
         func(x_array_nan[:2], x_array_int[:2])
     with pytest.warns(match="contains inf"):
-        if not math.isnan(func(x_array_int, y_array_inf)):
-            msg = "Corr coef should support infs."
-            raise ValueError(msg)
+        res = func(x_array_int, y_array_inf)
+    if not math.isnan(res):
+        msg = "Corr coef should support infs."
+        raise ValueError(msg)
 
 
 @pytest.mark.parametrize("func", all_functions)
@@ -204,7 +206,7 @@ def test_unequal_arrays(
     func: typing.Callable, x_array_int: npt.NDArray, y_array_int: npt.NDArray
 ) -> None:
     """Test for unequal arrays."""
-    with pytest.warns(match="Lenghts of the inputs do not match"):
+    with pytest.warns(match="Lengths of the inputs do not match"):
         func(x_array_int[:4], y_array_int[:3])
 
 
@@ -212,7 +214,7 @@ def test_unequal_arrays(
 def test_a_in_rank_div(
     x_array_float: npt.NDArray, y_array_float: npt.NDArray, a: float
 ) -> None:
-    """Simple tets case for correctnes of a."""
+    """Simple test case for correctness of a parameter value."""
     with pytest.raises(ValueError, match="Parameter a should be > 0"):
         rank_divergence(x_array_float, y_array_float, a=a)
 
