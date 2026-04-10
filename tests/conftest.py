@@ -15,13 +15,13 @@ def x_list_float() -> list[float]:
 
 @pytest.fixture(scope="session")
 def x_list_int() -> list[int]:
-    """List of ints."""
+    """List of integers."""
     return [-1, 2, 0, -2, 3, 11, 0, 1]
 
 
 @pytest.fixture(scope="session")
 def x_array_int(x_list_int: list[int]) -> npt.NDArray:
-    """Array of ints."""
+    """Array of integers."""
     return np.asarray(x_list_int, dtype="int")
 
 
@@ -33,7 +33,7 @@ def x_array_float(x_list_float: npt.NDArray) -> npt.NDArray:
 
 @pytest.fixture(scope="session")
 def x_array_nan(x_array_float: npt.NDArray) -> npt.NDArray:
-    """Array of float with nan."""
+    """Array of float with NaN."""
     temp = x_array_float.copy()
     temp[0] = np.nan
     return temp
@@ -53,7 +53,7 @@ def y_list_int() -> list[int]:
 
 @pytest.fixture(scope="session")
 def y_array_int(y_list_int: list[int]) -> npt.NDArray:
-    """Array of ints."""
+    """Array of integers."""
     return np.asarray(y_list_int, dtype="int")
 
 
@@ -65,7 +65,7 @@ def y_array_float(y_list_float: list[float]) -> npt.NDArray:
 
 @pytest.fixture(scope="session")
 def y_array_inf(y_array_float: npt.NDArray) -> npt.NDArray:
-    """Array of float with nan."""
+    """Array of float with NaN."""
     temp = y_array_float.copy()
     temp[1] = np.inf
     return temp

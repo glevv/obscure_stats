@@ -48,7 +48,6 @@
     * Groeneveld Range Skewness Coefficient - `groeneveld_range_skew`;
     * Hossain-Adnan Skewness Coefficient - `hossain_adnan_skew`;
     * Kelly Skewness Coefficient - `kelly_skew`;
-    * Linear Skewness Coefficient - `l_skew`;
     * Left Quantile Weight - `left_quantile_weight`;
     * Medeen Skewness Coefficient - `medeen_skew`;
     * Pearson Median Skewness Coefficient - `pearson_median_skew`;
@@ -57,7 +56,6 @@
 - Collection of measures of kurtosis - `obscure_stats.kurtosis`:
     * Crow-Siddiqui Kurtosis Coefficient - `crow_siddiqui_kurt`;
     * Hogg Kurtosis Coefficient - `hogg_kurt`;
-    * Linear Kurtosis Coefficient - `l_kurt`;
     * Moors Kurtosis Coefficient - `moors_kurt`;
     * Moors Octile Kurtosis Coefficient - `moors_octile_kurt`;
     * Reza-Ma Kurtosis Coefficient - `reza_ma_kurt`;
@@ -65,7 +63,6 @@
     * Staudte Kurtosis Coefficient - `staudte_kurt`.
 - Collection of measures of association - `obscure_stats.association`:
     * Blomqvist's Beta - `blomqvist_beta`;
-    * Chatterjee Xi Correlation Coefficient - `chatterjee_xi`;
     * Concordance Correlation Coefficient - `concordance_correlation`;
     * Concordance Rate - `concordance_rate`;
     * Fechner Correlation Coefficient - `fechner_correlation`;

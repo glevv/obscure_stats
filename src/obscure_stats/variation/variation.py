@@ -241,7 +241,7 @@ def renyi_entropy(
     if alpha == 1:
         # return Shannon entropy to avoid division by 0
         return float(-np.sum(freq * np.log2(freq)) / normalizer)
-    return float(1 / (1 - alpha) * math.log2(np.sum(freq**alpha)) / normalizer)
+    return 1 / (1 - alpha) * math.log2(np.sum(freq**alpha)) / normalizer
 
 
 def negative_extropy(x: npt.NDArray) -> float:

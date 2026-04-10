@@ -36,7 +36,7 @@ def midrange(x: npt.NDArray) -> float:
 def midhinge(x: npt.NDArray) -> float:
     """Calculate midhinge, i.e. average between 1st and 3rd quartile.
 
-    This measure is more robust then average.
+    This measure is more robust than average.
 
     Parameters
     ----------
@@ -61,7 +61,7 @@ def midhinge(x: npt.NDArray) -> float:
 def trimean(x: npt.NDArray) -> float:
     """Calculate trimean, i.e weighted average between 3 quartiles.
 
-    This measure is more robust then average.
+    This measure is more robust than average.
 
     Parameters
     ----------
@@ -112,7 +112,7 @@ def contraharmonic_mean(x: npt.NDArray) -> float:
 def midmean(x: npt.NDArray) -> float:
     """Calculate interquartile mean, i.e mean inside interquartile range.
 
-    This measure is more robust then average.
+    This measure is more robust than average.
 
     Parameters
     ----------
@@ -162,12 +162,12 @@ def hodges_lehmann_sen_location(x: npt.NDArray) -> float:
 
     Notes
     -----
-    This implementation uses cartesian product, so the time and memory complexity
+    This implementation uses Cartesian product, so the time and memory complexity
     are N^2. It is best to not use it on large arrays.
     """
     # In the original paper authors suggest use only upper triangular
-    # of the cartesian product, but in this implementation we use
-    # whole matrix, which is equvalent.
+    # of the Cartesian product, but in this implementation we use
+    # whole matrix, which is equivalent.
     product = np.meshgrid(x, x, sparse=True)
     return float(np.nanmedian(product[0] + product[1]) * 0.5)
 
@@ -314,7 +314,7 @@ def tau_location(x: npt.NDArray, c: float = 4.5) -> float:
 def grenanders_m(x: npt.NDArray, p: float = 1.001, k: int = 2) -> float:
     """Calculate Grenander's Mode.
 
-    This measure is a direct nonparametric estimation of the mode.
+    This measure is a direct non-parametric estimation of the mode.
     It is not very robust to outliers.
     It is recommended to set k > 2p, but it is only possible if x has
     enough samples.
@@ -339,21 +339,20 @@ def grenanders_m(x: npt.NDArray, p: float = 1.001, k: int = 2) -> float:
     Some direct estimates of the mode.
     Annals of Mathematical Statistics, 36, 131-138.
     """
-    x_sort = np.sort(x)
-    x_sort = x_sort.astype("float")
+    x_sort = np.sort(x).astype("float")
     x_sort = x_sort[np.isfinite(x_sort)]
 
     if p <= 1:
         msg = "Parameter p should be a float greater than 1."
         raise ValueError(msg)
     if (k <= 0) or (not isinstance(k, int)):
-        msg = "Parameter k should be an integer between 1 and lenght of x."
+        msg = "Parameter k should be an integer between 1 and length of x."
         raise ValueError(msg)
 
     if len(x_sort) <= k:
         return np.nan
 
-    # pre calculate diffs
+    # precalculate diffs
     diff = x_sort[k:] - x_sort[:-k]
     # if the diffs are constant - return the value
     if diff.sum() == 0.0:
@@ -371,7 +370,7 @@ def grenanders_m(x: npt.NDArray, p: float = 1.001, k: int = 2) -> float:
 def gastwirth_location(x: npt.NDArray) -> float:
     """Calculate Gastwirth's location estimator.
 
-    This measure is more robust then average.
+    This measure is more robust than average.
 
     Parameters
     ----------

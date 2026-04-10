@@ -2,7 +2,7 @@
 
 import numpy as np
 import numpy.typing as npt
-from scipy import special, stats  # type: ignore[import-untyped]
+from scipy import stats  # type: ignore[import-untyped]
 
 
 def studentized_range(x: npt.NDArray) -> float:
@@ -53,12 +53,7 @@ def coefficient_of_lvariation(x: npt.NDArray) -> float:
     using linear combinations of order statistics.
     Journal of the Royal Statistical Society, Series B. 52 (1): 105-124.
     """
-    l1 = np.nanmean(x)
-    _x = np.sort(x)
-    n = len(_x)
-    common = 1 / special.comb(n - 1, 1) / n
-    beta_1 = common * np.nansum(special.comb(np.arange(1, n), 1) * _x[1:])
-    l2 = 2 * beta_1 - l1
+    l1, l2 = stats.lmoment(x, order=[1, 2], nan_policy="omit")
     return float(l2 / l1)
 
 
@@ -189,7 +184,7 @@ def standard_quantile_absolute_deviation(x: npt.NDArray) -> float:
     """Calculate standard quantile absolute deviation.
 
     This measure is a robust measure of dispersion, that has higher
-    gaussian efficiency, but lower breaking point than MAD.
+    Gaussian efficiency, but lower breaking point than MAD.
 
     Parameters
     ----------
@@ -239,7 +234,7 @@ def shamos_estimator(x: npt.NDArray) -> float:
 
     Notes
     -----
-    This implementation uses cartesian product, so the time and memory complexity
+    This implementation uses Cartesian product, so the time and memory complexity
     are N^2. It is best to not use it on large arrays.
 
     See Also
@@ -247,8 +242,8 @@ def shamos_estimator(x: npt.NDArray) -> float:
     obscure_stats.central_tendency.hodges_lehmann_sen_location - Hodges-Lehmann-Sen loc.
     """
     # In the original paper authors suggest use only upper triangular
-    # of the cartesian product, but in this implementation we use
-    # whole matrix, which is equvalent.
+    # of the Cartesian product, but in this implementation we use
+    # whole matrix, which is equivalent.
     product = np.meshgrid(x, x, sparse=True)
     return float(np.nanmedian(np.abs(product[0] - product[1])))
 
@@ -325,7 +320,7 @@ def gini_mean_difference(x: npt.NDArray) -> float:
 
     Notes
     -----
-    This implementation uses cartesian product, so the time and memory complexity
+    This implementation uses Cartesian product, so the time and memory complexity
     are N^2. It is best to not use it on large arrays.
     """
     n = len(x)

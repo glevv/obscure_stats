@@ -2,7 +2,6 @@
 
 from .association import (
     blomqvist_beta,
-    chatterjee_xi,
     concordance_correlation,
     concordance_rate,
     fechner_correlation,
@@ -13,6 +12,7 @@ from .association import (
     rank_divergence,
     rank_minrelation_coefficient,
     symmetric_chatterjee_xi,
+    symmetric_normalized_chatterjee_xi,
     tanimoto_similarity,
     tukey_correlation,
     winsorized_correlation,
@@ -21,7 +21,6 @@ from .association import (
 
 __all__ = [
     "blomqvist_beta",
-    "chatterjee_xi",
     "concordance_correlation",
     "concordance_rate",
     "fechner_correlation",
@@ -32,6 +31,7 @@ __all__ = [
     "rank_divergence",
     "rank_minrelation_coefficient",
     "symmetric_chatterjee_xi",
+    "symmetric_normalized_chatterjee_xi",
     "tanimoto_similarity",
     "tukey_correlation",
     "winsorized_correlation",

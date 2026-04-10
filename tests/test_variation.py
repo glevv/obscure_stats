@@ -70,7 +70,7 @@ def test_statistic_with_nans(func: typing.Callable, c_array_nan: npt.NDArray) ->
 
 
 def test_renyi_entropy_edgecases(c_array_obj: npt.NDArray) -> None:
-    """Test for different edgecases of Renyi entropy."""
+    """Test for different edge cases of Renyi entropy."""
     with pytest.raises(ValueError, match="alpha should be positive"):
         renyi_entropy(c_array_obj, alpha=-1)
     renyi_0 = renyi_entropy(c_array_obj, alpha=0)

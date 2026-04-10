@@ -19,7 +19,6 @@ from obscure_stats.skewness import (
     groeneveld_range_skew,
     hossain_adnan_skew,
     kelly_skew,
-    l_skew,
     left_quantile_weight,
     medeen_skew,
     pearson_median_skew,
@@ -36,7 +35,6 @@ all_functions = [
     groeneveld_range_skew,
     hossain_adnan_skew,
     kelly_skew,
-    l_skew,
     left_quantile_weight,
     medeen_skew,
     pearson_median_skew,
@@ -98,14 +96,14 @@ def test_statistic_with_nans(func: typing.Callable, x_array_nan: npt.NDArray) ->
 @pytest.mark.parametrize("func", [right_quantile_weight, left_quantile_weight])
 @pytest.mark.parametrize("q", [0.0, 1.0])
 def test_q_in_qw(x_array_float: npt.NDArray, func: typing.Callable, q: float) -> None:
-    """Simple tets case for correctnes of q."""
+    """Simple test case for correctness of q parameter value."""
     with pytest.raises(ValueError, match="Parameter q should be in range"):
         func(x_array_float, q=q)
 
 
 @pytest.mark.parametrize("dp", [-1, 0])
 def test_dp_in_auc_skew(x_array_float: npt.NDArray, dp: float) -> None:
-    """Simple tets case for correctnes of dp."""
+    """Simple test case for correctness of dp parameter value."""
     with pytest.raises(ValueError, match="Parameter dp should be > 0"):
         auc_skew_gamma(x_array_float, dp=dp)
 
@@ -121,7 +119,6 @@ def test_dp_in_auc_skew(x_array_float: npt.NDArray, dp: float) -> None:
         groeneveld_range_skew,
         hossain_adnan_skew,
         kelly_skew,
-        l_skew,
         medeen_skew,
         pearson_median_skew,
         pearson_mode_skew,

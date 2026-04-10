@@ -1,4 +1,4 @@
-"""Collection of tests of central tendecy module."""
+"""Collection of tests of central tendency module."""
 
 from __future__ import annotations
 
@@ -68,7 +68,7 @@ def test_thdm(thdme_test_data: npt.NDArray) -> None:
 
 
 def test_edge_cases(x_array_float: npt.NDArray) -> None:
-    """Simple tets case for edge cases."""
+    """Simple test for edge cases."""
     result = standard_trimmed_harrell_davis_quantile(x_array_float[:1])
     if result != pytest.approx(x_array_float[0], rel=1e-4):
         msg = "Result does not match expected output."
@@ -81,13 +81,13 @@ def test_edge_cases(x_array_float: npt.NDArray) -> None:
 
 @pytest.mark.parametrize("q", [0.0, 1.0])
 def test_q_in_sthdq(x_array_float: npt.NDArray, q: float) -> None:
-    """Simple tets case for correctnes of q."""
+    """Simple test case for correctness of q parameter value."""
     with pytest.raises(ValueError, match="Parameter q should be in range"):
         standard_trimmed_harrell_davis_quantile(x_array_float, q=q)
 
 
 def test_hls(hls_test_data: npt.NDArray, hls_test_data_big: list[int]) -> None:
-    """Simple tets case for correctness of Hodges-Lehmann-Sen."""
+    """Simple test case for correctness of Hodges-Lehmann-Sen."""
     result = hodges_lehmann_sen_location(hls_test_data)
     if result != pytest.approx(3.5):
         msg = "Results from the test and paper do not match."
@@ -99,7 +99,7 @@ def test_hls(hls_test_data: npt.NDArray, hls_test_data_big: list[int]) -> None:
 
 
 def test_hsm(hsm_test_data: npt.NDArray) -> None:
-    """Simple tets case for correctness of Half Sample Mode."""
+    """Simple test case for correctness of Half Sample Mode."""
     result = half_sample_mode(hsm_test_data)
     if result != pytest.approx(2.0):
         msg = "Results from the test and paper do not match."
@@ -151,8 +151,7 @@ def test_grenaders_m(x_array_float: npt.NDArray) -> None:
 def test_sensibility(func: typing.Callable, seed: int) -> None:
     """Test central tendencies convergence for normal distribution."""
     rng = np.random.default_rng(seed)
-    normal = rng.normal(size=100)
-    res = func(normal)
+    res = func(rng.normal(size=100))
     if res == pytest.approx(0.0):
         msg = f"Cental tendency for normal distribution should be 0.0, got {res}."
         raise ValueError(msg)
