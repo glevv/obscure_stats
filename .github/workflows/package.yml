@@ -11,6 +11,10 @@ on:
 env:
   PYTHONUNBUFFERED: "1"
   PYTHONHASHSEED: "1"
+  PYTHONDEVMODE: "1"
+  PYTHONDONTWRITEBYTECODE: "1"
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+  CI: "true"
 
 permissions:
   contents: read
@@ -69,9 +73,9 @@ jobs:
           poetry run ruff check --output-format=github .
           poetry run ruff format . --diff
 
-      - name: Run mypy
+      - name: Run pyrefly
         run: |
-          poetry run mypy .
+          poetry run pyrefly check .
 
       - name: Run tests
         run: |

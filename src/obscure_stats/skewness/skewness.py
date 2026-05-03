@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 import numpy.typing as npt
-from scipy import integrate, stats  # type: ignore[import-untyped]
+from scipy import integrate, stats
 
 from obscure_stats.central_tendency import half_sample_mode
 

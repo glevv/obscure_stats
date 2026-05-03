@@ -92,7 +92,8 @@ def test_hls(hls_test_data: npt.NDArray, hls_test_data_big: list[int]) -> None:
     if result != pytest.approx(3.5):
         msg = "Results from the test and paper do not match."
         raise ValueError(msg)
-    result = hodges_lehmann_sen_location(hls_test_data_big)  # type: ignore[arg-type]
+    # pyrefly: ignore [bad-argument-type]
+    result = hodges_lehmann_sen_location(hls_test_data_big)
     if result != pytest.approx(5.75):
         msg = "Results from the test and paper do not match."
         raise ValueError(msg)
@@ -140,7 +141,8 @@ def test_grenaders_m(x_array_float: npt.NDArray) -> None:
     with pytest.raises(ValueError, match="Parameter k should be an integer"):
         grenanders_m(x_array_float, k=0)
     with pytest.raises(ValueError, match="Parameter k should be an integer"):
-        grenanders_m(x_array_float, k=1.5)  # type: ignore[arg-type]
+        # pyrefly: ignore [bad-argument-type]
+        grenanders_m(x_array_float, k=1.5)
     if not math.isnan(grenanders_m(x_array_float, k=len(x_array_float))):
         msg = "Statistic should return nans."
         raise ValueError(msg)

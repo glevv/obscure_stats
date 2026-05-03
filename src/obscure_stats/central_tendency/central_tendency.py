@@ -4,7 +4,7 @@ import math
 
 import numpy as np
 import numpy.typing as npt
-from scipy import stats  # type: ignore[import-untyped]
+from scipy import stats
 
 
 def midrange(x: npt.NDArray) -> float:
@@ -260,6 +260,7 @@ def half_sample_mode(x: npt.NDArray) -> float:
     while (ny := len(y)) >= _corner_cases[0]:
         half_y = math.ceil(ny / 2)
         w_min = y[-1] - y[0]
+        w, j = 0, 0
         for i in range(ny - half_y):
             w = y[i + half_y - 1] - y[i]
             if w <= w_min:

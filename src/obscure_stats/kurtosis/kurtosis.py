@@ -2,7 +2,7 @@
 
 import numpy as np
 import numpy.typing as npt
-from scipy import stats  # type: ignore[import-untyped]
+from scipy import stats
 
 
 def moors_kurt(x: npt.NDArray) -> float:

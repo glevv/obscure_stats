@@ -4,7 +4,7 @@ import math
 
 import numpy as np
 import numpy.typing as npt
-from scipy import stats  # type: ignore[import-untyped]
+from scipy import stats
 
 
 def mod_vr(x: npt.NDArray) -> float:
@@ -134,7 +134,7 @@ def gibbs_m2(x: npt.NDArray) -> float:
     """
     freq = np.unique(x, return_counts=True, equal_nan=True)[1] / len(x)
     k = len(freq)
-    return float((k / (k - 1)) * (1 - np.sum(freq**2))) if k > 1 else 0.0
+    return (k / (k - 1)) * (1 - np.sum(freq**2)) if k > 1 else 0.0
 
 
 def b_index(x: npt.NDArray) -> float:
