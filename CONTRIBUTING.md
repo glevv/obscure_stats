@@ -24,7 +24,7 @@ All contributions are appreciated, from reporting bugs to implementing new featu
 
 - Every change should be tested; you need to add new tests for the new functionality (`pytest` and `pytest-cov` will help you with this).
 - Every change should be documented; you need to add a docstring (`numpy` style) with reference to a scientific paper (preprints accepted).
-- Every change should be clean; you need to run linters, formatters, type checkers (`ruff` and `mypy` will take care of this).
+- Every change should be clean; you need to run linters, formatters, type checkers (`ruff` and `pyrefly` will take care of this).
 
 After you have made some changes to the codebase, you should run the following commands:
 ```python
@@ -38,7 +38,7 @@ This command will run linters and other useful stuff and try to fix all the prob
 This command will run formatter.
 
 ```python
->>> poetry run mypy .
+>>> poetry run pyrefly check .
 ```
 This command will run type checker. All typing problems should be fixed.
 

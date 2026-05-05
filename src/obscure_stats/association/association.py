@@ -6,7 +6,7 @@ import warnings
 
 import numpy as np
 import numpy.typing as npt
-from scipy import stats  # type: ignore[import-untyped]
+from scipy import stats
 
 from obscure_stats.dispersion import gini_mean_difference
 
@@ -252,14 +252,12 @@ def zhang_i(x: npt.NDArray, y: npt.NDArray) -> float:
     x, y = _prep_arrays(x, y)
     if _check_arrays(x, y):
         return np.nan
-    return float(
-        min(
-            1.0,
-            max(
-                abs(stats.spearmanr(x, y, nan_policy="omit")[0]),
-                2.5**0.5 * symmetric_chatterjee_xi(x, y),
-            ),
-        )
+    return min(
+        1.0,
+        max(
+            abs(stats.spearmanr(x, y, nan_policy="omit")[0]),
+            2.5**0.5 * symmetric_chatterjee_xi(x, y),
+        ),
     )
 
 
@@ -528,7 +526,7 @@ def tukey_correlation(x: npt.NDArray, y: npt.NDArray) -> float:
         gini_mean_difference(x_norm + y_norm) ** 2
         - gini_mean_difference(x_norm - y_norm) ** 2
     )
-    return float(max(min(coef, 1.0), -1.0))
+    return max(min(coef, 1.0), -1.0)
 
 
 def gaussain_rank_correlation(x: npt.NDArray, y: npt.NDArray) -> float:
@@ -569,7 +567,7 @@ def gaussain_rank_correlation(x: npt.NDArray, y: npt.NDArray) -> float:
     coef = np.sum(stats.norm.ppf(x_ranks_norm) * stats.norm.ppf(y_ranks_norm)) / np.sum(
         stats.norm.ppf(np.arange(1, n + 1) * norm_factor) ** 2
     )
-    return float(max(min(coef, 1.0), -1.0))
+    return max(min(coef, 1.0), -1.0)
 
 
 def quantile_correlation(x: npt.NDArray, y: npt.NDArray, q: float = 0.5) -> float:
