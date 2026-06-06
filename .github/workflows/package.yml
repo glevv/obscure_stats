@@ -79,6 +79,7 @@ jobs:
       - name: Run tests
         run: |
           poetry run pytest --cov=obscure_stats --cov-report term --cov-report xml:coverage.xml
+          rm -f .coverage
 
       - name: Run Coveralls
         uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e # v2.3.7
