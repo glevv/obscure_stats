@@ -85,6 +85,7 @@ jobs:
         uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e # v2.3.7
         with:
           flag-name: run-${{ matrix.python-version }}
+          git-commit: ${{ github.event.pull_request.head.sha || github.sha }}
           file: coverage.xml
           format: cobertura
           parallel: true
