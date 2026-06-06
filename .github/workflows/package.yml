@@ -95,8 +95,14 @@ jobs:
     permissions: {}
     runs-on: ubuntu-latest
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          disable-sudo: true
+          egress-policy: audit
+
       - name: Upload Coveralls
         uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e # v2.3.7
         with:
-          carryforward: run-3.11,run-3.12,run-3.13,run-3.14
+          carryforward: "run-3.11,run-3.12,run-3.13,run-3.14"
           parallel-finished: true
