@@ -78,13 +78,15 @@ jobs:
 
       - name: Run tests
         run: |
-          poetry run pytest --cov=obscure_stats --cov-report=
+          poetry run pytest --cov=obscure_stats --cov-report term --cov-report xml:coverage.xml
 
       - name: Coveralls Parallel
         uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e
         with:
           flag-name: run-${{ matrix.python-version }}
           parallel: true
+          file: coverage.xml
+          format: cobertura
 
   finish:
     needs: build
