@@ -10,8 +10,6 @@ permissions:
 
 jobs:
   publish:
-    strategy:
-      fail-fast: false
     runs-on: ubuntu-latest
     steps:
       - name: Harden Runner
