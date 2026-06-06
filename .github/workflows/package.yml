@@ -83,18 +83,19 @@ jobs:
       - name: Run Coveralls
         uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e # v2.3.7
         with:
-          flag-name: run${{ matrix.python-version }}
-          parallel: true
+          flag-name: run-${{ matrix.python-version }}
           file: coverage.xml
           format: cobertura
+          parallel: true
 
-  finish:
+  aggregate-tests:
     needs: build
-    if: ${{ always() }}
+    if: always()
+    permissions: {}
     runs-on: ubuntu-latest
     steps:
       - name: Upload Coveralls
         uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e # v2.3.7
         with:
-          carryforward: "run3.11,run3.12,run3.13,run3.14"
+          carryforward: run-3.11,run-3.12,run-3.13,run-3.14
           parallel-finished: true
