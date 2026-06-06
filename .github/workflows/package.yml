@@ -83,7 +83,8 @@ jobs:
       - name: Coveralls Parallel
         uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e
         with:
-          flag-name: run-${{ join(matrix.*, '-') }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          flag-name: run-${{ matrix.python-version }}
           parallel: true
 
   finish:
