@@ -78,12 +78,11 @@ jobs:
 
       - name: Run tests
         run: |
-          poetry run pytest --cov=obscure_stats --cov-report term --cov-report xml:coverage.xml
+          poetry run pytest --cov=obscure_stats --cov-report=
 
       - name: Coveralls Parallel
         uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           flag-name: run-${{ matrix.python-version }}
           parallel: true
 
