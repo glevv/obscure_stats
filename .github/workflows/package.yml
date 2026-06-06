@@ -81,7 +81,7 @@ jobs:
           poetry run pytest --cov=obscure_stats --cov-report term --cov-report xml:coverage.xml
 
       - name: Coveralls Parallel
-        uses: coverallsapp/github-action@v2
+        uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e
         with:
           flag-name: run-${{ join(matrix.*, '-') }}
           parallel: true
@@ -92,7 +92,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Coveralls Finished
-        uses: coverallsapp/github-action@v2
+        uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e
         with:
           parallel-finished: true
-          carryforward: "run-3.11,run-3.12,run-3.13,run-3.14"
