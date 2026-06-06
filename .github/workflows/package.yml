@@ -80,9 +80,11 @@ jobs:
         run: |
           poetry run pytest --cov=obscure_stats --cov-report term --cov-report xml:coverage.xml
 
-      - name: Coveralls Parallel
+      - name: Run Coveralls
         uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e # v2.3.7
         with:
+          flag-name: run${{ matrix.python-version }}
+          parallel: true
           file: coverage.xml
           format: cobertura
 
@@ -91,7 +93,8 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
-      - name: Coveralls Finished
+      - name: Upload Coveralls
         uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e # v2.3.7
         with:
+          carryforward: "run3.11,run3.12,run3.13,run3.14"
           parallel-finished: true
