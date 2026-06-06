@@ -80,13 +80,19 @@ jobs:
         run: |
           poetry run pytest --cov=obscure_stats --cov-report term --cov-report xml:coverage.xml
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6.0.1
-        if: matrix.python-version == '3.11'
+      - name: Coveralls Parallel
+        uses: coverallsapp/github-action@v2
         with:
-          flags: smart-tests
-          verbose: true
-          files: ./coverage.xml
-          fail_ci_if_error: true
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          flag-name: run-${{ join(matrix.*, '-') }}
+          parallel: true
+
+  finish:
+    needs: build
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@v2
+        with:
+          parallel-finished: true
+          carryforward: "run-3.11,run-3.12,run-3.13,run-3.14"
