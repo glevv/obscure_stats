@@ -48,10 +48,6 @@ jobs:
       - name: Install the project
         run: uv sync --all-extras --dev
 
-      - name: Activate env
-        run: |
-          source $VENV
-
       - name: Run ruff
         run: |
           uv run ruff check . --output-format=github
