@@ -40,7 +40,7 @@ all_functions = [
 @pytest.mark.parametrize("func", all_functions)
 @pytest.mark.parametrize("data", ["c_list_obj", "c_array_obj"])
 def test_mock_variation_functions(
-    func: typing.Callable, data: str, request: pytest.FixtureRequest
+    func: typing.Callable[..., float], data: str, request: pytest.FixtureRequest
 ) -> None:
     """Test for different data types."""
     data = request.getfixturevalue(data)
@@ -49,7 +49,9 @@ def test_mock_variation_functions(
 
 @pytest.mark.parametrize("func", all_functions)
 @pytest.mark.parametrize("seed", [1, 42, 99])
-def test_var_sensibility_higher_better(func: typing.Callable, seed: int) -> None:
+def test_var_sensibility_higher_better(
+    func: typing.Callable[..., float], seed: int
+) -> None:
     """Test for result correctness."""
     rng = np.random.default_rng(seed)
     low_var = rng.choice(["a", "b", "c", "d"], p=[0.25, 0.25, 0.25, 0.25], size=100)
@@ -62,14 +64,16 @@ def test_var_sensibility_higher_better(func: typing.Callable, seed: int) -> None
 
 
 @pytest.mark.parametrize("func", all_functions)
-def test_statistic_with_nans(func: typing.Callable, c_array_nan: npt.NDArray) -> None:
+def test_statistic_with_nans(
+    func: typing.Callable[..., float], c_array_nan: npt.NDArray[np.str_]
+) -> None:
     """Test for different data types."""
     if math.isnan(func(c_array_nan)):
         msg = "Statistic should not return nans."
         raise ValueError(msg)
 
 
-def test_renyi_entropy_edgecases(c_array_obj: npt.NDArray) -> None:
+def test_renyi_entropy_edgecases(c_array_obj: npt.NDArray[np.str_]) -> None:
     """Test for different edge cases of Renyi entropy."""
     with pytest.raises(ValueError, match="alpha should be positive"):
         renyi_entropy(c_array_obj, alpha=-1)
@@ -81,7 +85,7 @@ def test_renyi_entropy_edgecases(c_array_obj: npt.NDArray) -> None:
     if renyi_1 != pytest.approx(2.040373):
         msg = f"Results from the test and paper do not match, got {renyi_1}"
         raise ValueError(msg)
-    renyi_2 = renyi_entropy(np.arange(10), normalize=True)
+    renyi_2 = renyi_entropy(np.arange(10).astype(str), normalize=True)
     if renyi_2 != pytest.approx(1.0):
         msg = f"For uniformly distributed array normalized entropy should be 1.0, got {renyi_2}"
         raise ValueError(msg)
@@ -99,6 +103,8 @@ def test_renyi_entropy_edgecases(c_array_obj: npt.NDArray) -> None:
     )
 )
 @pytest.mark.parametrize("func", all_functions)
-def test_fuzz_variations(func: typing.Callable, data: npt.NDArray) -> None:
+def test_fuzz_variations(
+    func: typing.Callable[..., float], data: npt.NDArray[np.str_]
+) -> None:
     """Test all functions with fuzz."""
     func(data)

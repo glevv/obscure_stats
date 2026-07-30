@@ -10,7 +10,7 @@ import numpy.typing as npt
 from scipy import stats
 
 
-def mod_vr(x: npt.NDArray) -> float:
+def mod_vr(x: npt.NDArray[np.str_]) -> float:
     """Calculate Mode Variation Ratio.
 
     This ratio could be interpreted as the probability of
@@ -39,7 +39,7 @@ def mod_vr(x: npt.NDArray) -> float:
     return float(1 - np.max(cnts) / len(x))
 
 
-def range_vr(x: npt.NDArray) -> float:
+def range_vr(x: npt.NDArray[np.str_]) -> float:
     """Calculate Range Variation Ratio.
 
     Ratio of frequencies of the least and the most common categories.
@@ -68,7 +68,7 @@ def range_vr(x: npt.NDArray) -> float:
     return float(np.min(cnts) / np.max(cnts))
 
 
-def gibbs_m1(x: npt.NDArray) -> float:
+def gibbs_m1(x: npt.NDArray[np.str_]) -> float:
     """Calculate Gibbs M1 Index.
 
     M1 can be interpreted as one minus the likelihood that a random pair
@@ -110,7 +110,7 @@ def gibbs_m1(x: npt.NDArray) -> float:
     return float(1 - np.sum(freq**2))
 
 
-def gibbs_m2(x: npt.NDArray) -> float:
+def gibbs_m2(x: npt.NDArray[np.str_]) -> float:
     """Calculate Gibbs M2 Index.
 
     M2 can be interpreted as the ratio of the variance of
@@ -140,7 +140,7 @@ def gibbs_m2(x: npt.NDArray) -> float:
     return (k / (k - 1)) * (1 - np.sum(freq**2)) if k > 1 else 0.0
 
 
-def b_index(x: npt.NDArray) -> float:
+def b_index(x: npt.NDArray[np.str_]) -> float:
     """Calculate B Index.
 
     Normalized to 0-1 range geometric mean of probabilities of all categories.
@@ -169,7 +169,7 @@ def b_index(x: npt.NDArray) -> float:
     return float(1 - (1 - (stats.gmean(freq * len(freq) / n)) ** 2) ** 0.5)
 
 
-def avdev(x: npt.NDArray) -> float:
+def avdev(x: npt.NDArray[np.str_]) -> float:
     """Calculate Average Deviation Analogue.
 
     Normalized to 0-1 range categorical analogue of the mean deviation.
@@ -201,7 +201,7 @@ def avdev(x: npt.NDArray) -> float:
 
 
 def renyi_entropy(
-    x: npt.NDArray, alpha: float = 2, *, normalize: bool = False
+    x: npt.NDArray[np.str_], alpha: float = 2, *, normalize: bool = False
 ) -> float:
     """Calculate Renyi entropy (bits).
 
@@ -247,7 +247,7 @@ def renyi_entropy(
     return 1 / (1 - alpha) * math.log2(np.sum(freq**alpha)) / normalizer
 
 
-def negative_extropy(x: npt.NDArray) -> float:
+def negative_extropy(x: npt.NDArray[np.str_]) -> float:
     """Calculate Negative Information Extropy (bits).
 
     This measure is complementary to entropy.
@@ -278,7 +278,7 @@ def negative_extropy(x: npt.NDArray) -> float:
     return float(-np.sum(p_inv * np.log2(p_inv)))
 
 
-def mcintosh_d(x: npt.NDArray) -> float:
+def mcintosh_d(x: npt.NDArray[np.str_]) -> float:
     """Calculate McIntosh's D.
 
     Ranges from 0 to 1, where 0 corresponds to no diversity,

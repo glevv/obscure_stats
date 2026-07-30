@@ -108,4 +108,5 @@ max-line-length = 100
 project-includes = [
     "**/*.py*",
 ]
+preset = "strict"
 min-severity = "warn"

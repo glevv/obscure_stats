@@ -8,7 +8,7 @@ import numpy.typing as npt
 from scipy import stats
 
 
-def studentized_range(x: npt.NDArray) -> float:
+def studentized_range(x: npt.NDArray[np.number]) -> float:
     """Calculate range normalized by standard deviation.
 
     Parameters
@@ -33,7 +33,7 @@ def studentized_range(x: npt.NDArray) -> float:
     return float((maximum - minimum) / std)
 
 
-def coefficient_of_lvariation(x: npt.NDArray) -> float:
+def coefficient_of_lvariation(x: npt.NDArray[np.number]) -> float:
     """Calculate linear coefficient of variation.
 
     L-CV is the L-scale (half of mean absolute deviation) divided
@@ -60,7 +60,7 @@ def coefficient_of_lvariation(x: npt.NDArray) -> float:
     return float(l2 / l1)
 
 
-def coefficient_of_variation(x: npt.NDArray) -> float:
+def coefficient_of_variation(x: npt.NDArray[np.number]) -> float:
     """Calculate coefficient of variation (Standard deviation / Mean).
 
     Parameters
@@ -82,7 +82,7 @@ def coefficient_of_variation(x: npt.NDArray) -> float:
     return float(np.nanstd(x) / np.nanmean(x))
 
 
-def robust_coefficient_of_variation(x: npt.NDArray) -> float:
+def robust_coefficient_of_variation(x: npt.NDArray[np.number]) -> float:
     """Calculate robust coefficient of variation.
 
     It is based on median absolute deviation from the median, i.e. median
@@ -109,7 +109,7 @@ def robust_coefficient_of_variation(x: npt.NDArray) -> float:
     return float(1.4826 * med_abs_dev / med)
 
 
-def quartile_coefficient_of_dispersion(x: npt.NDArray) -> float:
+def quartile_coefficient_of_dispersion(x: npt.NDArray[np.number]) -> float:
     """Calculate quartile coefficient of dispersion (IQR / Midhinge).
 
     Parameters
@@ -132,7 +132,7 @@ def quartile_coefficient_of_dispersion(x: npt.NDArray) -> float:
     return float(0.75 * (q3 - q1) / (q3 + q1))
 
 
-def fisher_index_of_dispersion(x: npt.NDArray) -> float:
+def fisher_index_of_dispersion(x: npt.NDArray[np.number]) -> float:
     """Calculate Fisher's index of dispersion.
 
     It is very similar to the coefficient of variation but uses unnormalized
@@ -157,7 +157,7 @@ def fisher_index_of_dispersion(x: npt.NDArray) -> float:
     return float((len(x) - 1) * np.nanvar(x) / np.nanmean(x))
 
 
-def morisita_index_of_dispersion(x: npt.NDArray) -> float:
+def morisita_index_of_dispersion(x: npt.NDArray[np.number]) -> float:
     """Calculate Morisita's index of dispersion.
 
     Morisita's index of dispersion is the scaled probability that two
@@ -183,7 +183,7 @@ def morisita_index_of_dispersion(x: npt.NDArray) -> float:
     return float(len(x) * (np.nansum(np.square(x)) - x_sum) / (x_sum**2 - x_sum))
 
 
-def standard_quantile_absolute_deviation(x: npt.NDArray) -> float:
+def standard_quantile_absolute_deviation(x: npt.NDArray[np.number]) -> float:
     """Calculate standard quantile absolute deviation.
 
     This measure is a robust measure of dispersion, that has higher
@@ -214,7 +214,7 @@ def standard_quantile_absolute_deviation(x: npt.NDArray) -> float:
     return float(k * np.nanquantile(np.abs(x - med), q=q))
 
 
-def shamos_estimator(x: npt.NDArray) -> float:
+def shamos_estimator(x: npt.NDArray[np.number]) -> float:
     """Calculate Shamos robust estimator of dispersion.
 
     This measure is complementary to Hodges-Lehmann-Sen estimator.
@@ -251,7 +251,7 @@ def shamos_estimator(x: npt.NDArray) -> float:
     return float(np.nanmedian(np.abs(product[0] - product[1])))
 
 
-def coefficient_of_range(x: npt.NDArray) -> float:
+def coefficient_of_range(x: npt.NDArray[np.number]) -> float:
     """Calculate coefficient of range (Range / Midrange).
 
     Parameters
@@ -275,7 +275,7 @@ def coefficient_of_range(x: npt.NDArray) -> float:
     return float((max_ - min_) / (max_ + min_))
 
 
-def cole_index_of_dispersion(x: npt.NDArray) -> float:
+def cole_index_of_dispersion(x: npt.NDArray[np.number]) -> float:
     """Calculate Cole's index of dispersion.
 
     Higher values mean higher dispersion.
@@ -300,7 +300,7 @@ def cole_index_of_dispersion(x: npt.NDArray) -> float:
     return float(np.nansum(np.square(x)) / np.nansum(x) ** 2)
 
 
-def gini_mean_difference(x: npt.NDArray) -> float:
+def gini_mean_difference(x: npt.NDArray[np.number]) -> float:
     """Calculate Gini Mean Difference.
 
     Alternative measure of variability to the usual standard deviation.
@@ -331,7 +331,7 @@ def gini_mean_difference(x: npt.NDArray) -> float:
     return float(np.nansum(np.abs(product[0] - product[1])) / (n * (n - 1)))
 
 
-def inter_expectile_range(x: npt.NDArray) -> float:
+def inter_expectile_range(x: npt.NDArray[np.number]) -> float:
     """Calculate inter expectile range (IER).
 
     It is the same as IQR, but uses expectile instead of quantile.

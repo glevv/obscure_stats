@@ -48,7 +48,7 @@ all_functions = [
     "data", ["x_list_float", "x_list_int", "x_array_int", "x_array_float"]
 )
 def test_mock_aggregation_functions(
-    func: typing.Callable, data: str, request: pytest.FixtureRequest
+    func: typing.Callable[..., float], data: str, request: pytest.FixtureRequest
 ) -> None:
     """Test for different data types."""
     data = request.getfixturevalue(data)
@@ -57,7 +57,7 @@ def test_mock_aggregation_functions(
 
 @pytest.mark.parametrize("func", all_functions)
 @pytest.mark.parametrize("seed", [1, 42, 99])
-def test_skew_sensibility(func: typing.Callable, seed: int) -> None:
+def test_skew_sensibility(func: typing.Callable[..., float], seed: int) -> None:
     """Test for result correctness."""
     rng = np.random.default_rng(seed)
     # round for the mode estimators to work properly
@@ -77,8 +77,8 @@ def test_skew_sensibility(func: typing.Callable, seed: int) -> None:
         raise ValueError(msg)
 
 
-def test_rank_skew(rank_skewness_test_data: npt.NDArray) -> None:
-    """Simple tets case for correctness of Rank skewness coefficient."""
+def test_rank_skew(rank_skewness_test_data: npt.NDArray[np.number]) -> None:
+    """Simple test case for correctness of Rank skewness coefficient."""
     res = forhad_shorna_rank_skew(rank_skewness_test_data)
     if res != pytest.approx(0.93809, rel=1e-2):
         msg = f"Results from the test and paper do not match, got {res} instead of 0.93809."
@@ -86,7 +86,9 @@ def test_rank_skew(rank_skewness_test_data: npt.NDArray) -> None:
 
 
 @pytest.mark.parametrize("func", all_functions)
-def test_statistic_with_nans(func: typing.Callable, x_array_nan: npt.NDArray) -> None:
+def test_statistic_with_nans(
+    func: typing.Callable[..., float], x_array_nan: npt.NDArray[np.number]
+) -> None:
     """Test for different data types."""
     if math.isnan(func(x_array_nan)):
         msg = "Statistic should not return nans."
@@ -95,14 +97,16 @@ def test_statistic_with_nans(func: typing.Callable, x_array_nan: npt.NDArray) ->
 
 @pytest.mark.parametrize("func", [right_quantile_weight, left_quantile_weight])
 @pytest.mark.parametrize("q", [0.0, 1.0])
-def test_q_in_qw(x_array_float: npt.NDArray, func: typing.Callable, q: float) -> None:
+def test_q_in_qw(
+    x_array_float: npt.NDArray[np.number], func: typing.Callable[..., float], q: float
+) -> None:
     """Simple test case for correctness of q parameter value."""
     with pytest.raises(ValueError, match="Parameter q should be in range"):
         func(x_array_float, q=q)
 
 
 @pytest.mark.parametrize("dp", [-1, 0])
-def test_dp_in_auc_skew(x_array_float: npt.NDArray, dp: float) -> None:
+def test_dp_in_auc_skew(x_array_float: npt.NDArray[np.number], dp: float) -> None:
     """Simple test case for correctness of dp parameter value."""
     with pytest.raises(ValueError, match="Parameter dp should be > 0"):
         auc_skew_gamma(x_array_float, dp=dp)
@@ -124,7 +128,9 @@ def test_dp_in_auc_skew(x_array_float: npt.NDArray, dp: float) -> None:
         pearson_mode_skew,
     ],
 )
-def test_change_sign(func: typing.Callable, x_array_float: npt.NDArray) -> None:
+def test_change_sign(
+    func: typing.Callable[..., float], x_array_float: npt.NDArray[np.number]
+) -> None:
     """Test change of sign of statistic if array changed sign."""
     res1 = -func(x_array_float)
     res2 = func(-x_array_float)
@@ -133,7 +139,9 @@ def test_change_sign(func: typing.Callable, x_array_float: npt.NDArray) -> None:
         raise ValueError(msg)
 
 
-def test_change_sign_for_quantile_weights(x_array_float: npt.NDArray) -> None:
+def test_change_sign_for_quantile_weights(
+    x_array_float: npt.NDArray[np.number],
+) -> None:
     """Test change of sign of statistic if array changed sign."""
     if left_quantile_weight(-x_array_float) != pytest.approx(
         -right_quantile_weight(x_array_float)
@@ -143,7 +151,9 @@ def test_change_sign_for_quantile_weights(x_array_float: npt.NDArray) -> None:
 
 
 @pytest.mark.parametrize("func", all_functions)
-def test_invariance_mult(func: typing.Callable, x_array_float: npt.NDArray) -> None:
+def test_invariance_mult(
+    func: typing.Callable[..., float], x_array_float: npt.NDArray[np.number]
+) -> None:
     """Test coefficients for invariance to multiplication."""
     res1 = func(x_array_float)
     res2 = func(x_array_float * 10)
@@ -160,6 +170,8 @@ def test_invariance_mult(func: typing.Callable, x_array_float: npt.NDArray) -> N
     )
 )
 @pytest.mark.parametrize("func", all_functions)
-def test_fuzz_skewnesses(func: typing.Callable, data: npt.NDArray) -> None:
+def test_fuzz_skewnesses(
+    func: typing.Callable[..., float], data: npt.NDArray[np.number]
+) -> None:
     """Test all functions with fuzz."""
     func(data)

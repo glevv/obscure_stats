@@ -12,7 +12,7 @@ from scipy import integrate, stats
 from obscure_stats.central_tendency import half_sample_mode
 
 
-def pearson_mode_skew(x: npt.NDArray) -> float:
+def pearson_mode_skew(x: npt.NDArray[np.number]) -> float:
     """Calculate Pearson's mode skew coefficient.
 
     This measure could be unstable due mode instability.
@@ -39,7 +39,7 @@ def pearson_mode_skew(x: npt.NDArray) -> float:
     return float((mean - mode) / std)
 
 
-def bickel_mode_skew(x: npt.NDArray) -> float:
+def bickel_mode_skew(x: npt.NDArray[np.number]) -> float:
     """Calculate Robust Mode skew with half sample mode.
 
     This measure should be more stable than Pearson mode
@@ -65,7 +65,7 @@ def bickel_mode_skew(x: npt.NDArray) -> float:
     return float(np.nanmean(np.sign(np.asarray(x) - mode)))
 
 
-def pearson_median_skew(x: npt.NDArray) -> float:
+def pearson_median_skew(x: npt.NDArray[np.number]) -> float:
     """Calculate Pearson's median skew coefficient.
 
     Parameters
@@ -90,7 +90,7 @@ def pearson_median_skew(x: npt.NDArray) -> float:
     return float(3.0 * (mean - median) / std)
 
 
-def medeen_skew(x: npt.NDArray) -> float:
+def medeen_skew(x: npt.NDArray[np.number]) -> float:
     """Calculate Medeen's skewness statistic.
 
     This measure is similar to Pearson median skewness coefficient
@@ -118,7 +118,7 @@ def medeen_skew(x: npt.NDArray) -> float:
     return float((mean - median) / np.nanmean(np.abs(x - median)))
 
 
-def bowley_skew(x: npt.NDArray) -> float:
+def bowley_skew(x: npt.NDArray[np.number]) -> float:
     """Calculate Bowley's skewness coefficinet.
 
     Also known as Yule-Kendall skewness coefficient.
@@ -146,7 +146,7 @@ def bowley_skew(x: npt.NDArray) -> float:
     return float((q3 + q1 - 2 * q2) / (q3 - q1))
 
 
-def groeneveld_range_skew(x: npt.NDArray) -> float:
+def groeneveld_range_skew(x: npt.NDArray[np.number]) -> float:
     """Calculate Groeneveld's skewness coefficinet.
 
     This measure should be more robust than moment based skewness.
@@ -174,7 +174,7 @@ def groeneveld_range_skew(x: npt.NDArray) -> float:
     return float((max_ + min_ - 2 * m) / (max_ - min_))
 
 
-def kelly_skew(x: npt.NDArray) -> float:
+def kelly_skew(x: npt.NDArray[np.number]) -> float:
     """Calculate Kelly's skewness coefficinet.
 
     It is based on deciles (uncentered, unscaled).
@@ -202,7 +202,7 @@ def kelly_skew(x: npt.NDArray) -> float:
     return float((d9 + d1 - 2 * d5) / (d9 - d1))
 
 
-def hossain_adnan_skew(x: npt.NDArray) -> float:
+def hossain_adnan_skew(x: npt.NDArray[np.number]) -> float:
     """Calculate Houssain and Adnan skewness coefficient.
 
     It is based on differences from the median, and is somewhar similar
@@ -229,7 +229,7 @@ def hossain_adnan_skew(x: npt.NDArray) -> float:
     return float(np.nanmean(diff) / np.nanmean(np.abs(diff)))
 
 
-def forhad_shorna_rank_skew(x: npt.NDArray) -> float:
+def forhad_shorna_rank_skew(x: npt.NDArray[np.number]) -> float:
     """Calculate Forhad-Shorna coefficient of rank skewness.
 
     This measure is similar to Houssain and Adnan skewness coefficient,
@@ -263,7 +263,7 @@ def forhad_shorna_rank_skew(x: npt.NDArray) -> float:
     return float(np.nansum(diff) / np.nansum(np.abs(diff)))
 
 
-def auc_skew_gamma(x: npt.NDArray, dp: float = 0.01) -> float:
+def auc_skew_gamma(x: npt.NDArray[np.number], dp: float = 0.01) -> float:
     """Calculate area under the curve of generalized Bowley skewness coefficients.
 
     This measure tries to combine multiple generalized Bowley skewness coefficients
@@ -301,7 +301,7 @@ def auc_skew_gamma(x: npt.NDArray, dp: float = 0.01) -> float:
     return float(integrate.trapezoid(skews, dx=dp))
 
 
-def left_quantile_weight(x: npt.NDArray, q: float = 0.25) -> float:
+def left_quantile_weight(x: npt.NDArray[np.number], q: float = 0.25) -> float:
     """Calculate left quantile weight (LQW).
 
     It is based on inter-percentile ranges (uncentered, unscaled) of the
@@ -338,7 +338,7 @@ def left_quantile_weight(x: npt.NDArray, q: float = 0.25) -> float:
     )
 
 
-def right_quantile_weight(x: npt.NDArray, q: float = 0.75) -> float:
+def right_quantile_weight(x: npt.NDArray[np.number], q: float = 0.75) -> float:
     """Calculate right quantile weight (RQW).
 
     It is based on inter-percentile ranges (uncentered, unscaled) of the
@@ -374,7 +374,7 @@ def right_quantile_weight(x: npt.NDArray, q: float = 0.75) -> float:
     )
 
 
-def cumulative_skew(x: npt.NDArray) -> float:
+def cumulative_skew(x: npt.NDArray[np.number]) -> float:
     """
     Calculate cumulative measure of skewness.
 

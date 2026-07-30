@@ -10,7 +10,7 @@ import numpy.typing as npt
 from scipy import stats
 
 
-def midrange(x: npt.NDArray) -> float:
+def midrange(x: npt.NDArray[np.number]) -> float:
     """Calculate midrange or midpoint, i.e. average between min and max.
 
     This measure could be noisy since it is based on minimum and maximum.
@@ -36,7 +36,7 @@ def midrange(x: npt.NDArray) -> float:
     return float((maximum + minimum) * 0.5)
 
 
-def midhinge(x: npt.NDArray) -> float:
+def midhinge(x: npt.NDArray[np.number]) -> float:
     """Calculate midhinge, i.e. average between 1st and 3rd quartile.
 
     This measure is more robust than average.
@@ -61,7 +61,7 @@ def midhinge(x: npt.NDArray) -> float:
     return float((q3 + q1) * 0.5)
 
 
-def trimean(x: npt.NDArray) -> float:
+def trimean(x: npt.NDArray[np.number]) -> float:
     """Calculate trimean, i.e weighted average between 3 quartiles.
 
     This measure is more robust than average.
@@ -86,7 +86,7 @@ def trimean(x: npt.NDArray) -> float:
     return float(0.5 * q2 + 0.25 * q1 + 0.25 * q3)
 
 
-def contraharmonic_mean(x: npt.NDArray) -> float:
+def contraharmonic_mean(x: npt.NDArray[np.number]) -> float:
     """Calculate contraharmonic mean.
 
     Contraharmonic mean is a function complementary to the harmonic mean.
@@ -112,7 +112,7 @@ def contraharmonic_mean(x: npt.NDArray) -> float:
     return float(np.nansum(np.square(x)) / np.nansum(x))
 
 
-def midmean(x: npt.NDArray) -> float:
+def midmean(x: npt.NDArray[np.number]) -> float:
     """Calculate interquartile mean, i.e mean inside interquartile range.
 
     This measure is more robust than average.
@@ -137,7 +137,7 @@ def midmean(x: npt.NDArray) -> float:
     return float(np.nanmean(np.where((x >= q1) & (x <= q3), x, np.nan)))
 
 
-def hodges_lehmann_sen_location(x: npt.NDArray) -> float:
+def hodges_lehmann_sen_location(x: npt.NDArray[np.number]) -> float:
     """Calculate Hodges-Lehmann-Sen robust location measure (pseudomedian).
 
     This measure is more robust then average.
@@ -175,7 +175,9 @@ def hodges_lehmann_sen_location(x: npt.NDArray) -> float:
     return float(np.nanmedian(product[0] + product[1]) * 0.5)
 
 
-def standard_trimmed_harrell_davis_quantile(x: npt.NDArray, q: float = 0.5) -> float:
+def standard_trimmed_harrell_davis_quantile(
+    x: npt.NDArray[np.number], q: float = 0.5
+) -> float:
     """Calculate Standard Trimmed Harrell-Davis median estimator.
 
     This measure is very robust.
@@ -230,7 +232,7 @@ def standard_trimmed_harrell_davis_quantile(x: npt.NDArray, q: float = 0.5) -> f
     return float(np.sum(_x[i_start:i_end] * w))
 
 
-def half_sample_mode(x: npt.NDArray) -> float:
+def half_sample_mode(x: npt.NDArray[np.number]) -> float:
     """Calculate half sample mode.
 
     This estimator is more stable than regular mode estimation,
@@ -282,7 +284,7 @@ def half_sample_mode(x: npt.NDArray) -> float:
     return float(np.mean(y))
 
 
-def tau_location(x: npt.NDArray, c: float = 4.5) -> float:
+def tau_location(x: npt.NDArray[np.number], c: float = 4.5) -> float:
     """Calculate Tau measure of location.
 
     This measure is very robust and has higher efficiency than median.
@@ -315,7 +317,7 @@ def tau_location(x: npt.NDArray, c: float = 4.5) -> float:
     return float(np.nansum(x * w) / np.nansum(w))
 
 
-def grenanders_m(x: npt.NDArray, p: float = 1.001, k: int = 2) -> float:
+def grenanders_m(x: npt.NDArray[np.number], p: float = 1.001, k: int = 2) -> float:
     """Calculate Grenander's Mode.
 
     This measure is a direct non-parametric estimation of the mode.
@@ -371,7 +373,7 @@ def grenanders_m(x: npt.NDArray, p: float = 1.001, k: int = 2) -> float:
     )
 
 
-def gastwirth_location(x: npt.NDArray) -> float:
+def gastwirth_location(x: npt.NDArray[np.number]) -> float:
     """Calculate Gastwirth's location estimator.
 
     This measure is more robust than average.

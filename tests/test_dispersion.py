@@ -48,7 +48,7 @@ all_functions = [
     "data", ["x_list_float", "x_list_int", "x_array_int", "x_array_float"]
 )
 def test_mock_aggregation_functions(
-    func: typing.Callable, data: str, request: pytest.FixtureRequest
+    func: typing.Callable[..., float], data: str, request: pytest.FixtureRequest
 ) -> None:
     """Test for different data types."""
     data = request.getfixturevalue(data)
@@ -73,7 +73,7 @@ def test_mock_aggregation_functions(
     ],
 )
 @pytest.mark.parametrize("seed", [1, 42, 99])
-def test_dispersion_sensibility(func: typing.Callable, seed: int) -> None:
+def test_dispersion_sensibility(func: typing.Callable[..., float], seed: int) -> None:
     """Test for result correctness."""
     rng = np.random.default_rng(seed)
     low_disp = np.round(rng.exponential(scale=1, size=100) + 1, 2)
@@ -89,7 +89,9 @@ def test_dispersion_sensibility(func: typing.Callable, seed: int) -> None:
 
 
 @pytest.mark.parametrize("func", all_functions)
-def test_statistic_with_nans(func: typing.Callable, x_array_nan: npt.NDArray) -> None:
+def test_statistic_with_nans(
+    func: typing.Callable[..., float], x_array_nan: npt.NDArray[np.number]
+) -> None:
     """Test for different data types."""
     if math.isnan(func(x_array_nan)):
         msg = "Statistic should not return nans."
@@ -106,7 +108,9 @@ def test_statistic_with_nans(func: typing.Callable, x_array_nan: npt.NDArray) ->
         studentized_range,
     ],
 )
-def test_invariance_add(func: typing.Callable, x_array_float: npt.NDArray) -> None:
+def test_invariance_add(
+    func: typing.Callable[..., float], x_array_float: npt.NDArray[np.number]
+) -> None:
     """Test coefficients for invariance to addition."""
     res1 = func(x_array_float)
     res2 = func(x_array_float + 10)
@@ -126,7 +130,9 @@ def test_invariance_add(func: typing.Callable, x_array_float: npt.NDArray) -> No
         cole_index_of_dispersion,
     ],
 )
-def test_invariance_mult(func: typing.Callable, x_array_float: npt.NDArray) -> None:
+def test_invariance_mult(
+    func: typing.Callable[..., float], x_array_float: npt.NDArray[np.number]
+) -> None:
     """Test coefficients for invariance to multiplication."""
     res1 = func(x_array_float)
     res2 = func(x_array_float * 10)
@@ -143,6 +149,8 @@ def test_invariance_mult(func: typing.Callable, x_array_float: npt.NDArray) -> N
     )
 )
 @pytest.mark.parametrize("func", all_functions)
-def test_fuzz_dispersions(func: typing.Callable, data: npt.NDArray) -> None:
+def test_fuzz_dispersions(
+    func: typing.Callable[..., float], data: npt.NDArray[np.number]
+) -> None:
     """Test all functions with fuzz."""
     func(data)

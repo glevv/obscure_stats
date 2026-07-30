@@ -57,7 +57,10 @@ all_functions = [
     "y_array", ["y_list_float", "y_list_int", "y_array_int", "y_array_float"]
 )
 def test_mock_association_functions(
-    func: typing.Callable, x_array: str, y_array: str, request: pytest.FixtureRequest
+    func: typing.Callable[..., float],
+    x_array: str,
+    y_array: str,
+    request: pytest.FixtureRequest,
 ) -> None:
     """Test for different data types."""
     x_array = request.getfixturevalue(x_array)
@@ -81,7 +84,7 @@ def test_mock_association_functions(
     ],
 )
 def test_signed_corr_sensibility(
-    func: typing.Callable, y_array_float: npt.NDArray
+    func: typing.Callable[..., float], y_array_float: npt.NDArray[np.number]
 ) -> None:
     """Test for result correctness."""
     res = func(-2 * y_array_float, y_array_float)
@@ -101,7 +104,7 @@ def test_signed_corr_sensibility(
     ],
 )
 def test_unsigned_corr_sensibility(
-    func: typing.Callable, y_array_float: npt.NDArray
+    func: typing.Callable[..., float], y_array_float: npt.NDArray[np.number]
 ) -> None:
     """Test for result correctness."""
     w = np.ones(shape=len(y_array_float))
@@ -132,7 +135,9 @@ def test_unsigned_corr_sensibility(
         zhang_i,
     ],
 )
-def test_const(func: typing.Callable, y_array_float: npt.NDArray) -> None:
+def test_const(
+    func: typing.Callable[..., float], y_array_float: npt.NDArray[np.number]
+) -> None:
     """Test for constant input."""
     x = np.ones(shape=(len(y_array_float),))
     with pytest.warns(match="is constant"):
@@ -143,7 +148,9 @@ def test_const(func: typing.Callable, y_array_float: npt.NDArray) -> None:
 
 
 @pytest.mark.parametrize("func", all_functions)
-def test_const_after_prep(func: typing.Callable, x_array_float: npt.NDArray) -> None:
+def test_const_after_prep(
+    func: typing.Callable[..., float], x_array_float: npt.NDArray[np.number]
+) -> None:
     """Test the second prep edge case input."""
     corr_test_data = np.ones(shape=len(x_array_float))
     corr_test_data[0] = np.nan
@@ -170,7 +177,9 @@ def test_const_after_prep(func: typing.Callable, x_array_float: npt.NDArray) -> 
     ],
 )
 def test_invariance(
-    func: typing.Callable, x_array_float: npt.NDArray, y_array_float: npt.NDArray
+    func: typing.Callable[..., float],
+    x_array_float: npt.NDArray[np.number],
+    y_array_float: npt.NDArray[np.number],
 ) -> None:
     """Test for invariance."""
     xy = func(x_array_float, y_array_float)
@@ -182,11 +191,11 @@ def test_invariance(
 
 @pytest.mark.parametrize("func", all_functions)
 def test_notfinite_association(
-    func: typing.Callable,
-    x_array_nan: npt.NDArray,
-    x_array_int: npt.NDArray,
-    y_array_inf: npt.NDArray,
-    y_array_int: npt.NDArray,
+    func: typing.Callable[..., float],
+    x_array_nan: npt.NDArray[np.number],
+    x_array_int: npt.NDArray[np.number],
+    y_array_inf: npt.NDArray[np.number],
+    y_array_int: npt.NDArray[np.number],
 ) -> None:
     """Test for correct NaN behavior."""
     if math.isnan(func(x_array_nan, y_array_int)):
@@ -203,7 +212,9 @@ def test_notfinite_association(
 
 @pytest.mark.parametrize("func", all_functions)
 def test_unequal_arrays(
-    func: typing.Callable, x_array_int: npt.NDArray, y_array_int: npt.NDArray
+    func: typing.Callable[..., float],
+    x_array_int: npt.NDArray[np.number],
+    y_array_int: npt.NDArray[np.number],
 ) -> None:
     """Test for unequal arrays."""
     with pytest.warns(match="Lengths of the inputs do not match"):
@@ -212,7 +223,9 @@ def test_unequal_arrays(
 
 @pytest.mark.parametrize("a", [-1, 0])
 def test_a_in_rank_div(
-    x_array_float: npt.NDArray, y_array_float: npt.NDArray, a: float
+    x_array_float: npt.NDArray[np.number],
+    y_array_float: npt.NDArray[np.number],
+    a: float,
 ) -> None:
     """Simple test case for correctness of a parameter value."""
     with pytest.raises(ValueError, match="Parameter a should be > 0"):
@@ -220,7 +233,9 @@ def test_a_in_rank_div(
 
 
 @pytest.mark.parametrize("func", all_functions)
-def test_corr_boundaries(func: typing.Callable, y_array_float: npt.NDArray) -> None:
+def test_corr_boundaries(
+    func: typing.Callable[..., float], y_array_float: npt.NDArray[np.number]
+) -> None:
     """Test for result correctness."""
     res = func(y_array_float, -y_array_float)
     if abs(res) > 1:
@@ -228,7 +243,9 @@ def test_corr_boundaries(func: typing.Callable, y_array_float: npt.NDArray) -> N
         raise ValueError(msg)
 
 
-def test_concordance(x_array_float: npt.NDArray, y_array_float: npt.NDArray) -> None:
+def test_concordance(
+    x_array_float: npt.NDArray[np.number], y_array_float: npt.NDArray[np.number]
+) -> None:
     """Test coefficients for invariance to addition."""
     res1 = concordance_correlation(x_array_float, y_array_float)
     res2 = concordance_correlation(x_array_float, y_array_float + 1.0)
@@ -251,7 +268,9 @@ def test_concordance(x_array_float: npt.NDArray, y_array_float: npt.NDArray) -> 
 )
 @pytest.mark.parametrize("func", all_functions)
 def test_fuzz_associations(
-    func: typing.Callable, x: npt.NDArray, y: npt.NDArray
+    func: typing.Callable[..., float],
+    x: npt.NDArray[np.number],
+    y: npt.NDArray[np.number],
 ) -> None:
     """Test all functions with fuzz."""
     func(x, y)
