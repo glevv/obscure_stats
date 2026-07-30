@@ -1,3 +1,6 @@
+# Copyright (c) 2023 Hleb Levitski
+# Licensed under the MIT License. See LICENSE in the project root for details.
+
 """Module for measures of dispersion."""
 
 import numpy as np
