@@ -47,7 +47,7 @@ def y_list_float() -> list[float]:
 
 @pytest.fixture(scope="session")
 def y_list_int() -> list[int]:
-    """List of ints."""
+    """List of integers."""
     return [-1, 1, 9, 7, 0, 1, 0, 1]
 
 

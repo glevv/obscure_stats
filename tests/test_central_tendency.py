@@ -54,7 +54,7 @@ def test_mock_aggregation_functions(
 
 
 def test_thdm(thdme_test_data: npt.NDArray[np.number]) -> None:
-    """Test the case for correctness of Trimmed Harrel Davis median."""
+    """Test the case for correctness of Trimmed Harrel-Davis median."""
     result = standard_trimmed_harrell_davis_quantile(thdme_test_data)
     if result != pytest.approx(0.6268, rel=1e-4):
         msg = "Results from the test and paper do not match."

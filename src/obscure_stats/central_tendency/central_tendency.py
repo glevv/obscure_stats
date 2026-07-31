@@ -11,7 +11,7 @@ from scipy import stats
 
 
 def midrange(x: npt.NDArray[np.number]) -> float:
-    """Calculate midrange or midpoint, i.e. average between min and max.
+    """Calculate midrange or midpoint, i.e. average between minimum and maximum.
 
     This measure could be noisy since it is based on minimum and maximum.
 
@@ -140,7 +140,7 @@ def midmean(x: npt.NDArray[np.number]) -> float:
 def hodges_lehmann_sen_location(x: npt.NDArray[np.number]) -> float:
     """Calculate Hodges-Lehmann-Sen robust location measure (pseudomedian).
 
-    This measure is more robust then average.
+    This measure is more robust than average.
 
     Parameters
     ----------

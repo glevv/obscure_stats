@@ -27,7 +27,7 @@ jobs:
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
 
       - name: Install Python 3.12
-        run: uv python install 3.12
+        run: uv python install 3.12 # locked to 3.12
 
       - name: Build
         run: uv build
@@ -35,4 +35,4 @@ jobs:
       - name: Publish
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
-        run: uv publish --dry-run
+        run: uv publish
