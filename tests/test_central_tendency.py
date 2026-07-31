@@ -46,15 +46,15 @@ all_functions = [
     "data", ["x_list_float", "x_list_int", "x_array_int", "x_array_float"]
 )
 def test_mock_aggregation_functions(
-    func: typing.Callable, data: str, request: pytest.FixtureRequest
+    func: typing.Callable[..., float], data: str, request: pytest.FixtureRequest
 ) -> None:
     """Test for different data types."""
     data = request.getfixturevalue(data)
     func(data)
 
 
-def test_thdm(thdme_test_data: npt.NDArray) -> None:
-    """Test the case for correctness of Trimmed Harrel Davis median."""
+def test_thdm(thdme_test_data: npt.NDArray[np.number]) -> None:
+    """Test the case for correctness of Trimmed Harrel-Davis median."""
     result = standard_trimmed_harrell_davis_quantile(thdme_test_data)
     if result != pytest.approx(0.6268, rel=1e-4):
         msg = "Results from the test and paper do not match."
@@ -67,7 +67,7 @@ def test_thdm(thdme_test_data: npt.NDArray) -> None:
         raise ValueError(msg)
 
 
-def test_edge_cases(x_array_float: npt.NDArray) -> None:
+def test_edge_cases(x_array_float: npt.NDArray[np.number]) -> None:
     """Simple test for edge cases."""
     result = standard_trimmed_harrell_davis_quantile(x_array_float[:1])
     if result != pytest.approx(x_array_float[0], rel=1e-4):
@@ -80,13 +80,15 @@ def test_edge_cases(x_array_float: npt.NDArray) -> None:
 
 
 @pytest.mark.parametrize("q", [0.0, 1.0])
-def test_q_in_sthdq(x_array_float: npt.NDArray, q: float) -> None:
+def test_q_in_sthdq(x_array_float: npt.NDArray[np.number], q: float) -> None:
     """Simple test case for correctness of q parameter value."""
     with pytest.raises(ValueError, match="Parameter q should be in range"):
         standard_trimmed_harrell_davis_quantile(x_array_float, q=q)
 
 
-def test_hls(hls_test_data: npt.NDArray, hls_test_data_big: list[int]) -> None:
+def test_hls(
+    hls_test_data: npt.NDArray[np.number], hls_test_data_big: list[int]
+) -> None:
     """Simple test case for correctness of Hodges-Lehmann-Sen."""
     result = hodges_lehmann_sen_location(hls_test_data)
     if result != pytest.approx(3.5):
@@ -99,7 +101,7 @@ def test_hls(hls_test_data: npt.NDArray, hls_test_data_big: list[int]) -> None:
         raise ValueError(msg)
 
 
-def test_hsm(hsm_test_data: npt.NDArray) -> None:
+def test_hsm(hsm_test_data: npt.NDArray[np.number]) -> None:
     """Simple test case for correctness of Half Sample Mode."""
     result = half_sample_mode(hsm_test_data)
     if result != pytest.approx(2.0):
@@ -120,7 +122,9 @@ def test_hsm(hsm_test_data: npt.NDArray) -> None:
 
 
 @pytest.mark.parametrize("func", all_functions)
-def test_statistic_with_nans(func: typing.Callable, x_array_nan: npt.NDArray) -> None:
+def test_statistic_with_nans(
+    func: typing.Callable[..., float], x_array_nan: npt.NDArray[np.number]
+) -> None:
     """Test for different data types."""
     if math.isnan(func(x_array_nan)):
         msg = "Statistic should not return nans."
@@ -128,13 +132,13 @@ def test_statistic_with_nans(func: typing.Callable, x_array_nan: npt.NDArray) ->
 
 
 @pytest.mark.parametrize("c", [0.0, -1.0])
-def test_tau_location(x_array_float: npt.NDArray, c: float) -> None:
+def test_tau_location(x_array_float: npt.NDArray[np.number], c: float) -> None:
     """Test that function will raise error if c parameter is incorrect."""
     with pytest.raises(ValueError, match="Parameter c should be strictly"):
         tau_location(x_array_float, c=c)
 
 
-def test_grenaders_m(x_array_float: npt.NDArray) -> None:
+def test_grenaders_m(x_array_float: npt.NDArray[np.number]) -> None:
     """Test that function will raise error if p or k parameters are incorrect."""
     with pytest.raises(ValueError, match="Parameter p should be a float"):
         grenanders_m(x_array_float, p=1)
@@ -150,7 +154,7 @@ def test_grenaders_m(x_array_float: npt.NDArray) -> None:
 
 @pytest.mark.parametrize("func", all_functions)
 @pytest.mark.parametrize("seed", [1, 42, 99])
-def test_sensibility(func: typing.Callable, seed: int) -> None:
+def test_sensibility(func: typing.Callable[..., float], seed: int) -> None:
     """Test central tendencies convergence for normal distribution."""
     rng = np.random.default_rng(seed)
     res = func(rng.normal(size=100))
@@ -167,6 +171,8 @@ def test_sensibility(func: typing.Callable, seed: int) -> None:
     )
 )
 @pytest.mark.parametrize("func", all_functions)
-def test_fuzz_central_tendencies(func: typing.Callable, data: npt.NDArray) -> None:
+def test_fuzz_central_tendencies(
+    func: typing.Callable[..., float], data: npt.NDArray[np.number]
+) -> None:
     """Test all functions with fuzz."""
     func(data)

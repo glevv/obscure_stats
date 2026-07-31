@@ -1,3 +1,6 @@
+# Copyright (c) 2023 Hleb Levitski
+# Licensed under the MIT License. See LICENSE in the project root for details.
+
 """Module for association measures."""
 
 from __future__ import annotations
@@ -11,7 +14,7 @@ from scipy import stats
 from obscure_stats.dispersion import gini_mean_difference
 
 
-def _check_arrays(x: npt.NDArray, y: npt.NDArray) -> bool:
+def _check_arrays(x: npt.NDArray[np.number], y: npt.NDArray[np.number]) -> bool:
     """Check arrays.
 
     - Equal lengths of the arrays;
@@ -57,7 +60,9 @@ def _check_arrays(x: npt.NDArray, y: npt.NDArray) -> bool:
     return False
 
 
-def _prep_arrays(x: npt.NDArray, y: npt.NDArray) -> tuple[npt.NDArray, npt.NDArray]:
+def _prep_arrays(
+    x: npt.NDArray[np.number], y: npt.NDArray[np.number]
+) -> tuple[npt.NDArray[np.number], npt.NDArray[np.number]]:
     """Prepare data for downstream task."""
     _x = np.ravel(x)
     _y = np.ravel(y)
@@ -67,7 +72,9 @@ def _prep_arrays(x: npt.NDArray, y: npt.NDArray) -> tuple[npt.NDArray, npt.NDArr
     return _x, _y
 
 
-def concordance_correlation(x: npt.NDArray, y: npt.NDArray) -> float:
+def concordance_correlation(
+    x: npt.NDArray[np.number], y: npt.NDArray[np.number]
+) -> float:
     """Calculate concordance correlation coefficient.
 
     The main difference between Pearson's R and CCC is that CCC
@@ -113,7 +120,7 @@ def concordance_correlation(x: npt.NDArray, y: npt.NDArray) -> float:
     return float(p * x_a)
 
 
-def concordance_rate(x: npt.NDArray, y: npt.NDArray) -> float:
+def concordance_rate(x: npt.NDArray[np.number], y: npt.NDArray[np.number]) -> float:
     """Calculate conventional concordance rate.
 
     Also known as quadrant count ratio.
@@ -169,7 +176,9 @@ def concordance_rate(x: npt.NDArray, y: npt.NDArray) -> float:
     )
 
 
-def symmetric_chatterjee_xi(x: npt.NDArray, y: npt.NDArray) -> float:
+def symmetric_chatterjee_xi(
+    x: npt.NDArray[np.number], y: npt.NDArray[np.number]
+) -> float:
     """Calculate symmetric Xi correlation coefficient.
 
     Another variation of rank correlation which does not make any assumptions about
@@ -216,7 +225,7 @@ def symmetric_chatterjee_xi(x: npt.NDArray, y: npt.NDArray) -> float:
     )
 
 
-def zhang_i(x: npt.NDArray, y: npt.NDArray) -> float:
+def zhang_i(x: npt.NDArray[np.number], y: npt.NDArray[np.number]) -> float:
     """Calculate I correlation coefficient proposed by Q. Zhang.
 
     This coefficient combines Spearman and Chatterjee rank correlation coefficients
@@ -261,7 +270,7 @@ def zhang_i(x: npt.NDArray, y: npt.NDArray) -> float:
     )
 
 
-def tanimoto_similarity(x: npt.NDArray, y: npt.NDArray) -> float:
+def tanimoto_similarity(x: npt.NDArray[np.number], y: npt.NDArray[np.number]) -> float:
     """Calculate Tanimoto similarity.
 
     It is very similar to Jaccard or Cosine similarity but differs in how
@@ -306,7 +315,7 @@ def tanimoto_similarity(x: npt.NDArray, y: npt.NDArray) -> float:
     return float(xy / (xx + yy - xy))
 
 
-def blomqvist_beta(x: npt.NDArray, y: npt.NDArray) -> float:
+def blomqvist_beta(x: npt.NDArray[np.number], y: npt.NDArray[np.number]) -> float:
     """Calculate Blomqvist's beta.
 
     Also known as medial correlation. It is similar to Spearman Rho
@@ -352,7 +361,7 @@ def blomqvist_beta(x: npt.NDArray, y: npt.NDArray) -> float:
     return float(np.mean(np.sign((x - med_x) * (y - med_y))))
 
 
-def fechner_correlation(x: npt.NDArray, y: npt.NDArray) -> float:
+def fechner_correlation(x: npt.NDArray[np.number], y: npt.NDArray[np.number]) -> float:
     """Calculate Fechner correlation.
 
     It is similar to Bloomqvist beta and Pearson correlation.
@@ -392,7 +401,9 @@ def fechner_correlation(x: npt.NDArray, y: npt.NDArray) -> float:
     return float(np.mean(np.sign(x - avg_x) * np.sign(y - avg_y)))
 
 
-def winsorized_correlation(x: npt.NDArray, y: npt.NDArray, k: float = 0.1) -> float:
+def winsorized_correlation(
+    x: npt.NDArray[np.number], y: npt.NDArray[np.number], k: float = 0.1
+) -> float:
     """Calculate winsorized correlation coefficient.
 
     This correlation is a robust alternative of the Pearson correlation.
@@ -433,7 +444,9 @@ def winsorized_correlation(x: npt.NDArray, y: npt.NDArray, k: float = 0.1) -> fl
     return float(np.corrcoef(x_w, y_w)[0, 1])
 
 
-def rank_minrelation_coefficient(x: npt.NDArray, y: npt.NDArray) -> float:
+def rank_minrelation_coefficient(
+    x: npt.NDArray[np.number], y: npt.NDArray[np.number]
+) -> float:
     """Calculate rank minrelation coefficient.
 
     This measure estimates p(y > x) when x and y are continuous random variables.
@@ -483,7 +496,7 @@ def rank_minrelation_coefficient(x: npt.NDArray, y: npt.NDArray) -> float:
     return float((lower - higher) / (lower + higher))
 
 
-def tukey_correlation(x: npt.NDArray, y: npt.NDArray) -> float:
+def tukey_correlation(x: npt.NDArray[np.number], y: npt.NDArray[np.number]) -> float:
     """Calculate Tukey's correlation coefficient.
 
     It is not quite as robust as rank correlations, but it is more
@@ -529,7 +542,9 @@ def tukey_correlation(x: npt.NDArray, y: npt.NDArray) -> float:
     return max(min(coef, 1.0), -1.0)
 
 
-def gaussain_rank_correlation(x: npt.NDArray, y: npt.NDArray) -> float:
+def gaussain_rank_correlation(
+    x: npt.NDArray[np.number], y: npt.NDArray[np.number]
+) -> float:
     """Calculate Gaussian rank correlation coefficient.
 
     The Gaussian rank correlation equals the usual correlation coefficient
@@ -570,7 +585,9 @@ def gaussain_rank_correlation(x: npt.NDArray, y: npt.NDArray) -> float:
     return max(min(coef, 1.0), -1.0)
 
 
-def quantile_correlation(x: npt.NDArray, y: npt.NDArray, q: float = 0.5) -> float:
+def quantile_correlation(
+    x: npt.NDArray[np.number], y: npt.NDArray[np.number], q: float = 0.5
+) -> float:
     """Calculate quantile correlation.
 
     This function measures linear association between two
@@ -615,7 +632,9 @@ def quantile_correlation(x: npt.NDArray, y: npt.NDArray, q: float = 0.5) -> floa
     )
 
 
-def normalized_chatterjee_xi(x: npt.NDArray, y: npt.NDArray) -> float:
+def normalized_chatterjee_xi(
+    x: npt.NDArray[np.number], y: npt.NDArray[np.number]
+) -> float:
     """Calculate normalized Xi correlation coefficient.
 
     Another variation of rank correlation which does not make any assumptions about
@@ -662,7 +681,9 @@ def normalized_chatterjee_xi(x: npt.NDArray, y: npt.NDArray) -> float:
     )
 
 
-def morisita_horn_similarity(x: npt.NDArray, y: npt.NDArray) -> float:
+def morisita_horn_similarity(
+    x: npt.NDArray[np.number], y: npt.NDArray[np.number]
+) -> float:
     """Calculate Morisita-Horn similarity.
 
     It is very similar to Jaccard or Cosine similarity but differs in how
@@ -707,7 +728,9 @@ def morisita_horn_similarity(x: npt.NDArray, y: npt.NDArray) -> float:
     )
 
 
-def rank_divergence(x: npt.NDArray, y: npt.NDArray, a: float = 2.0) -> float:
+def rank_divergence(
+    x: npt.NDArray[np.number], y: npt.NDArray[np.number], a: float = 2.0
+) -> float:
     """Calculate Rank-Turbulence divergence.
 
     It is a rank based divergency measure.
@@ -755,7 +778,9 @@ def rank_divergence(x: npt.NDArray, y: npt.NDArray, a: float = 2.0) -> float:
     )
 
 
-def symmetric_normalized_chatterjee_xi(x: npt.NDArray, y: npt.NDArray) -> float:
+def symmetric_normalized_chatterjee_xi(
+    x: npt.NDArray[np.number], y: npt.NDArray[np.number]
+) -> float:
     """Calculate symmetric normalized Xi correlation coefficient.
 
     Another variation of rank correlation which does not make any assumptions about

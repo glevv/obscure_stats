@@ -20,19 +20,19 @@ def x_list_int() -> list[int]:
 
 
 @pytest.fixture(scope="session")
-def x_array_int(x_list_int: list[int]) -> npt.NDArray:
+def x_array_int(x_list_int: list[int]) -> npt.NDArray[np.number]:
     """Array of integers."""
     return np.asarray(x_list_int, dtype="int")
 
 
 @pytest.fixture(scope="session")
-def x_array_float(x_list_float: npt.NDArray) -> npt.NDArray:
+def x_array_float(x_list_float: npt.NDArray[np.number]) -> npt.NDArray[np.number]:
     """Array of float."""
     return np.asarray(x_list_float, dtype="float")
 
 
 @pytest.fixture(scope="session")
-def x_array_nan(x_array_float: npt.NDArray) -> npt.NDArray:
+def x_array_nan(x_array_float: npt.NDArray[np.number]) -> npt.NDArray[np.number]:
     """Array of float with NaN."""
     temp = x_array_float.copy()
     temp[0] = np.nan
@@ -47,24 +47,24 @@ def y_list_float() -> list[float]:
 
 @pytest.fixture(scope="session")
 def y_list_int() -> list[int]:
-    """List of ints."""
+    """List of integers."""
     return [-1, 1, 9, 7, 0, 1, 0, 1]
 
 
 @pytest.fixture(scope="session")
-def y_array_int(y_list_int: list[int]) -> npt.NDArray:
+def y_array_int(y_list_int: list[int]) -> npt.NDArray[np.number]:
     """Array of integers."""
     return np.asarray(y_list_int, dtype="int")
 
 
 @pytest.fixture(scope="session")
-def y_array_float(y_list_float: list[float]) -> npt.NDArray:
+def y_array_float(y_list_float: list[float]) -> npt.NDArray[np.number]:
     """Array of float."""
     return np.asarray(y_list_float, dtype="float")
 
 
 @pytest.fixture(scope="session")
-def y_array_inf(y_array_float: npt.NDArray) -> npt.NDArray:
+def y_array_inf(y_array_float: npt.NDArray[np.number]) -> npt.NDArray[np.number]:
     """Array of float with NaN."""
     temp = y_array_float.copy()
     temp[1] = np.inf
@@ -78,21 +78,21 @@ def c_list_obj() -> list[str]:
 
 
 @pytest.fixture(scope="session")
-def c_array_obj(c_list_obj: list[str]) -> npt.NDArray:
+def c_array_obj(c_list_obj: list[str]) -> npt.NDArray[np.number]:
     """Array of objects."""
     return np.asarray(c_list_obj)
 
 
 @pytest.fixture(scope="session")
-def c_array_nan(c_array_obj: npt.NDArray) -> npt.NDArray:
+def c_array_nan(c_array_obj: npt.NDArray[np.number]) -> npt.NDArray[np.number]:
     """Array of objects."""
     temp = c_array_obj.copy()
-    temp[1] = None
+    temp[1] = np.nan
     return temp
 
 
 @pytest.fixture(scope="session")
-def rank_skewness_test_data() -> npt.NDArray:
+def rank_skewness_test_data() -> npt.NDArray[np.number]:
     """Test data from the paper for Rank Skew."""
     return np.asarray(
         (
@@ -208,7 +208,7 @@ def rank_skewness_test_data() -> npt.NDArray:
 
 
 @pytest.fixture(scope="session")
-def thdme_test_data() -> npt.NDArray:
+def thdme_test_data() -> npt.NDArray[np.number]:
     """Test data from the paper for Trimmed Harrles-Davies median."""
     return np.asarray(
         (-0.565, -0.106, -0.095, 0.363, 0.404, 0.633, 1.371, 1.512, 2.018, 100_000)
@@ -216,13 +216,13 @@ def thdme_test_data() -> npt.NDArray:
 
 
 @pytest.fixture(scope="session")
-def hls_test_data() -> npt.NDArray:
+def hls_test_data() -> npt.NDArray[np.number]:
     """Test data from the paper for Hodges-Lehmann-Sen estimator."""
     return np.asarray((1, 5, 2, 2, 7, 4, 1, 6))
 
 
 @pytest.fixture(scope="session")
-def hsm_test_data() -> npt.NDArray:
+def hsm_test_data() -> npt.NDArray[np.number]:
     """Test data for Half Sample Mode."""
     return np.asarray((1, 2, 2, 2, 7, 4, 1, 6))
 

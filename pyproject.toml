@@ -1,18 +1,17 @@
-[tool.poetry]
+[project]
 name = "obscure_stats"
-version = "0.7.1"
+version = "0.8.0"
 description = "Collection of lesser-known statistical functions"
-authors = ["Hleb Levitski"]
+authors = [{ name = "Hleb Levitski" }]
+requires-python = ">=3.12,<3.15"
 readme = "README.md"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
@@ -21,23 +20,31 @@ classifiers = [
     "Topic :: Software Development",
     "Typing :: Typed",
 ]
+dependencies = [
+    "numpy>=2.0.0,<3",
+    "scipy>=1.16.0,<2",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.11,<3.15"
-numpy = "^2.0.0"
-scipy = "^1.16.0"
+[project.license]
+file = "LICENSE.txt"
 
-[tool.poetry.group.dev.dependencies]
-pytest = "^9.0.0"
-pytest-cov = "^7.0.0"
-ruff = "^0.15.0"
-hypothesis = "^6.103.1"
-hypothesis-pytest = "^0.19.0"
-pyrefly = "^1.0.0"
+[dependency-groups]
+dev = [
+    "pytest>=9.0.0,<10",
+    "pytest-cov>=7.0.0,<8",
+    "ruff>=0.16.0,<0.17",
+    "hypothesis>=6.103.1,<7",
+    "hypothesis-pytest>=0.19.0,<0.20",
+    "pyrefly>=1.0.0,<2",
+]
+
+[tool.uv]
+default-groups = "all"
+package = false
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.12.0,<0.13.0"]
+build-backend = "uv_build"
 
 [tool.pytest.ini_options]
 addopts = [
@@ -78,6 +85,10 @@ fixable = ["ALL"]
 ignore = ["COM812", "ISC001"]
 task-tags = ["TODO"]
 
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["CPY001"]
+"tests/*.py" = ["CPY001"]
+
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
@@ -96,6 +107,6 @@ max-line-length = 100
 [tool.pyrefly]
 project-includes = [
     "**/*.py*",
-    "**/*.ipynb",
 ]
+preset = "strict"
 min-severity = "warn"

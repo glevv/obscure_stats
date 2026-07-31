@@ -189,3 +189,4 @@ Temporary Items
 # User defined
 .ruff_cache/
 .vscode/
+uv.lock

@@ -2,10 +2,25 @@
 
 | | |
 | --- | --- |
-| CI/CD | [![CI](https://github.com/glevv/obscure_stats/actions/workflows/package.yml/badge.svg)](https://github.com/glevv/obscure_stats/actions/workflows/package.yml) [![CD](https://github.com/glevv/obscure_stats/actions/workflows/publish.yml/badge.svg)](https://github.com/glevv/obscure_stats/actions/workflows/publish.yml) [![Coverage Status](https://coveralls.io/repos/github/glevv/obscure_stats/badge.svg)](https://coveralls.io/github/glevv/obscure_stats) |
-| Security | [![CodeQL](https://github.com/glevv/obscure_stats/actions/workflows/codeql.yml/badge.svg)](https://github.com/glevv/obscure_stats/actions/workflows/codeql.yml) [![Dependabot](https://img.shields.io/badge/Dependabot-active-brightgreen.svg)](https://github.com/dependabot/dependabot-core) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/glevv/obscure_stats/badge)](https://securityscorecards.dev/viewer/?uri=github.com/glevv/obscure_stats) |
-| Package | [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/obscure_stats?logo=Python)](https://pypi.org/project/obscure_stats/) [![PyPI](https://img.shields.io/pypi/v/obscure_stats?logo=PyPI)](https://pypi.org/project/obscure_stats/) [![Downloads](https://static.pepy.tech/badge/obscure_stats)](https://pepy.tech/project/obscure_stats) |
-| Meta | [![Poetry](https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json)](https://python-poetry.org/) [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff) [![pyrefly](https://img.shields.io/endpoint?url=https://pyrefly.org/badge.json)](https://github.com/facebook/pyrefly) [![License - MIT](https://img.shields.io/badge/license-MIT-9400d3.svg)](https://spdx.org/licenses/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10206933.svg)](https://doi.org/10.5281/zenodo.10206933)
+| CI/CD | [![CI][github-actions-badge]](https://github.com/glevv/obscure_stats/actions/workflows/package.yml) [![CD][github-publish-badge]](https://github.com/glevv/obscure_stats/actions/workflows/publish.yml) [![Coverage Status][coveradge-badge]](https://coveralls.io/github/glevv/obscure_stats) |
+| Security | [![CodeQL][code-ql-badge]](https://github.com/glevv/obscure_stats/actions/workflows/codeql.yml) [![Dependabot][dependabot-badge]](https://github.com/dependabot/dependabot-core) [![OpenSSF Scorecard][open-ssf-badge]](https://securityscorecards.dev/viewer/?uri=github.com/glevv/obscure_stats) |
+| Package | [![PyPI - Python Version][pypi-ver-badge]](https://pypi.org/project/obscure_stats/) [![PyPI][pypi-pub-badge]](https://pypi.org/project/obscure_stats/) [![Downloads][downloads-badge]](https://pepy.tech/project/obscure_stats) |
+| Meta | [![uv][uv-badge]](https://github.com/astral-sh/uv) [![Ruff][ruff-badge]](https://github.com/astral-sh/ruff) [![pyrefly][pyrefly-badge]](https://github.com/facebook/pyrefly) [![License - MIT][license-badge]](https://spdx.org/licenses/) [![DOI][doi-badge]](https://doi.org/10.5281/zenodo.10206933)
+
+[github-actions-badge]: https://github.com/glevv/obscure_stats/actions/workflows/package.yml/badge.svg
+[github-publish-badge]: https://github.com/glevv/obscure_stats/actions/workflows/publish.yml/badge.svg
+[coveradge-badge]: https://coveralls.io/repos/github/glevv/obscure_stats/badge.svg
+[code-ql-badge]: https://github.com/glevv/obscure_stats/actions/workflows/codeql.yml/badge.svg
+[dependabot-badge]: https://img.shields.io/badge/Dependabot-active-brightgreen.svg
+[open-ssf-badge]: https://api.securityscorecards.dev/projects/github.com/glevv/obscure_stats/badge
+[pypi-ver-badge]: https://img.shields.io/pypi/pyversions/obscure_stats?logo=Python
+[pypi-pub-badge]: https://img.shields.io/pypi/v/obscure_stats?logo=PyPI
+[downloads-badge]: https://static.pepy.tech/badge/obscure_stats
+[uv-badge]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json
+[ruff-badge]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json
+[pyrefly-badge]: https://img.shields.io/endpoint?url=https://pyrefly.org/badge.json
+[license-badge]: https://img.shields.io/badge/license-MIT-9400d3.svg
+[doi-badge]: https://zenodo.org/badge/DOI/10.5281/zenodo.10206933.svg
 
 ## Highlights:
 
