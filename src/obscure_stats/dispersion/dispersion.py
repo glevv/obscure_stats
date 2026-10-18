@@ -237,20 +237,50 @@ def shamos_estimator(x: npt.NDArray[np.number]) -> float:
     Geometry and statistics: Problems at the interface (p. 0032).
     Carnegie-Mellon University. Department of Computer Science.
 
-    Notes
-    -----
-    This implementation uses Cartesian product, so the time and memory complexity
-    are N^2. It is best to not use it on large arrays.
-
     See Also
     --------
     obscure_stats.central_tendency.hodges_lehmann_sen_location - Hodges-Lehmann-Sen loc.
     """
-    # In the original paper authors suggest use only upper triangular
-    # of the Cartesian product, but in this implementation we use
-    # whole matrix, which is equivalent.
-    product = np.meshgrid(x, x, sparse=True)
-    return float(np.nanmedian(np.abs(product[0] - product[1])))
+    x = np.sort(x)
+    x = x[np.isfinite(x)]
+    n = len(x)
+
+    if n <= 1:
+        return np.nan
+
+    total_pairs = n * (n - 1) // 2
+
+    def count_le(m: float) -> int:
+        """Count how many absolute differences (x[j] - x[i] for j > i) are <= m."""
+        count = 0
+        for i in range(n):
+            target = x[i] + m
+            # Count elements in x[i+1:] that are <= x[i] + m
+            count += np.searchsorted(x[i + 1 :], target, side="right")
+        return count
+
+    def find_quantile(k: int) -> float:
+        """Find quantile iteratively."""
+        low = 0.0
+        high = x[-1] - x[0]
+        for _ in range(60):  # 60 iterations give full float64 precision
+            mid = 0.5 * (low + high)
+            if count_le(mid) < k:
+                low = mid
+            else:
+                high = mid
+        return high
+
+    # Find the median position(s) of pairwise differences
+    if total_pairs % 2 == 1:
+        k = (total_pairs + 1) // 2
+        raw_shamos = find_quantile(k)
+    else:
+        k1 = total_pairs // 2
+        k2 = k1 + 1
+        raw_shamos = 0.5 * (find_quantile(k1) + find_quantile(k2))
+
+    return float(raw_shamos)  # * 1.048358
 
 
 def coefficient_of_range(x: npt.NDArray[np.number]) -> float:
@@ -322,15 +352,17 @@ def gini_mean_difference(x: npt.NDArray[np.number]) -> float:
     Yitzhaki, S.; Schechtman, E. (2013).
     The Gini Methodology.
     Springer, New York.
-
-    Notes
-    -----
-    This implementation uses Cartesian product, so the time and memory complexity
-    are N^2. It is best to not use it on large arrays.
     """
+    x = np.sort(x)
+    x = x[np.isfinite(x)]
     n = len(x)
-    product = np.meshgrid(x, x, sparse=True)
-    return float(np.nansum(np.abs(product[0] - product[1])) / (n * (n - 1)))
+
+    if n <= 1:
+        return 0.0
+
+    # O(n) closed-form formula using sorted indices (1-indexed perspective)
+    indices = np.arange(1, n + 1)
+    return float(2.0 * np.sum((2 * indices - n - 1) * x) / (n * (n - 1)))
 
 
 def inter_expectile_range(x: npt.NDArray[np.number]) -> float:

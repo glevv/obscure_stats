@@ -164,17 +164,50 @@ def hodges_lehmann_sen_location(x: npt.NDArray[np.number]) -> float:
     On the Estimation of Relative Potency in Dilution (-Direct)
     Assays by Distribution-Free Methods.
     Biometrics 19, no. 4: 532-552.
-
-    Notes
-    -----
-    This implementation uses Cartesian product, so the time and memory complexity
-    are N^2. It is best to not use it on large arrays.
     """
-    # In the original paper authors suggest use only upper triangular
-    # of the Cartesian product, but in this implementation we use
-    # whole matrix, which is equivalent.
-    product = np.meshgrid(x, x, sparse=True)
-    return float(np.nanmedian(product[0] + product[1]) * 0.5)
+    x = np.sort(x)
+    x = x[np.isfinite(x)]
+    n = len(x)
+
+    if n == 0:
+        return np.nan
+    if n == 1:
+        return float(x[0])
+
+    total_pairs = n * (n + 1) // 2
+
+    def count_le(m: float) -> int:
+        """Count how many pairwise sums (x[i] + x[j] for i <= j) are <= m."""
+        count = 0
+        for i in range(n):
+            target = m - x[i]
+            # Count elements in x[i:] that are <= target
+            count += np.searchsorted(x[i:], target, side="right")
+        return count
+
+    # Binary search for the k-th smallest pairwise sum (1-indexed)
+    def find_quantile(k: int) -> float:
+        """Find quantile iteratively."""
+        low = x[0] + x[0]
+        high = x[-1] + x[-1]
+        # ~60 iterations give full float64 precision
+        for _ in range(60):
+            mid = 0.5 * (low + high)
+            if count_le(mid) < k:
+                low = mid
+            else:
+                high = mid
+        return high
+
+    # Find the median position(s)
+    if total_pairs % 2 == 1:
+        k = (total_pairs + 1) // 2
+        return float(find_quantile(k) * 0.5)
+    k1 = total_pairs // 2
+    k2 = k1 + 1
+    val1 = find_quantile(k1)
+    val2 = find_quantile(k2)
+    return float(0.25 * (val1 + val2))
 
 
 def standard_trimmed_harrell_davis_quantile(
@@ -268,14 +301,14 @@ def half_sample_mode(x: npt.NDArray[np.number]) -> float:
         half_y = math.ceil(ny / 2)
         w_min = y[-1] - y[0]
         w, j = 0, 0
-        for i in range(ny - half_y):
+        for i in range(ny - half_y + 1):
             w = y[i + half_y - 1] - y[i]
             if w <= w_min:
                 w_min = w
                 j = i
-        if w == 0:
+        if w_min == 0:
             return float(y[j])
-        y = y[j : (j + half_y - 1)]
+        y = y[j : j + half_y]
     if len(y) == _corner_cases[1]:
         z = 2 * y[1] - y[0] - y[2]
         if z < 0:
@@ -362,17 +395,21 @@ def grenanders_m(x: npt.NDArray[np.number], p: float = 1.001, k: int = 2) -> flo
 
     # precalculate diffs
     diff = x_sort[k:] - x_sort[:-k]
+
     # if the diffs are constant - return the value
     if diff.sum() == 0.0:
         return float(x_sort[0])
-    # to avoid division by zero
-    diff[diff == 0.0] = np.nan
 
-    return float(
-        0.5
-        * np.nansum((x_sort[k:] + x_sort[:-k]) / np.power(diff, p))
-        / np.nansum(np.power(diff, -p))
-    )
+    # zero diffs should have 'infinite' weight
+    zero_mask = diff == 0.0
+    if np.any(zero_mask):
+        midpoints = 0.5 * (x_sort[k:][zero_mask] + x_sort[:-k][zero_mask])
+        return float(np.mean(midpoints))
+
+    # standard calculation for non-zero diffs
+    weights = np.power(diff, -p)
+    midpoints = 0.5 * (x_sort[k:] + x_sort[:-k])
+    return float(np.sum(midpoints * weights) / np.sum(weights))
 
 
 def gastwirth_location(x: npt.NDArray[np.number]) -> float:

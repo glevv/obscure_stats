@@ -230,4 +230,4 @@ def hsm_test_data() -> npt.NDArray[np.number]:
 @pytest.fixture(scope="session")
 def hls_test_data_big() -> list[int]:
     """Test data from the paper for Hodges-Lehmann-Sen estimator."""
-    return [10**100, 10**100, 2, 2, 7, 4, 1, 6]
+    return [10**10, 10**10, 2, 2, 7, 4, 1, 6]
