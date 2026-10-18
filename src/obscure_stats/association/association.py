@@ -441,7 +441,7 @@ def winsorized_correlation(
     x, y = _prep_arrays(x, y)
     if _check_arrays(x, y):
         return np.nan
-    if not 0 <= k < 0.5:  # noqa: PLR2004
+    if not 0 <= k < 0.5:
         msg = "Parameter k should be in range [0, 0.5)."
         raise ValueError(msg)
     x_w = stats.mstats.winsorize(x, (k, k))

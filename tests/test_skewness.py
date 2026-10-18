@@ -101,10 +101,10 @@ def test_q_in_qw(
         func(x_array_float, q=q)
 
 
-@pytest.mark.parametrize("dp", [-1, 0])
+@pytest.mark.parametrize("dp", [0, 0.3])
 def test_dp_in_auc_skew(x_array_float: npt.NDArray[np.number], dp: float) -> None:
     """Simple test case for correctness of dp parameter value."""
-    with pytest.raises(ValueError, match="Parameter dp should be > 0"):
+    with pytest.raises(ValueError, match="Parameter dp should be in range"):
         auc_skew_gamma(x_array_float, dp=dp)
 
 

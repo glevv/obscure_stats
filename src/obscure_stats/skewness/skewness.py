@@ -289,19 +289,16 @@ def auc_skew_gamma(x: npt.NDArray[np.number], dp: float = 0.01) -> float:
     Mean skewness measures.
     arXiv preprint arXiv:1912.06996.
     """
-    if dp <= 0:
-        msg = "Parameter dp should be > 0."
+    if not 0 < dp < 0.25:
+        msg = "Parameter dp should be in range (0, 0.25)."
         raise ValueError(msg)
     ps = np.arange(0.0, 0.5, dp)
-    if len(ps) < 2:  # noqa: PLR2004
-        msg = "Parameter dp should be < 0.25."
-        raise ValueError(msg)
     qs = np.nanquantile(x, np.r_[ps, 0.5, 1.0 - ps])
     qs_low, med, qs_high = qs[: len(ps)], qs[len(ps)], qs[len(ps) + 1 :]
     with np.errstate(divide="ignore", invalid="ignore"):
         skews = (qs_low + qs_high - 2 * med) / (qs_high - qs_low)
     skews = skews[np.isfinite(skews)]
-    if len(skews) < 2:  # noqa: PLR2004
+    if len(skews) < 2:
         return np.nan
     return float(integrate.trapezoid(skews, dx=1.0) / (len(skews) - 1))
 

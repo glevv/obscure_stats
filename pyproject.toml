@@ -82,7 +82,7 @@ indent-width = 4
 [tool.ruff.lint]
 select = ["ALL"]
 fixable = ["ALL"]
-ignore = ["COM812", "ISC001"]
+ignore = ["COM812", "ISC001", "PLR2004"]
 task-tags = ["TODO"]
 
 [tool.ruff.lint.per-file-ignores]

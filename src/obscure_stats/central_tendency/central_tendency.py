@@ -187,14 +187,22 @@ def _beta_hdi(a: float, b: float, width: float) -> tuple[float, float]:
     Port of getBetaHdi from Akinshin (2022), reference implementation.
     """
     eps = 1e-9
+
     if width > 1 - eps:
         return (0.0, 1.0)
-    if a < 1 + eps and b < 1 + eps:  # U-shaped / degenerate: fall back to centre
-        return (0.5 - width / 2, 0.5 + width / 2)
-    if a < 1 + eps:  # density is decreasing -> left border
-        return (0.0, width)
-    if b < 1 + eps:  # density is increasing -> right border
+
+    if a < 1 + eps and b < 1 + eps:
+        dist = stats.beta(a, b)
+        if dist.cdf(width) >= dist.sf(1.0 - width):
+            return (0.0, width)
         return (1.0 - width, 1.0)
+
+    if a < 1 + eps:
+        return (0.0, width)
+
+    if b < 1 + eps:
+        return (1.0 - width, 1.0)
+
     mode = (a - 1) / (a + b - 2)
     lo, hi = max(0.0, mode - width), min(mode, 1.0 - width)
     pdf = stats.beta(a, b).pdf  # pyrefly: ignore [missing-attribute]
@@ -202,10 +210,7 @@ def _beta_hdi(a: float, b: float, width: float) -> tuple[float, float]:
     def f(t: float) -> float:
         return pdf(t) - pdf(t + width)
 
-    if f(lo) * f(hi) > 0:  # numerical edge: no sign change, use nearest bound
-        left = lo if abs(f(lo)) < abs(f(hi)) else hi
-    else:
-        left = optimize.brentq(f, lo, hi, xtol=1e-12)
+    left = optimize.brentq(f, lo, hi, xtol=1e-12)
     return (left, left + width)  # pyrefly: ignore
 
 
@@ -295,16 +300,14 @@ def half_sample_mode(x: npt.NDArray[np.number]) -> float:
     # heavily inspired by https://github.com/cran/modeest/blob/master/R/hsm.R
     y = np.sort(x)
     y = y[np.isfinite(y)]
-    _min_iter_size, _three = 4, 3
-    while (ny := len(y)) >= _min_iter_size:
-        k = math.ceil(ny / 2) - 1  # window holds k + 1 (= ceil(ny/2)) points
-        widths = y[k:] - y[: ny - k]  # all ny - k windows
-        # narrowest window; on ties take the last one (original convention)
+    while (ny := len(y)) >= 4:
+        k = math.ceil(ny / 2) - 1
+        widths = y[k:] - y[: ny - k]
         j = len(widths) - 1 - int(np.argmin(widths[::-1]))
         if widths[j] == 0:
             return float(y[j])
         y = y[j : j + k + 1]
-    if len(y) == _three:
+    if len(y) == 3:
         z = 2 * y[1] - y[0] - y[2]
         if z < 0:
             return float(np.mean(y[0:2]))
