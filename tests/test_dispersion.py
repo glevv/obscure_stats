@@ -21,8 +21,8 @@ from obscure_stats.dispersion import (
     morisita_index_of_dispersion,
     quartile_coefficient_of_dispersion,
     robust_coefficient_of_variation,
-    shapiro_coefficient_of_variation,
     shamos_estimator,
+    shapiro_coefficient_of_variation,
     standard_quantile_absolute_deviation,
     studentized_range,
 )
