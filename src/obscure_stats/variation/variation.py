@@ -168,7 +168,7 @@ def b_index(x: npt.NDArray[np.str_]) -> float:
     """
     n = len(x)
     freq = np.unique(x, return_counts=True, equal_nan=True)[1] / n
-    return float(1 - (1 - (stats.gmean(freq * len(freq) / n)) ** 2) ** 0.5)
+    return float(1 - (1 - (stats.gmean(freq * len(freq))) ** 2) ** 0.5)
 
 
 def avdev(x: npt.NDArray[np.str_]) -> float:
@@ -196,10 +196,10 @@ def avdev(x: npt.NDArray[np.str_]) -> float:
     The Western Political Quarterly. 26 (2): 325-343.
     """
     n = len(x)
-    freq = np.unique(x, return_counts=True, equal_nan=True)[1] / n
-    k = len(freq)
+    counts = np.unique(x, return_counts=True, equal_nan=True)[1]
+    k = len(counts)
     mean = n / k
-    return float(1 - (np.sum(np.abs(freq - mean)) / (2 * mean * max(k - 1, 1))))
+    return float(1 - (np.sum(np.abs(counts - mean)) / (2 * mean * max(k - 1, 1))))
 
 
 def renyi_entropy(
@@ -277,7 +277,8 @@ def negative_extropy(x: npt.NDArray[np.str_]) -> float:
     """
     freq = np.unique(x, return_counts=True, equal_nan=True)[1] / len(x)
     p_inv = 1.0 - freq
-    return float(-np.sum(p_inv * np.log2(p_inv)))
+    terms = p_inv * np.log2(np.where(p_inv > 0, p_inv, 1.0))
+    return float(-np.sum(terms)) + 0.0  # avoid -0.0
 
 
 def mcintosh_d(x: npt.NDArray[np.str_]) -> float:

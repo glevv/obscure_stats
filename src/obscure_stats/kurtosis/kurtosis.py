@@ -142,9 +142,9 @@ def reza_ma_kurt(x: npt.NDArray[np.number]) -> float:
 
     References
     ----------
-    Reza, M. S.; Ma, J. (2016).
-    ICA and PCA integrated feature extraction for classification.
-    2016 IEEE 13th International Conference on Signal Processing (ICSP), 1083-1088.
+    Reza, M. S.; Ma, J. (2017).
+    Quantile Kurtosis in ICA and Integrated Feature Extraction for Classification
+    ICIC 2017, LNCS 10361, pp. 681–692. Springer.
     """
     h1, h7, h9, h15 = np.nanquantile(x, [0.0625, 0.4375, 0.5625, 0.9375])
     return float(((h15 - h9) + (h7 - h1)) / (h15 - h1))

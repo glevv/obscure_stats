@@ -157,9 +157,9 @@ def test_grenaders_m(x_array_float: npt.NDArray[np.number]) -> None:
 def test_sensibility(func: typing.Callable[..., float], seed: int) -> None:
     """Test central tendencies convergence for normal distribution."""
     rng = np.random.default_rng(seed)
-    res = func(rng.normal(size=100))
-    if res == pytest.approx(0.0):
-        msg = f"Cental tendency for normal distribution should be 0.0, got {res}."
+    res = func(rng.normal(loc=10.0, size=100))
+    if res != pytest.approx(10.0, abs=0.75):
+        msg = f"Central tendency for N(10, 1) should be close to 10.0, got {res}."
         raise ValueError(msg)
 
 

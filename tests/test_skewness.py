@@ -65,10 +65,6 @@ def test_skew_sensibility(func: typing.Callable[..., float], seed: int) -> None:
     left_skew = np.round(rng.exponential(size=100) + 1, 2)
     no_skew_res = func(no_skew)
     left_skew_res = func(left_skew)
-    if func.__name__ == "right_quantile_weight":
-        # ugly but more harmonized this way
-        no_skew_res = -no_skew_res
-        left_skew_res = -left_skew_res
     if no_skew_res > left_skew_res:
         msg = (
             f"Skewness in the first case should be lower, "
@@ -144,7 +140,7 @@ def test_change_sign_for_quantile_weights(
 ) -> None:
     """Test change of sign of statistic if array changed sign."""
     if left_quantile_weight(-x_array_float) != pytest.approx(
-        -right_quantile_weight(x_array_float)
+        right_quantile_weight(x_array_float)
     ):
         msg = "Statistics should be equal."
         raise ValueError(msg)

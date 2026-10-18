@@ -36,7 +36,7 @@ def pearson_mode_skew(x: npt.NDArray[np.number]) -> float:
     Cambridge University Press, Cambridge.
     """
     mean = np.nanmean(x)
-    mode = stats.mode(x)[0]
+    mode = stats.mode(x, nan_policy="omit")[0]
     std = np.nanstd(x)
     return float((mean - mode) / std)
 
@@ -292,15 +292,18 @@ def auc_skew_gamma(x: npt.NDArray[np.number], dp: float = 0.01) -> float:
     if dp <= 0:
         msg = "Parameter dp should be > 0."
         raise ValueError(msg)
-    n = int(1 / dp)
-    half_n = n // 2
-    qs = np.nanquantile(x, np.r_[np.linspace(0, 1, n), 0.5])
-    med = qs[-1]
-    qs = qs[:-1]
-    qs_low = qs[:half_n]
-    qs_high = qs[-half_n:]
-    skews = (qs_low + qs_high - 2 * med) / (qs_high - qs_low)
-    return float(integrate.trapezoid(skews, dx=dp))
+    ps = np.arange(0.0, 0.5, dp)
+    if len(ps) < 2:  # noqa: PLR2004
+        msg = "Parameter dp should be < 0.25."
+        raise ValueError(msg)
+    qs = np.nanquantile(x, np.r_[ps, 0.5, 1.0 - ps])
+    qs_low, med, qs_high = qs[: len(ps)], qs[len(ps)], qs[len(ps) + 1 :]
+    with np.errstate(divide="ignore", invalid="ignore"):
+        skews = (qs_low + qs_high - 2 * med) / (qs_high - qs_low)
+    skews = skews[np.isfinite(skews)]
+    if len(skews) < 2:  # noqa: PLR2004
+        return np.nan
+    return float(integrate.trapezoid(skews, dx=1.0) / (len(skews) - 1))
 
 
 def left_quantile_weight(x: npt.NDArray[np.number], q: float = 0.25) -> float:
@@ -372,7 +375,7 @@ def right_quantile_weight(x: npt.NDArray[np.number], q: float = 0.75) -> float:
         x, [1 - q * 0.5, 0.75, (1 + q) * 0.5]
     )
     return float(
-        (lower_quantile + upper_quantile - 2 * q075) / (lower_quantile - upper_quantile)
+        (lower_quantile + upper_quantile - 2 * q075) / (upper_quantile - lower_quantile)
     )
 
 
@@ -403,7 +406,12 @@ def cumulative_skew(x: npt.NDArray[np.number]) -> float:
     arXiv preprint arXiv:2209.10699.
     """
     _x = np.sort(x)
+    _x = np.sort(np.ravel(np.asarray(x, dtype=np.float64)))
+    _x = _x[np.isfinite(_x)]
     n = len(_x)
+    if n == 0:
+        return np.nan
+    _x = _x - _x[0]
     q = np.nancumsum(_x) / np.nansum(_x)
     q = np.insert(q, 0, 0)
     r = np.arange(1, n + 1)

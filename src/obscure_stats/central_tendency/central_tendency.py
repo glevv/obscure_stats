@@ -9,7 +9,7 @@ import numpy as np
 import numpy.typing as npt
 
 # pyrefly: ignore [untyped-import]
-from scipy import stats
+from scipy import optimize, stats
 
 
 def midrange(x: npt.NDArray[np.number]) -> float:
@@ -164,50 +164,49 @@ def hodges_lehmann_sen_location(x: npt.NDArray[np.number]) -> float:
     On the Estimation of Relative Potency in Dilution (-Direct)
     Assays by Distribution-Free Methods.
     Biometrics 19, no. 4: 532-552.
+
+    Notes
+    -----
+    This implementation enumerates all N(N-1)/2 pairs, so the time and memory
+    complexity are N^2. It is best to not use it on large arrays.
     """
-    x = np.sort(x)
-    x = x[np.isfinite(x)]
-    n = len(x)
+    _x = np.ravel(np.asarray(x, dtype=np.float64))
+    _x = _x[~np.isnan(_x)]
+    n = len(_x)
 
     if n == 0:
         return np.nan
-    if n == 1:
-        return float(x[0])
 
-    total_pairs = n * (n + 1) // 2
+    walsh = np.concatenate([_x[i] + _x[i:] for i in range(len(_x))])
+    return float(np.median(walsh) * 0.5)
 
-    def count_le(m: float) -> int:
-        """Count how many pairwise sums (x[i] + x[j] for i <= j) are <= m."""
-        count = 0
-        for i in range(n):
-            target = m - x[i]
-            # Count elements in x[i:] that are <= target
-            count += np.searchsorted(x[i:], target, side="right")
-        return count
 
-    # Binary search for the k-th smallest pairwise sum (1-indexed)
-    def find_quantile(k: int) -> float:
-        """Find quantile iteratively."""
-        low = x[0] + x[0]
-        high = x[-1] + x[-1]
-        # ~60 iterations give full float64 precision
-        for _ in range(60):
-            mid = 0.5 * (low + high)
-            if count_le(mid) < k:
-                low = mid
-            else:
-                high = mid
-        return high
+def _beta_hdi(a: float, b: float, width: float) -> tuple[float, float]:
+    """Highest density interval of given width for Beta(a, b).
 
-    # Find the median position(s)
-    if total_pairs % 2 == 1:
-        k = (total_pairs + 1) // 2
-        return float(find_quantile(k) * 0.5)
-    k1 = total_pairs // 2
-    k2 = k1 + 1
-    val1 = find_quantile(k1)
-    val2 = find_quantile(k2)
-    return float(0.25 * (val1 + val2))
+    Port of getBetaHdi from Akinshin (2022), reference implementation.
+    """
+    eps = 1e-9
+    if width > 1 - eps:
+        return (0.0, 1.0)
+    if a < 1 + eps and b < 1 + eps:  # U-shaped / degenerate: fall back to centre
+        return (0.5 - width / 2, 0.5 + width / 2)
+    if a < 1 + eps:  # density is decreasing -> left border
+        return (0.0, width)
+    if b < 1 + eps:  # density is increasing -> right border
+        return (1.0 - width, 1.0)
+    mode = (a - 1) / (a + b - 2)
+    lo, hi = max(0.0, mode - width), min(mode, 1.0 - width)
+    pdf = stats.beta(a, b).pdf  # pyrefly: ignore [missing-attribute]
+
+    def f(t: float) -> float:
+        return pdf(t) - pdf(t + width)
+
+    if f(lo) * f(hi) > 0:  # numerical edge: no sign change, use nearest bound
+        left = lo if abs(f(lo)) < abs(f(hi)) else hi
+    else:
+        left = optimize.brentq(f, lo, hi, xtol=1e-12)
+    return (left, left + width)  # pyrefly: ignore
 
 
 def standard_trimmed_harrell_davis_quantile(
@@ -252,10 +251,10 @@ def standard_trimmed_harrell_davis_quantile(
         return np.nan
     if n == 1:
         return float(_x[0])
-    n_calculated = 1 / n**0.5  # heuristic suggested by the author
+    width = 1 / n**0.5  # heuristic suggested by the author
     a = (n + 1) * q
     b = (n + 1) * (1.0 - q)
-    hdi = (max(0, q - n_calculated * 0.5), min(1, q + n_calculated * 0.5))
+    hdi = _beta_hdi(a, b, width)
     hdi_cdf = stats.beta.cdf(hdi, a, b)
     i_start = math.floor(hdi[0] * n)
     i_end = math.ceil(hdi[1] * n)
@@ -296,26 +295,24 @@ def half_sample_mode(x: npt.NDArray[np.number]) -> float:
     # heavily inspired by https://github.com/cran/modeest/blob/master/R/hsm.R
     y = np.sort(x)
     y = y[np.isfinite(y)]
-    _corner_cases = (4, 3)  # for 4 samples and 3 samples
-    while (ny := len(y)) >= _corner_cases[0]:
-        half_y = math.ceil(ny / 2)
-        w_min = y[-1] - y[0]
-        w, j = 0, 0
-        for i in range(ny - half_y + 1):
-            w = y[i + half_y - 1] - y[i]
-            if w <= w_min:
-                w_min = w
-                j = i
-        if w_min == 0:
+    _min_iter_size, _three = 4, 3
+    while (ny := len(y)) >= _min_iter_size:
+        k = math.ceil(ny / 2) - 1  # window holds k + 1 (= ceil(ny/2)) points
+        widths = y[k:] - y[: ny - k]  # all ny - k windows
+        # narrowest window; on ties take the last one (original convention)
+        j = len(widths) - 1 - int(np.argmin(widths[::-1]))
+        if widths[j] == 0:
             return float(y[j])
-        y = y[j : j + half_y]
-    if len(y) == _corner_cases[1]:
+        y = y[j : j + k + 1]
+    if len(y) == _three:
         z = 2 * y[1] - y[0] - y[2]
         if z < 0:
-            return float(np.mean(y[0:1]))
+            return float(np.mean(y[0:2]))
         if z > 0:
-            return float(np.mean(y[1:2]))
+            return float(np.mean(y[1:3]))
         return float(y[1])
+    if len(y) == 0:
+        return np.nan
     return float(np.mean(y))
 
 
@@ -347,6 +344,9 @@ def tau_location(x: npt.NDArray[np.number], c: float = 4.5) -> float:
         raise ValueError(msg)
     med = np.nanmedian(x)
     mad = np.nanmedian(np.abs(x - med))
+    if mad == 0:
+        # more than half the sample is identical; that value is the location
+        return float(med)
     scaled_x = (x - med) / mad
     w = np.square(1.0 - np.square(scaled_x / c)) * (np.abs(scaled_x) <= c)
     return float(np.nansum(x * w) / np.nansum(w))
@@ -380,15 +380,15 @@ def grenanders_m(x: npt.NDArray[np.number], p: float = 1.001, k: int = 2) -> flo
     Some direct estimates of the mode.
     Annals of Mathematical Statistics, 36, 131-138.
     """
-    x_sort = np.sort(x).astype("float")
-    x_sort = x_sort[np.isfinite(x_sort)]
-
     if p <= 1:
         msg = "Parameter p should be a float greater than 1."
         raise ValueError(msg)
     if (k <= 0) or (not isinstance(k, int)):
         msg = "Parameter k should be an integer between 1 and length of x."
         raise ValueError(msg)
+
+    x_sort = np.sort(x).astype("float")
+    x_sort = x_sort[np.isfinite(x_sort)]
 
     if len(x_sort) <= k:
         return np.nan

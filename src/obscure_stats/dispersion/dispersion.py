@@ -131,7 +131,30 @@ def quartile_coefficient_of_dispersion(x: npt.NDArray[np.number]) -> float:
     John Wiley & Sons.
     """
     q1, q3 = np.nanquantile(x, [0.25, 0.75])
-    return float(0.75 * (q3 - q1) / (q3 + q1))
+    return float(2 * (q3 - q1) / (q3 + q1))
+
+
+def shapiro_coefficient_of_variation(x: npt.NDArray[np.number]) -> float:
+    """Calculate Shapiro's robust coefficient of variation (IQR / Median).
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+
+    Returns
+    -------
+    scv : float
+        The value of Shapiro's coefficient of variation.
+
+    References
+    ----------
+    Shapiro, H. M. (2005).
+    Practical flow cytometry.
+    John Wiley & Sons.
+    """
+    q1, q2, q3 = np.nanquantile(x, [0.25, 0.5, 0.75])
+    return float(0.75 * (q3 - q1) / q2)
 
 
 def fisher_index_of_dispersion(x: npt.NDArray[np.number]) -> float:
@@ -156,7 +179,8 @@ def fisher_index_of_dispersion(x: npt.NDArray[np.number]) -> float:
     Statistical methods for research workers.
     Hafner, New York.
     """
-    return float((len(x) - 1) * np.nanvar(x) / np.nanmean(x))
+    n = np.count_nonzero(~np.isnan(np.asarray(x, dtype=np.float64)))
+    return float(n * np.nanvar(x) / np.nanmean(x))
 
 
 def morisita_index_of_dispersion(x: npt.NDArray[np.number]) -> float:
@@ -182,7 +206,8 @@ def morisita_index_of_dispersion(x: npt.NDArray[np.number]) -> float:
     Memoirs of the Faculty of Science, Kyushu University Series e. Biol. 2: 215-235
     """
     x_sum = np.nansum(x)
-    return float(len(x) * (np.nansum(np.square(x)) - x_sum) / (x_sum**2 - x_sum))
+    n = np.count_nonzero(~np.isnan(np.asarray(x, dtype=np.float64)))
+    return float(n * (np.nansum(np.square(x)) - x_sum) / (x_sum**2 - x_sum))
 
 
 def standard_quantile_absolute_deviation(x: npt.NDArray[np.number]) -> float:
@@ -208,7 +233,7 @@ def standard_quantile_absolute_deviation(x: npt.NDArray[np.number]) -> float:
     arXiv preprint arXiv:2208.13459.
     """
     med = np.nanmedian(x)
-    n = len(x)
+    n = np.count_nonzero(~np.isnan(x))
     # finite sample correction
     k = 1.0 + 0.762 / n + 0.967 / n**2
     # constant value that maximizes efficiency for normal distribution
@@ -237,50 +262,26 @@ def shamos_estimator(x: npt.NDArray[np.number]) -> float:
     Geometry and statistics: Problems at the interface (p. 0032).
     Carnegie-Mellon University. Department of Computer Science.
 
+    Notes
+    -----
+    This implementation enumerates all N(N-1)/2 pairs, so the time and memory
+    complexity are N^2. It is best to not use it on large arrays.
+    The raw value is returned; multiply by 1.048358 for a consistent estimate
+    of the standard deviation under normality.
+
     See Also
     --------
     obscure_stats.central_tendency.hodges_lehmann_sen_location - Hodges-Lehmann-Sen loc.
     """
-    x = np.sort(x)
-    x = x[np.isfinite(x)]
-    n = len(x)
+    _x = np.ravel(np.asarray(x, dtype=np.float64))
+    _x = _x[np.isfinite(_x)]
+    n = len(_x)
 
     if n <= 1:
         return np.nan
 
-    total_pairs = n * (n - 1) // 2
-
-    def count_le(m: float) -> int:
-        """Count how many absolute differences (x[j] - x[i] for j > i) are <= m."""
-        count = 0
-        for i in range(n):
-            target = x[i] + m
-            # Count elements in x[i+1:] that are <= x[i] + m
-            count += np.searchsorted(x[i + 1 :], target, side="right")
-        return count
-
-    def find_quantile(k: int) -> float:
-        """Find quantile iteratively."""
-        low = 0.0
-        high = x[-1] - x[0]
-        for _ in range(60):  # 60 iterations give full float64 precision
-            mid = 0.5 * (low + high)
-            if count_le(mid) < k:
-                low = mid
-            else:
-                high = mid
-        return high
-
-    # Find the median position(s) of pairwise differences
-    if total_pairs % 2 == 1:
-        k = (total_pairs + 1) // 2
-        raw_shamos = find_quantile(k)
-    else:
-        k1 = total_pairs // 2
-        k2 = k1 + 1
-        raw_shamos = 0.5 * (find_quantile(k1) + find_quantile(k2))
-
-    return float(raw_shamos)  # * 1.048358
+    diffs = np.concatenate([np.abs(_x[i] - _x[i + 1 :]) for i in range(n - 1)])
+    return float(np.median(diffs))
 
 
 def coefficient_of_range(x: npt.NDArray[np.number]) -> float:
@@ -360,7 +361,6 @@ def gini_mean_difference(x: npt.NDArray[np.number]) -> float:
     if n <= 1:
         return 0.0
 
-    # O(n) closed-form formula using sorted indices (1-indexed perspective)
     indices = np.arange(1, n + 1)
     return float(2.0 * np.sum((2 * indices - n - 1) * x) / (n * (n - 1)))
 

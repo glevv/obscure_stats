@@ -116,7 +116,7 @@ def concordance_correlation(
     std_x = np.std(x, ddof=0)
     std_y = np.std(y, ddof=0)
     w = std_y / std_x
-    v = (np.mean(x) - np.mean(y)) ** 2 / (std_x * std_y) ** 0.5
+    v = (np.mean(x) - np.mean(y)) / (std_x * std_y) ** 0.5
     x_a = 2 / (v**2 + w + 1 / w)
     p = np.corrcoef(x, y)[0][1]
     return float(p * x_a)
@@ -441,6 +441,9 @@ def winsorized_correlation(
     x, y = _prep_arrays(x, y)
     if _check_arrays(x, y):
         return np.nan
+    if not 0 <= k < 0.5:  # noqa: PLR2004
+        msg = "Parameter k should be in range [0, 0.5)."
+        raise ValueError(msg)
     x_w = stats.mstats.winsorize(x, (k, k))
     y_w = stats.mstats.winsorize(y, (k, k))
     return float(np.corrcoef(x_w, y_w)[0, 1])
