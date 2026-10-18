@@ -238,7 +238,7 @@ def test_k_in_winsorized_corr(
     y_array_float: npt.NDArray[np.number],
     k: float,
 ) -> None:
-    """Simple test case for correctness of q parameter value."""
+    """Test for correctness of q parameter value."""
     with pytest.raises(ValueError, match="Parameter k should be in range"):
         winsorized_correlation(x_array_float, y_array_float, k=k)
 

@@ -58,7 +58,7 @@ def test_mock_aggregation_functions(
 
 
 def test_thdm(thdme_test_data: npt.NDArray[np.number]) -> None:
-    """Test the case for correctness of Trimmed Harrel-Davis median."""
+    """Test for correctness of Trimmed Harrel-Davis median."""
     result = standard_trimmed_harrell_davis_quantile(thdme_test_data)
     if result != pytest.approx(0.6268, rel=1e-4):
         msg = "Results from the test and paper do not match."
@@ -72,7 +72,7 @@ def test_thdm(thdme_test_data: npt.NDArray[np.number]) -> None:
 
 
 def test_edge_cases(x_array_float: npt.NDArray[np.number]) -> None:
-    """Simple test for edge cases."""
+    """Test for edge cases."""
     result = standard_trimmed_harrell_davis_quantile(x_array_float[:1])
     if result != pytest.approx(x_array_float[0], rel=1e-4):
         msg = "Result does not match expected output."
@@ -85,7 +85,7 @@ def test_edge_cases(x_array_float: npt.NDArray[np.number]) -> None:
 
 @pytest.mark.parametrize("q", [0.0, 1.0])
 def test_q_in_sthdq(x_array_float: npt.NDArray[np.number], q: float) -> None:
-    """Simple test case for correctness of q parameter value."""
+    """Test for correctness of q parameter value."""
     with pytest.raises(ValueError, match="Parameter q should be in range"):
         standard_trimmed_harrell_davis_quantile(x_array_float, q=q)
 
@@ -93,7 +93,7 @@ def test_q_in_sthdq(x_array_float: npt.NDArray[np.number], q: float) -> None:
 def test_hls(
     hls_test_data: npt.NDArray[np.number], hls_test_data_big: list[int]
 ) -> None:
-    """Simple test case for correctness of Hodges-Lehmann-Sen."""
+    """Test for correctness of Hodges-Lehmann-Sen."""
     result = hodges_lehmann_sen_location(hls_test_data)
     if result != pytest.approx(3.5):
         msg = "Results from the test and paper do not match."
@@ -106,7 +106,7 @@ def test_hls(
 
 
 def test_hsm(hsm_test_data: npt.NDArray[np.number]) -> None:
-    """Simple test case for correctness of Half Sample Mode."""
+    """Test for correctness of Half Sample Mode."""
     result = half_sample_mode(hsm_test_data)
     if result != pytest.approx(2.0):
         msg = "Results from the test and paper do not match."
@@ -168,7 +168,7 @@ def test_sensibility(func: typing.Callable[..., float], seed: int) -> None:
 
 
 def _best_mass(a: float, b: float, width: float, grid: int = 20_001) -> float:
-    """Brute force: largest probability mass of any interval [l, l + width]."""
+    """Find largest probability mass of any interval [l, l + width] by brute force."""
     left = np.linspace(0.0, max(0.0, 1.0 - width), grid)
     dist = stats.beta(a, b)
     return float(np.max(dist.cdf(np.minimum(left + width, 1.0)) - dist.cdf(left)))
@@ -191,7 +191,7 @@ BRANCH_CASES = [
 
 @pytest.mark.parametrize(("a", "b", "width"), BRANCH_CASES)
 def test_beta_hdi_is_highest_density(a: float, b: float, width: float) -> None:
-    """Returned interval has the requested width, lies in [0, 1], and holds max mass."""
+    """Test if returned interval matches the width, lies in [0, 1], and has max mass."""
     lo, hi = _beta_hdi(a, b, width)
     if not 0.0 <= lo <= hi <= 1.0:
         msg = f"Interval ({lo}, {hi}) is outside [0, 1]."
@@ -206,7 +206,7 @@ def test_beta_hdi_is_highest_density(a: float, b: float, width: float) -> None:
 
 
 def test_beta_hdi_middle_equal_density_endpoints() -> None:
-    """In the unimodal case the HDI endpoints have equal density."""
+    """Test unimodal case for HDI endpoints."""
     a, b, width = 4.0, 9.0, 0.25
     lo, hi = _beta_hdi(a, b, width)
     pdf = stats.beta(a, b).pdf  # pyrefly: ignore [missing-attribute]

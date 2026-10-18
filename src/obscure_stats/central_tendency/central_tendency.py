@@ -182,7 +182,7 @@ def hodges_lehmann_sen_location(x: npt.NDArray[np.number]) -> float:
 
 
 def _beta_hdi(a: float, b: float, width: float) -> tuple[float, float]:
-    """Highest density interval of given width for Beta(a, b).
+    """Find highest density interval of given width for Beta(a, b).
 
     Port of getBetaHdi from Akinshin (2022), reference implementation.
     """

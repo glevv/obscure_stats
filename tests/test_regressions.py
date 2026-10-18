@@ -37,7 +37,7 @@ def _check(condition: bool, msg: str = "Result does not match reference.") -> No
 
 
 def _hsm_reference(x: npt.NDArray[np.float64]) -> float:
-    """Straightforward port of R modeest::hsm (last-tie convention)."""
+    """Calculate HSM. Port of R modeest::hsm (last-tie convention)."""
     y = np.sort(x)
     while len(y) >= 4:
         k = math.ceil(len(y) / 2) - 1
