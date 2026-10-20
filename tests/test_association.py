@@ -232,6 +232,17 @@ def test_a_in_rank_div(
         rank_divergence(x_array_float, y_array_float, a=a)
 
 
+@pytest.mark.parametrize("k", [-1.0, 1.0])
+def test_k_in_winsorized_corr(
+    x_array_float: npt.NDArray[np.number],
+    y_array_float: npt.NDArray[np.number],
+    k: float,
+) -> None:
+    """Test for correctness of q parameter value."""
+    with pytest.raises(ValueError, match="Parameter k should be in range"):
+        winsorized_correlation(x_array_float, y_array_float, k=k)
+
+
 @pytest.mark.parametrize("func", all_functions)
 def test_corr_boundaries(
     func: typing.Callable[..., float], y_array_float: npt.NDArray[np.number]

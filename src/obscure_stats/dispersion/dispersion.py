@@ -131,7 +131,30 @@ def quartile_coefficient_of_dispersion(x: npt.NDArray[np.number]) -> float:
     John Wiley & Sons.
     """
     q1, q3 = np.nanquantile(x, [0.25, 0.75])
-    return float(0.75 * (q3 - q1) / (q3 + q1))
+    return float(2 * (q3 - q1) / (q3 + q1))
+
+
+def shapiro_coefficient_of_variation(x: npt.NDArray[np.number]) -> float:
+    """Calculate Shapiro's robust coefficient of variation (IQR / Median).
+
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+
+    Returns
+    -------
+    scv : float
+        The value of Shapiro's coefficient of variation.
+
+    References
+    ----------
+    Shapiro, H. M. (2005).
+    Practical flow cytometry.
+    John Wiley & Sons.
+    """
+    q1, q2, q3 = np.nanquantile(x, [0.25, 0.5, 0.75])
+    return float(0.75 * (q3 - q1) / q2)
 
 
 def fisher_index_of_dispersion(x: npt.NDArray[np.number]) -> float:
@@ -156,7 +179,8 @@ def fisher_index_of_dispersion(x: npt.NDArray[np.number]) -> float:
     Statistical methods for research workers.
     Hafner, New York.
     """
-    return float((len(x) - 1) * np.nanvar(x) / np.nanmean(x))
+    n = np.count_nonzero(~np.isnan(np.asarray(x, dtype=np.float64)))
+    return float(n * np.nanvar(x) / np.nanmean(x))
 
 
 def morisita_index_of_dispersion(x: npt.NDArray[np.number]) -> float:
@@ -182,7 +206,8 @@ def morisita_index_of_dispersion(x: npt.NDArray[np.number]) -> float:
     Memoirs of the Faculty of Science, Kyushu University Series e. Biol. 2: 215-235
     """
     x_sum = np.nansum(x)
-    return float(len(x) * (np.nansum(np.square(x)) - x_sum) / (x_sum**2 - x_sum))
+    n = np.count_nonzero(~np.isnan(np.asarray(x, dtype=np.float64)))
+    return float(n * (np.nansum(np.square(x)) - x_sum) / (x_sum**2 - x_sum))
 
 
 def standard_quantile_absolute_deviation(x: npt.NDArray[np.number]) -> float:
@@ -208,7 +233,7 @@ def standard_quantile_absolute_deviation(x: npt.NDArray[np.number]) -> float:
     arXiv preprint arXiv:2208.13459.
     """
     med = np.nanmedian(x)
-    n = len(x)
+    n = np.count_nonzero(~np.isnan(x))
     # finite sample correction
     k = 1.0 + 0.762 / n + 0.967 / n**2
     # constant value that maximizes efficiency for normal distribution
@@ -239,18 +264,24 @@ def shamos_estimator(x: npt.NDArray[np.number]) -> float:
 
     Notes
     -----
-    This implementation uses Cartesian product, so the time and memory complexity
-    are N^2. It is best to not use it on large arrays.
+    This implementation enumerates all N(N-1)/2 pairs, so the time and memory
+    complexity are N^2. It is best to not use it on large arrays.
+    The raw value is returned; multiply by 1.048358 for a consistent estimate
+    of the standard deviation under normality.
 
     See Also
     --------
     obscure_stats.central_tendency.hodges_lehmann_sen_location - Hodges-Lehmann-Sen loc.
     """
-    # In the original paper authors suggest use only upper triangular
-    # of the Cartesian product, but in this implementation we use
-    # whole matrix, which is equivalent.
-    product = np.meshgrid(x, x, sparse=True)
-    return float(np.nanmedian(np.abs(product[0] - product[1])))
+    _x = np.ravel(np.asarray(x, dtype=np.float64))
+    _x = _x[np.isfinite(_x)]
+    n = len(_x)
+
+    if n <= 1:
+        return np.nan
+
+    diffs = np.concatenate([np.abs(_x[i] - _x[i + 1 :]) for i in range(n - 1)])
+    return float(np.median(diffs))
 
 
 def coefficient_of_range(x: npt.NDArray[np.number]) -> float:
@@ -322,15 +353,16 @@ def gini_mean_difference(x: npt.NDArray[np.number]) -> float:
     Yitzhaki, S.; Schechtman, E. (2013).
     The Gini Methodology.
     Springer, New York.
-
-    Notes
-    -----
-    This implementation uses Cartesian product, so the time and memory complexity
-    are N^2. It is best to not use it on large arrays.
     """
+    x = np.sort(x)
+    x = x[np.isfinite(x)]
     n = len(x)
-    product = np.meshgrid(x, x, sparse=True)
-    return float(np.nansum(np.abs(product[0] - product[1])) / (n * (n - 1)))
+
+    if n <= 1:
+        return 0.0
+
+    indices = np.arange(1, n + 1)
+    return float(2.0 * np.sum((2 * indices - n - 1) * x) / (n * (n - 1)))
 
 
 def inter_expectile_range(x: npt.NDArray[np.number]) -> float:

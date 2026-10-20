@@ -9,7 +9,7 @@ import numpy as np
 import numpy.typing as npt
 
 # pyrefly: ignore [untyped-import]
-from scipy import stats
+from scipy import optimize, stats
 
 
 def midrange(x: npt.NDArray[np.number]) -> float:
@@ -167,14 +167,51 @@ def hodges_lehmann_sen_location(x: npt.NDArray[np.number]) -> float:
 
     Notes
     -----
-    This implementation uses Cartesian product, so the time and memory complexity
-    are N^2. It is best to not use it on large arrays.
+    This implementation enumerates all N(N-1)/2 pairs, so the time and memory
+    complexity are N^2. It is best to not use it on large arrays.
     """
-    # In the original paper authors suggest use only upper triangular
-    # of the Cartesian product, but in this implementation we use
-    # whole matrix, which is equivalent.
-    product = np.meshgrid(x, x, sparse=True)
-    return float(np.nanmedian(product[0] + product[1]) * 0.5)
+    _x = np.ravel(np.asarray(x, dtype=np.float64))
+    _x = _x[~np.isnan(_x)]
+    n = len(_x)
+
+    if n == 0:
+        return np.nan
+
+    walsh = np.concatenate([_x[i] + _x[i:] for i in range(len(_x))])
+    return float(np.median(walsh) * 0.5)
+
+
+def _beta_hdi(a: float, b: float, width: float) -> tuple[float, float]:
+    """Find highest density interval of given width for Beta(a, b).
+
+    Port of getBetaHdi from Akinshin (2022), reference implementation.
+    """
+    eps = 1e-9
+
+    if width > 1 - eps:
+        return (0.0, 1.0)
+
+    if a < 1 + eps and b < 1 + eps:
+        dist = stats.beta(a, b)
+        if dist.cdf(width) >= dist.sf(1.0 - width):
+            return (0.0, width)
+        return (1.0 - width, 1.0)
+
+    if a < 1 + eps:
+        return (0.0, width)
+
+    if b < 1 + eps:
+        return (1.0 - width, 1.0)
+
+    mode = (a - 1) / (a + b - 2)
+    lo, hi = max(0.0, mode - width), min(mode, 1.0 - width)
+    pdf = stats.beta(a, b).pdf  # pyrefly: ignore [missing-attribute]
+
+    def f(t: float) -> float:
+        return pdf(t) - pdf(t + width)
+
+    left = optimize.brentq(f, lo, hi, xtol=1e-12)
+    return (left, left + width)  # pyrefly: ignore
 
 
 def standard_trimmed_harrell_davis_quantile(
@@ -219,10 +256,10 @@ def standard_trimmed_harrell_davis_quantile(
         return np.nan
     if n == 1:
         return float(_x[0])
-    n_calculated = 1 / n**0.5  # heuristic suggested by the author
+    width = 1 / n**0.5  # heuristic suggested by the author
     a = (n + 1) * q
     b = (n + 1) * (1.0 - q)
-    hdi = (max(0, q - n_calculated * 0.5), min(1, q + n_calculated * 0.5))
+    hdi = _beta_hdi(a, b, width)
     hdi_cdf = stats.beta.cdf(hdi, a, b)
     i_start = math.floor(hdi[0] * n)
     i_end = math.ceil(hdi[1] * n)
@@ -263,26 +300,22 @@ def half_sample_mode(x: npt.NDArray[np.number]) -> float:
     # heavily inspired by https://github.com/cran/modeest/blob/master/R/hsm.R
     y = np.sort(x)
     y = y[np.isfinite(y)]
-    _corner_cases = (4, 3)  # for 4 samples and 3 samples
-    while (ny := len(y)) >= _corner_cases[0]:
-        half_y = math.ceil(ny / 2)
-        w_min = y[-1] - y[0]
-        w, j = 0, 0
-        for i in range(ny - half_y):
-            w = y[i + half_y - 1] - y[i]
-            if w <= w_min:
-                w_min = w
-                j = i
-        if w == 0:
+    while (ny := len(y)) >= 4:
+        k = math.ceil(ny / 2) - 1
+        widths = y[k:] - y[: ny - k]
+        j = len(widths) - 1 - int(np.argmin(widths[::-1]))
+        if widths[j] == 0:
             return float(y[j])
-        y = y[j : (j + half_y - 1)]
-    if len(y) == _corner_cases[1]:
+        y = y[j : j + k + 1]
+    if len(y) == 3:
         z = 2 * y[1] - y[0] - y[2]
         if z < 0:
-            return float(np.mean(y[0:1]))
+            return float(np.mean(y[0:2]))
         if z > 0:
-            return float(np.mean(y[1:2]))
+            return float(np.mean(y[1:3]))
         return float(y[1])
+    if len(y) == 0:
+        return np.nan
     return float(np.mean(y))
 
 
@@ -314,6 +347,9 @@ def tau_location(x: npt.NDArray[np.number], c: float = 4.5) -> float:
         raise ValueError(msg)
     med = np.nanmedian(x)
     mad = np.nanmedian(np.abs(x - med))
+    if mad == 0:
+        # more than half the sample is identical; that value is the location
+        return float(med)
     scaled_x = (x - med) / mad
     w = np.square(1.0 - np.square(scaled_x / c)) * (np.abs(scaled_x) <= c)
     return float(np.nansum(x * w) / np.nansum(w))
@@ -347,9 +383,6 @@ def grenanders_m(x: npt.NDArray[np.number], p: float = 1.001, k: int = 2) -> flo
     Some direct estimates of the mode.
     Annals of Mathematical Statistics, 36, 131-138.
     """
-    x_sort = np.sort(x).astype("float")
-    x_sort = x_sort[np.isfinite(x_sort)]
-
     if p <= 1:
         msg = "Parameter p should be a float greater than 1."
         raise ValueError(msg)
@@ -357,22 +390,29 @@ def grenanders_m(x: npt.NDArray[np.number], p: float = 1.001, k: int = 2) -> flo
         msg = "Parameter k should be an integer between 1 and length of x."
         raise ValueError(msg)
 
+    x_sort = np.sort(x).astype("float")
+    x_sort = x_sort[np.isfinite(x_sort)]
+
     if len(x_sort) <= k:
         return np.nan
 
     # precalculate diffs
     diff = x_sort[k:] - x_sort[:-k]
+
     # if the diffs are constant - return the value
     if diff.sum() == 0.0:
         return float(x_sort[0])
-    # to avoid division by zero
-    diff[diff == 0.0] = np.nan
 
-    return float(
-        0.5
-        * np.nansum((x_sort[k:] + x_sort[:-k]) / np.power(diff, p))
-        / np.nansum(np.power(diff, -p))
-    )
+    # zero diffs should have 'infinite' weight
+    zero_mask = diff == 0.0
+    if np.any(zero_mask):
+        midpoints = 0.5 * (x_sort[k:][zero_mask] + x_sort[:-k][zero_mask])
+        return float(np.mean(midpoints))
+
+    # standard calculation for non-zero diffs
+    weights = np.power(diff, -p)
+    midpoints = 0.5 * (x_sort[k:] + x_sort[:-k])
+    return float(np.sum(midpoints * weights) / np.sum(weights))
 
 
 def gastwirth_location(x: npt.NDArray[np.number]) -> float:

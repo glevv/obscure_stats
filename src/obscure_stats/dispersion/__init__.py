@@ -12,6 +12,7 @@ from .dispersion import (
     quartile_coefficient_of_dispersion,
     robust_coefficient_of_variation,
     shamos_estimator,
+    shapiro_coefficient_of_variation,
     standard_quantile_absolute_deviation,
     studentized_range,
 )
@@ -28,6 +29,7 @@ __all__ = [
     "quartile_coefficient_of_dispersion",
     "robust_coefficient_of_variation",
     "shamos_estimator",
+    "shapiro_coefficient_of_variation",
     "standard_quantile_absolute_deviation",
     "studentized_range",
 ]

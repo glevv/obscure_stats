@@ -65,10 +65,6 @@ def test_skew_sensibility(func: typing.Callable[..., float], seed: int) -> None:
     left_skew = np.round(rng.exponential(size=100) + 1, 2)
     no_skew_res = func(no_skew)
     left_skew_res = func(left_skew)
-    if func.__name__ == "right_quantile_weight":
-        # ugly but more harmonized this way
-        no_skew_res = -no_skew_res
-        left_skew_res = -left_skew_res
     if no_skew_res > left_skew_res:
         msg = (
             f"Skewness in the first case should be lower, "
@@ -78,7 +74,7 @@ def test_skew_sensibility(func: typing.Callable[..., float], seed: int) -> None:
 
 
 def test_rank_skew(rank_skewness_test_data: npt.NDArray[np.number]) -> None:
-    """Simple test case for correctness of Rank skewness coefficient."""
+    """Test for correctness of Rank skewness coefficient."""
     res = forhad_shorna_rank_skew(rank_skewness_test_data)
     if res != pytest.approx(0.93809, rel=1e-2):
         msg = f"Results from the test and paper do not match, got {res} instead of 0.93809."
@@ -100,15 +96,15 @@ def test_statistic_with_nans(
 def test_q_in_qw(
     x_array_float: npt.NDArray[np.number], func: typing.Callable[..., float], q: float
 ) -> None:
-    """Simple test case for correctness of q parameter value."""
+    """Test for correctness of q parameter value."""
     with pytest.raises(ValueError, match="Parameter q should be in range"):
         func(x_array_float, q=q)
 
 
-@pytest.mark.parametrize("dp", [-1, 0])
+@pytest.mark.parametrize("dp", [0, 0.3])
 def test_dp_in_auc_skew(x_array_float: npt.NDArray[np.number], dp: float) -> None:
-    """Simple test case for correctness of dp parameter value."""
-    with pytest.raises(ValueError, match="Parameter dp should be > 0"):
+    """Test for correctness of dp parameter value."""
+    with pytest.raises(ValueError, match="Parameter dp should be in range"):
         auc_skew_gamma(x_array_float, dp=dp)
 
 
@@ -144,7 +140,7 @@ def test_change_sign_for_quantile_weights(
 ) -> None:
     """Test change of sign of statistic if array changed sign."""
     if left_quantile_weight(-x_array_float) != pytest.approx(
-        -right_quantile_weight(x_array_float)
+        right_quantile_weight(x_array_float)
     ):
         msg = "Statistics should be equal."
         raise ValueError(msg)
