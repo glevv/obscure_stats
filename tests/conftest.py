@@ -93,7 +93,7 @@ def c_array_nan(c_array_obj: npt.NDArray[np.number]) -> npt.NDArray[np.number]:
 
 @pytest.fixture(scope="session")
 def rank_skewness_test_data() -> npt.NDArray[np.number]:
-    """Test data from the paper for Rank Skew."""
+    """Return test data from the paper for Rank Skew."""
     return np.asarray(
         (
             73.3,
@@ -209,7 +209,7 @@ def rank_skewness_test_data() -> npt.NDArray[np.number]:
 
 @pytest.fixture(scope="session")
 def thdme_test_data() -> npt.NDArray[np.number]:
-    """Test data from the paper for Trimmed Harrell-Davis median."""
+    """Return test data from the paper for Trimmed Harrell-Davis median."""
     return np.asarray(
         (-0.565, -0.106, -0.095, 0.363, 0.404, 0.633, 1.371, 1.512, 2.018, 100_000)
     )
@@ -217,37 +217,37 @@ def thdme_test_data() -> npt.NDArray[np.number]:
 
 @pytest.fixture(scope="session")
 def hls_test_data() -> npt.NDArray[np.number]:
-    """Test data from the paper for Hodges-Lehmann-Sen estimator."""
+    """Return test data from the paper for Hodges-Lehmann-Sen estimator."""
     return np.asarray((1, 5, 2, 2, 7, 4, 1, 6))
 
 
 @pytest.fixture(scope="session")
 def hsm_test_data() -> npt.NDArray[np.number]:
-    """Test data for Half Sample Mode."""
+    """Return test data for Half Sample Mode."""
     return np.asarray((1, 2, 2, 2, 7, 4, 1, 6))
 
 
 @pytest.fixture(scope="session")
 def hls_test_data_big() -> list[int]:
-    """Test data from the paper for Hodges-Lehmann-Sen estimator."""
+    """Return test data from the paper for Hodges-Lehmann-Sen estimator."""
     return [10**100, 10**100, 2, 2, 7, 4, 1, 6]
 
 
 @pytest.fixture(scope="session")
 def x_tied_list() -> list[int]:
-    """Test data for the rank correlations."""
+    """Return test data for the rank correlations."""
     return [0, 0, 1, 1, 2, 3, 4, 6, 7, 8, 8]
 
 
 @pytest.fixture(scope="session")
 def y_tied_list() -> list[int]:
-    """Test data for the rank correlations."""
+    """Return test data for the rank correlations."""
     return [2, 2, 2, 1, 4, 4, 4, 0, 9, 1, 3]
 
 
 @pytest.fixture(scope="session")
 def l1_corr_data_big() -> npt.NDArray[np.number]:
-    """Test data for L1 Concordance correlation."""
+    """Return test data for L1 Concordance correlation."""
     return np.array(
         [
             494,
@@ -274,7 +274,7 @@ def l1_corr_data_big() -> npt.NDArray[np.number]:
 
 @pytest.fixture(scope="session")
 def l1_corr_data_small() -> npt.NDArray[np.number]:
-    """Test data L1 Concordance correlation."""
+    """Return test data L1 Concordance correlation."""
     return np.array(
         [
             512,
@@ -301,5 +301,5 @@ def l1_corr_data_small() -> npt.NDArray[np.number]:
 
 @pytest.fixture(scope="session")
 def shorth_data() -> npt.NDArray[np.number]:
-    """Test data for shorth and length of shortest half."""
+    """Return test data for shorth and length of shortest half."""
     return np.array([1.0, 2.0, 3.0, 4.0, 10.0])
