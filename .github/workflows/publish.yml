@@ -1,15 +1,20 @@
 name: Release
 
+# Push a version tag (e.g. `git tag 0.8.0 && git push origin 0.8.0`) to release.
+# The workflow builds, publishes to PyPI (trusted publishing + PEP 740
+# attestations), signs the distributions with Sigstore and creates the GitHub
+# release with the distributions and their `.sigstore.json` bundles attached.
 on:
-  release:
-    types:
-      - published
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+*"
 
 permissions:
   contents: read
 
 jobs:
-  publish:
+  build:
+    name: Build distributions
     runs-on: ubuntu-latest
     steps:
       - name: Harden Runner
@@ -22,6 +27,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Install uv
         uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
@@ -29,10 +35,123 @@ jobs:
       - name: Install Python 3.12
         run: uv python install 3.12 # locked to 3.12
 
+      - name: Check tag matches project version
+        run: |
+          version="$(uv version --short)"
+          tag="${GITHUB_REF_NAME#v}"
+          if [ "$tag" != "$version" ]; then
+            echo "::error::Release tag '$GITHUB_REF_NAME' != project version '$version'"
+            exit 1
+          fi
+
+      # The GitHub release text is the version's section of CHANGELOG.md.
+      # The heading must carry a date: "## [0.8.0] - 2026-11-20".
+      - name: Extract release notes from CHANGELOG.md
+        run: |
+          version="$(uv version --short)"
+          if ! grep -qE "^## \[${version//./\\.}\] - [0-9]{4}-[0-9]{2}-[0-9]{2}$" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md needs a dated heading '## [$version] - YYYY-MM-DD'"
+            exit 1
+          fi
+          awk -v head="## [$version]" '
+            index($0, head) == 1 { found = 1; next }
+            found && /^## / { exit }
+            found { print }
+          ' CHANGELOG.md > release-notes.md
+          if ! grep -q '[^[:space:]]' release-notes.md; then
+            echo "::error::The CHANGELOG.md section for $version is empty"
+            exit 1
+          fi
+
       - name: Build
         run: uv build
 
+      - name: Smoke test wheel
+        run: |
+          uv run --isolated --no-project --with "$(ls dist/*.whl)" python -c \
+            "import obscure_stats.association, obscure_stats.central_tendency, obscure_stats.dispersion, obscure_stats.kurtosis, obscure_stats.skewness, obscure_stats.variation"
+          uv run --isolated --no-project --with "$(ls dist/*.whl)" python -c \
+            "import obscure_stats; assert obscure_stats.__version__ == '$(uv version --short)', obscure_stats.__version__"
+
+      - name: Upload distributions
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: dist
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload release notes
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-notes
+          path: release-notes.md
+          if-no-files-found: error
+          retention-days: 7
+
+  publish-pypi:
+    name: Publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write # trusted publishing (OIDC) + PEP 740 attestations
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@46b06cea07f9e64621fdf066ba77ac6915163d43 # v2.22.3
+        with:
+          disable-sudo: true
+          egress-policy: audit
+
+      - name: Download distributions
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: dist
+          path: dist/
+
       - name: Publish
+        uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # v1.14.3
+
+  github-release:
+    name: Sign and create GitHub release
+    needs: publish-pypi
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # create the release and upload its assets
+      id-token: write # Sigstore keyless signing
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@46b06cea07f9e64621fdf066ba77ac6915163d43 # v2.22.3
+        with:
+          disable-sudo: true
+          egress-policy: audit
+
+      - name: Download distributions
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: dist
+          path: dist/
+
+      - name: Download release notes
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-notes
+
+      - name: Sign distributions with Sigstore
+        uses: sigstore/gh-action-sigstore-python@790bc6befb9d733738f18d8f895854b453640ec9 # v3.5.0
+        with:
+          inputs: ./dist/*.tar.gz ./dist/*.whl
+          release-signing-artifacts: false # attached below with the release
+
+      # Draft first, publish after the uploads: immutable releases lock assets on publish.
+      - name: Create GitHub release
         env:
-          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
-        run: uv publish
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "$GITHUB_REF_NAME" \
+            --notes-file release-notes.md \
+            --verify-tag \
+            --draft
+          gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft=false

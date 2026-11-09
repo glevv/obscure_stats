@@ -2,6 +2,7 @@
 
 import math
 import typing
+import warnings
 
 import numpy as np
 import numpy.typing as npt
@@ -12,17 +13,19 @@ from hypothesis.extra.numpy import array_shapes, arrays
 
 from obscure_stats.association import (
     blomqvist_beta,
+    coefficient_of_monotone_association,
     concordance_correlation,
     concordance_rate,
     fechner_correlation,
-    gaussain_rank_correlation,
+    gaussian_rank_correlation,
+    gini_correlation,
+    l1_concordance_correlation,
     morisita_horn_similarity,
     normalized_chatterjee_xi,
     quantile_correlation,
     rank_divergence,
     rank_minrelation_coefficient,
     symmetric_chatterjee_xi,
-    symmetric_normalized_chatterjee_xi,
     tanimoto_similarity,
     tukey_correlation,
     winsorized_correlation,
@@ -30,18 +33,20 @@ from obscure_stats.association import (
 )
 
 all_functions = [
+    l1_concordance_correlation,
+    gini_correlation,
+    coefficient_of_monotone_association,
     blomqvist_beta,
     concordance_correlation,
     concordance_rate,
     fechner_correlation,
-    gaussain_rank_correlation,
+    gaussian_rank_correlation,
     normalized_chatterjee_xi,
     morisita_horn_similarity,
     quantile_correlation,
     rank_minrelation_coefficient,
     rank_divergence,
     symmetric_chatterjee_xi,
-    symmetric_normalized_chatterjee_xi,
     tanimoto_similarity,
     tukey_correlation,
     winsorized_correlation,
@@ -73,9 +78,8 @@ def test_mock_association_functions(
     [
         blomqvist_beta,
         concordance_correlation,
-        concordance_rate,
         fechner_correlation,
-        gaussain_rank_correlation,
+        gaussian_rank_correlation,
         quantile_correlation,
         rank_minrelation_coefficient,
         tanimoto_similarity,
@@ -99,7 +103,6 @@ def test_signed_corr_sensibility(
         morisita_horn_similarity,
         rank_divergence,
         symmetric_chatterjee_xi,
-        symmetric_normalized_chatterjee_xi,
         zhang_i,
     ],
 )
@@ -123,14 +126,13 @@ def test_unsigned_corr_sensibility(
         concordance_correlation,
         concordance_rate,
         fechner_correlation,
-        gaussain_rank_correlation,
+        gaussian_rank_correlation,
         normalized_chatterjee_xi,
         quantile_correlation,
         rank_minrelation_coefficient,
         rank_divergence,
         tukey_correlation,
         symmetric_chatterjee_xi,
-        symmetric_normalized_chatterjee_xi,
         winsorized_correlation,
         zhang_i,
     ],
@@ -167,12 +169,11 @@ def test_const_after_prep(
         concordance_correlation,
         concordance_rate,
         fechner_correlation,
-        gaussain_rank_correlation,
+        gaussian_rank_correlation,
         morisita_horn_similarity,
         rank_divergence,
         tanimoto_similarity,
         symmetric_chatterjee_xi,
-        symmetric_normalized_chatterjee_xi,
         winsorized_correlation,
     ],
 )
@@ -227,7 +228,7 @@ def test_a_in_rank_div(
     y_array_float: npt.NDArray[np.number],
     a: float,
 ) -> None:
-    """Simple test case for correctness of a parameter value."""
+    """Test for correctness of a parameter value."""
     with pytest.raises(ValueError, match="Parameter a should be > 0"):
         rank_divergence(x_array_float, y_array_float, a=a)
 
@@ -285,3 +286,21 @@ def test_fuzz_associations(
 ) -> None:
     """Test all functions with fuzz."""
     func(x, y)
+
+
+@pytest.mark.parametrize("func", all_functions)
+@pytest.mark.parametrize(("scale", "shift"), [(1e-9, 0.0), (1.0, 1e6), (1e-4, 100.0)])
+def test_small_spread_is_not_constant(
+    func: typing.Callable[..., float],
+    scale: float,
+    shift: float,
+    y_array_float: npt.NDArray[np.number],
+) -> None:
+    """Test that small-scale or high-level data is not flagged as constant."""
+    x = np.arange(len(y_array_float), dtype=float) * scale + shift
+    with warnings.catch_warnings(record=True) as rec:
+        warnings.simplefilter("always")
+        res = func(x, y_array_float)
+    if any("is constant" in str(w.message) for w in rec) or math.isnan(res):
+        msg = f"{func.__name__} flagged non-constant input as constant."
+        raise ValueError(msg)

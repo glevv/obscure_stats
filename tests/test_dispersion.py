@@ -14,10 +14,10 @@ from obscure_stats.dispersion import (
     coefficient_of_lvariation,
     coefficient_of_range,
     coefficient_of_variation,
-    cole_index_of_dispersion,
     fisher_index_of_dispersion,
     gini_mean_difference,
     inter_expectile_range,
+    length_of_shortest_half,
     morisita_index_of_dispersion,
     quartile_coefficient_of_dispersion,
     robust_coefficient_of_variation,
@@ -28,10 +28,10 @@ from obscure_stats.dispersion import (
 )
 
 all_functions = [
+    length_of_shortest_half,
     coefficient_of_lvariation,
     coefficient_of_range,
     coefficient_of_variation,
-    cole_index_of_dispersion,
     fisher_index_of_dispersion,
     gini_mean_difference,
     inter_expectile_range,
@@ -62,7 +62,6 @@ def test_mock_aggregation_functions(
     [
         coefficient_of_lvariation,
         coefficient_of_variation,
-        cole_index_of_dispersion,
         robust_coefficient_of_variation,
         fisher_index_of_dispersion,
         gini_mean_difference,
@@ -129,7 +128,6 @@ def test_invariance_add(
         coefficient_of_lvariation,
         coefficient_of_range,
         coefficient_of_variation,
-        cole_index_of_dispersion,
     ],
 )
 def test_invariance_mult(

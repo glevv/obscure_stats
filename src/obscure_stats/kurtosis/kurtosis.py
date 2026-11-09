@@ -1,16 +1,16 @@
 # Copyright (c) 2023 Hleb Levitski
 # Licensed under the MIT License. See LICENSE in the project root for details.
 
-"""Module for measures of kurtosis."""
+"""Module for measures of kurtosis.
+
+scipy is imported lazily inside functions: it takes ~0.3 s to import.
+"""
 
 import numpy as np
 import numpy.typing as npt
 
-# pyrefly: ignore [untyped-import]
-from scipy import stats
 
-
-def moors_kurt(x: npt.NDArray[np.number]) -> float:
+def moors_kurt(x: npt.ArrayLike) -> float:
     """Calculate Moor's vision of kurtosis, based on Z score.
 
     The kurtosis can now be seen as a measure of the dispersion of
@@ -21,7 +21,7 @@ def moors_kurt(x: npt.NDArray[np.number]) -> float:
     Parameters
     ----------
     x : array_like
-        Input array.
+        Numeric values.
 
     Returns
     -------
@@ -34,10 +34,14 @@ def moors_kurt(x: npt.NDArray[np.number]) -> float:
     The meaning of kurtosis: Darlington reexamined.
     The American Statistician, 40 (4): 283-284,
     """
+    x = np.asarray(x, dtype=np.float64)
+    # pyrefly: ignore [untyped-import]
+    from scipy import stats  # noqa: PLC0415  (lazy, see module docstring)
+
     return float(np.nanvar(stats.zscore(x, nan_policy="omit") ** 2) + 1)
 
 
-def moors_octile_kurt(x: npt.NDArray[np.number]) -> float:
+def moors_octile_kurt(x: npt.ArrayLike) -> float:
     """Calculate Moors measure of kurtosis based on octiles (uncentered, unscaled).
 
     This measure should be more robust than moment based kurtosis.
@@ -45,7 +49,7 @@ def moors_octile_kurt(x: npt.NDArray[np.number]) -> float:
     Parameters
     ----------
     x : array_like
-        Input array.
+        Numeric values.
 
     Returns
     -------
@@ -58,12 +62,13 @@ def moors_octile_kurt(x: npt.NDArray[np.number]) -> float:
     A quantile alternative for kurtosis.
     Journal of the Royal Statistical Society. Series D, 37(1):25-32.
     """
+    x = np.asarray(x, dtype=np.float64)
     o1, o2, o3, o5, o6, o7 = np.nanquantile(x, [0.125, 0.25, 0.375, 0.625, 0.75, 0.875])
     return float(((o7 - o5) + (o3 - o1)) / (o6 - o2))
 
 
-def hogg_kurt(x: npt.NDArray[np.number]) -> float:
-    """Calculatie Hogg's kurtosis coefficient.
+def hogg_kurt(x: npt.ArrayLike) -> float:
+    """Calculate Hogg's kurtosis coefficient.
 
     It is based on means of values between different percentiles (uncentered, unscaled).
     This measure should be more robust than moment based kurtosis.
@@ -71,7 +76,7 @@ def hogg_kurt(x: npt.NDArray[np.number]) -> float:
     Parameters
     ----------
     x : array_like
-        Input array.
+        Numeric values.
 
     Returns
     -------
@@ -84,6 +89,7 @@ def hogg_kurt(x: npt.NDArray[np.number]) -> float:
     More light on the kurtosis and related statistics.
     Journal of the American Statistical Association, 67(338):422-424.
     """
+    x = np.asarray(x, dtype=np.float64)
     p05, p50, p95 = np.nanquantile(x, [0.05, 0.5, 0.95])
     masked_p95 = np.where(x >= p95, x, np.nan)
     masked_p05 = np.where(x <= p05, x, np.nan)
@@ -95,7 +101,7 @@ def hogg_kurt(x: npt.NDArray[np.number]) -> float:
     )
 
 
-def crow_siddiqui_kurt(x: npt.NDArray[np.number]) -> float:
+def crow_siddiqui_kurt(x: npt.ArrayLike) -> float:
     """Calculate Crow & Siddiqui kurtosis coefficient.
 
     It is based on quartiles and percentiles (uncentered, unscaled) and
@@ -106,7 +112,7 @@ def crow_siddiqui_kurt(x: npt.NDArray[np.number]) -> float:
     Parameters
     ----------
     x : array_like
-        Input array.
+        Numeric values.
 
     Returns
     -------
@@ -119,12 +125,13 @@ def crow_siddiqui_kurt(x: npt.NDArray[np.number]) -> float:
     Robust estimation of location.
     Journal of the American Statistical Association, 62(318):353-389.
     """
+    x = np.asarray(x, dtype=np.float64)
     p025, p25, p75, p975 = np.nanquantile(x, [0.025, 0.25, 0.75, 0.975])
     return float((p975 - p025) / (p75 - p25))
 
 
-def reza_ma_kurt(x: npt.NDArray[np.number]) -> float:
-    """Calculatie Reza & Ma kurtosis coefficient.
+def reza_ma_kurt(x: npt.ArrayLike) -> float:
+    """Calculate Reza & Ma kurtosis coefficient.
 
     It is based on hexadeciles (uncentered, unscaled) and is very
     similar to Moor's octile kurtosis.
@@ -133,7 +140,7 @@ def reza_ma_kurt(x: npt.NDArray[np.number]) -> float:
     Parameters
     ----------
     x : array_like
-        Input array.
+        Numeric values.
 
     Returns
     -------
@@ -146,11 +153,12 @@ def reza_ma_kurt(x: npt.NDArray[np.number]) -> float:
     Quantile Kurtosis in ICA and Integrated Feature Extraction for Classification
     ICIC 2017, LNCS 10361, pp. 681-692. Springer.
     """
+    x = np.asarray(x, dtype=np.float64)
     h1, h7, h9, h15 = np.nanquantile(x, [0.0625, 0.4375, 0.5625, 0.9375])
     return float(((h15 - h9) + (h7 - h1)) / (h15 - h1))
 
 
-def staudte_kurt(x: npt.NDArray[np.number]) -> float:
+def staudte_kurt(x: npt.ArrayLike) -> float:
     """Calculate Staudte kurtosis coefficient.
 
     It is based on inter-percentile ranges (uncentered, unscaled) and
@@ -161,7 +169,7 @@ def staudte_kurt(x: npt.NDArray[np.number]) -> float:
     Parameters
     ----------
     x : array_like
-        Input array.
+        Numeric values.
 
     Returns
     -------
@@ -174,12 +182,13 @@ def staudte_kurt(x: npt.NDArray[np.number]) -> float:
     Inference for quantile measures of kurtosis, peakedness, and tail weight.
     Communications in Statistics-Theory and Methods, 46(7), 3148-3163.
     """
+    x = np.asarray(x, dtype=np.float64)
     p10, p33, p66, p90 = np.nanquantile(x, [0.1, 1 / 3, 2 / 3, 0.9])
     return float((p90 - p10) / (p66 - p33))
 
 
-def schmid_trede_peakedness(x: npt.NDArray[np.number]) -> float:
-    """Calculate Schmid and Trder measure of peakedness P.
+def schmid_trede_peakedness(x: npt.ArrayLike) -> float:
+    """Calculate Schmid and Trede measure of peakedness P.
 
     It is based on inter-percentile ranges (uncentered, unscaled) and
     tries to compare two different measures of dispersion of the same
@@ -189,7 +198,7 @@ def schmid_trede_peakedness(x: npt.NDArray[np.number]) -> float:
     Parameters
     ----------
     x : array_like
-        Input array.
+        Numeric values.
 
     Returns
     -------
@@ -202,5 +211,6 @@ def schmid_trede_peakedness(x: npt.NDArray[np.number]) -> float:
     Simple tests for peakedness, fat tails and leptokurtosis based on quantiles.
     Computational Statistics and Data Analysis, 43, 1-12.
     """
+    x = np.asarray(x, dtype=np.float64)
     p125, p25, p75, p875 = np.nanquantile(x, [0.125, 0.25, 0.75, 0.875])
     return float((p875 - p125) / (p75 - p25))

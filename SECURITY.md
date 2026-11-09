@@ -14,7 +14,7 @@ Authors of `obscure_stats` library take the security of the open source code rep
 | 0.4.x   | :x:                |
 | 0.5.x   | :x:                |
 | 0.6.x   | :x:                |
-| 0.7.x   | :white_check_mark: |
+| 0.7.x   | :x:                |
 | 0.8.x   | :white_check_mark: |
 
 ## Reporting a Vulnerability
@@ -36,6 +36,9 @@ Please include as much of the information listed below as you can to help us bet
 - Impact of the issue, including how an attacker might exploit the issue.
 
 This information will help triage your report more quickly.
+
+You will receive an initial response within 14 days. Fixes are released for the latest
+supported minor version only.
 
 ## Preferred Languages
 

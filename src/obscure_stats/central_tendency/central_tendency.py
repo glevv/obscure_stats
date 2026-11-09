@@ -1,18 +1,18 @@
 # Copyright (c) 2023 Hleb Levitski
 # Licensed under the MIT License. See LICENSE in the project root for details.
 
-"""Module for measures of central tendency."""
+"""Module for measures of central tendency.
+
+scipy is imported lazily inside functions: it takes ~0.3 s to import.
+"""
 
 import math
 
 import numpy as np
 import numpy.typing as npt
 
-# pyrefly: ignore [untyped-import]
-from scipy import optimize, stats
 
-
-def midrange(x: npt.NDArray[np.number]) -> float:
+def midrange(x: npt.ArrayLike) -> float:
     """Calculate midrange or midpoint, i.e. average between minimum and maximum.
 
     This measure could be noisy since it is based on minimum and maximum.
@@ -20,7 +20,7 @@ def midrange(x: npt.NDArray[np.number]) -> float:
     Parameters
     ----------
     x : array_like
-        Input array.
+        Numeric values.
 
     Returns
     -------
@@ -33,12 +33,13 @@ def midrange(x: npt.NDArray[np.number]) -> float:
     The Oxford dictionary of Statistical Terms.
     Oxford University Press.
     """
+    x = np.asarray(x, dtype=np.float64)
     maximum = np.nanmax(x)
     minimum = np.nanmin(x)
     return float((maximum + minimum) * 0.5)
 
 
-def midhinge(x: npt.NDArray[np.number]) -> float:
+def midhinge(x: npt.ArrayLike) -> float:
     """Calculate midhinge, i.e. average between 1st and 3rd quartile.
 
     This measure is more robust than average.
@@ -46,7 +47,7 @@ def midhinge(x: npt.NDArray[np.number]) -> float:
     Parameters
     ----------
     x : array_like
-        Input array.
+        Numeric values.
 
     Returns
     -------
@@ -59,11 +60,12 @@ def midhinge(x: npt.NDArray[np.number]) -> float:
     Exploratory Data Analysis.
     Addison-Wesley.
     """
+    x = np.asarray(x, dtype=np.float64)
     q1, q3 = np.nanquantile(x, [0.25, 0.75])
     return float((q3 + q1) * 0.5)
 
 
-def trimean(x: npt.NDArray[np.number]) -> float:
+def trimean(x: npt.ArrayLike) -> float:
     """Calculate trimean, i.e weighted average between 3 quartiles.
 
     This measure is more robust than average.
@@ -71,7 +73,7 @@ def trimean(x: npt.NDArray[np.number]) -> float:
     Parameters
     ----------
     x : array_like
-        Input array.
+        Numeric values.
 
     Returns
     -------
@@ -84,11 +86,12 @@ def trimean(x: npt.NDArray[np.number]) -> float:
     Exploratory Data Analysis.
     Addison-Wesley.
     """
+    x = np.asarray(x, dtype=np.float64)
     q1, q2, q3 = np.nanquantile(x, [0.25, 0.5, 0.75])
     return float(0.5 * q2 + 0.25 * q1 + 0.25 * q3)
 
 
-def contraharmonic_mean(x: npt.NDArray[np.number]) -> float:
+def contraharmonic_mean(x: npt.ArrayLike) -> float:
     """Calculate contraharmonic mean.
 
     Contraharmonic mean is a function complementary to the harmonic mean.
@@ -98,7 +101,7 @@ def contraharmonic_mean(x: npt.NDArray[np.number]) -> float:
     Parameters
     ----------
     x : array_like
-        Input array.
+        Numeric values.
 
     Returns
     -------
@@ -111,10 +114,11 @@ def contraharmonic_mean(x: npt.NDArray[np.number]) -> float:
     Handbook of means and their inequalities.
     Springer.
     """
+    x = np.asarray(x, dtype=np.float64)
     return float(np.nansum(np.square(x)) / np.nansum(x))
 
 
-def midmean(x: npt.NDArray[np.number]) -> float:
+def midmean(x: npt.ArrayLike) -> float:
     """Calculate interquartile mean, i.e mean inside interquartile range.
 
     This measure is more robust than average.
@@ -122,7 +126,7 @@ def midmean(x: npt.NDArray[np.number]) -> float:
     Parameters
     ----------
     x : array_like
-        Input array.
+        Numeric values.
 
     Returns
     -------
@@ -135,11 +139,12 @@ def midmean(x: npt.NDArray[np.number]) -> float:
     Encyclopedia of Research Design.
     SAGE Publications, Inc.
     """
+    x = np.asarray(x, dtype=np.float64)
     q1, q3 = np.nanquantile(x, [0.25, 0.75])
     return float(np.nanmean(np.where((x >= q1) & (x <= q3), x, np.nan)))
 
 
-def hodges_lehmann_sen_location(x: npt.NDArray[np.number]) -> float:
+def hodges_lehmann_sen_location(x: npt.ArrayLike) -> float:
     """Calculate Hodges-Lehmann-Sen robust location measure (pseudomedian).
 
     This measure is more robust than average.
@@ -147,7 +152,7 @@ def hodges_lehmann_sen_location(x: npt.NDArray[np.number]) -> float:
     Parameters
     ----------
     x : array_like
-        Input array.
+        Numeric values.
 
     Returns
     -------
@@ -167,17 +172,19 @@ def hodges_lehmann_sen_location(x: npt.NDArray[np.number]) -> float:
 
     Notes
     -----
-    This implementation enumerates all N(N-1)/2 pairs, so the time and memory
-    complexity are N^2. It is best to not use it on large arrays.
+    This implementation enumerates all N(N+1)/2 Walsh averages (pairs i <= j),
+    so the time and memory complexity are N^2. It is best to not use it on
+    large arrays.
     """
-    _x = np.ravel(np.asarray(x, dtype=np.float64))
+    x = np.asarray(x, dtype=np.float64)
+    _x = np.ravel(x)
     _x = _x[~np.isnan(_x)]
     n = len(_x)
 
     if n == 0:
         return np.nan
 
-    walsh = np.concatenate([_x[i] + _x[i:] for i in range(len(_x))])
+    walsh = np.concatenate([_x[i] + _x[i:] for i in range(n)])
     return float(np.median(walsh) * 0.5)
 
 
@@ -186,6 +193,9 @@ def _beta_hdi(a: float, b: float, width: float) -> tuple[float, float]:
 
     Port of getBetaHdi from Akinshin (2022), reference implementation.
     """
+    # pyrefly: ignore [untyped-import]
+    from scipy import optimize, stats  # noqa: PLC0415  (lazy, see module docstring)
+
     eps = 1e-9
 
     if width > 1 - eps:
@@ -205,28 +215,32 @@ def _beta_hdi(a: float, b: float, width: float) -> tuple[float, float]:
 
     mode = (a - 1) / (a + b - 2)
     lo, hi = max(0.0, mode - width), min(mode, 1.0 - width)
-    pdf = stats.beta(a, b).pdf  # pyrefly: ignore [missing-attribute]
 
     def f(t: float) -> float:
-        return pdf(t) - pdf(t + width)
+        """Return log pdf(t) - log pdf(t + width) (same sign as the pdf difference)."""
+        if t <= 0.0:
+            return -math.inf  # pdf(0) = 0 < pdf(width)
+        if t + width >= 1.0:
+            return math.inf  # pdf(1) = 0 < pdf(t)
+        return (a - 1) * (math.log(t) - math.log(t + width)) + (b - 1) * (
+            math.log1p(-t) - math.log1p(-(t + width))
+        )
 
     left = optimize.brentq(f, lo, hi, xtol=1e-12)
     return (left, left + width)  # pyrefly: ignore
 
 
-def standard_trimmed_harrell_davis_quantile(
-    x: npt.NDArray[np.number], q: float = 0.5
-) -> float:
+def standard_trimmed_harrell_davis_quantile(x: npt.ArrayLike, q: float = 0.5) -> float:
     """Calculate Standard Trimmed Harrell-Davis median estimator.
 
     This measure is very robust.
-    It calculates weighted Harrel-Davies quantiles on only sqrt(N) samples,
+    It calculates weighted Harrell-Davis quantiles on only sqrt(N) samples,
     located in the region with the most probability mass.
 
     Parameters
     ----------
     x : array_like
-        Input array.
+        Numeric values.
     q : float, default = 0.5
         Quantile value in range (0, 1).
 
@@ -245,7 +259,19 @@ def standard_trimmed_harrell_davis_quantile(
     See Also
     --------
     scipy.stats.mstats.hdquantiles - Harrell-Davis quantile estimates.
+
+    Notes
+    -----
+    The highest density interval of the Beta distribution has no closed form,
+    so its endpoints are found numerically with Brent's method
+    (`scipy.optimize.brentq`), as in the paper's reference implementation.
+    This is a one-dimensional root search that defines a unique interval, not a
+    fit to the data.
     """
+    x = np.asarray(x, dtype=np.float64)
+    # pyrefly: ignore [untyped-import]
+    from scipy import stats  # noqa: PLC0415  (lazy, see module docstring)
+
     if q <= 0 or q >= 1:
         msg = "Parameter q should be in range (0, 1)."
         raise ValueError(msg)
@@ -271,7 +297,7 @@ def standard_trimmed_harrell_davis_quantile(
     return float(np.sum(_x[i_start:i_end] * w))
 
 
-def half_sample_mode(x: npt.NDArray[np.number]) -> float:
+def half_sample_mode(x: npt.ArrayLike) -> float:
     """Calculate half sample mode.
 
     This estimator is more stable than regular mode estimation,
@@ -280,7 +306,7 @@ def half_sample_mode(x: npt.NDArray[np.number]) -> float:
     Parameters
     ----------
     x : array_like
-        Input array.
+        Numeric values.
 
     Returns
     -------
@@ -297,6 +323,7 @@ def half_sample_mode(x: npt.NDArray[np.number]) -> float:
     --------
     scipy.stats.mode - Mode estimator.
     """
+    x = np.asarray(x, dtype=np.float64)
     # heavily inspired by https://github.com/cran/modeest/blob/master/R/hsm.R
     y = np.sort(x)
     y = y[np.isfinite(y)]
@@ -319,7 +346,7 @@ def half_sample_mode(x: npt.NDArray[np.number]) -> float:
     return float(np.mean(y))
 
 
-def tau_location(x: npt.NDArray[np.number], c: float = 4.5) -> float:
+def tau_location(x: npt.ArrayLike, c: float = 4.5) -> float:
     """Calculate Tau measure of location.
 
     This measure is very robust and has higher efficiency than median.
@@ -327,7 +354,7 @@ def tau_location(x: npt.NDArray[np.number], c: float = 4.5) -> float:
     Parameters
     ----------
     x : array_like
-        Input array.
+        Numeric values.
     c : float, default = 4.5
         Constant that filter outliers.
 
@@ -342,6 +369,7 @@ def tau_location(x: npt.NDArray[np.number], c: float = 4.5) -> float:
     Introduction to Robust Estimation Hypothesis Testing.
     3rd Edition, Academic Press, New York.
     """
+    x = np.asarray(x, dtype=np.float64)
     if c <= 0:
         msg = "Parameter c should be strictly positive."
         raise ValueError(msg)
@@ -355,45 +383,79 @@ def tau_location(x: npt.NDArray[np.number], c: float = 4.5) -> float:
     return float(np.nansum(x * w) / np.nansum(w))
 
 
-def grenanders_m(x: npt.NDArray[np.number], p: float = 1.001, k: int = 2) -> float:
-    """Calculate Grenander's Mode.
+def grenanders_m(
+    x: npt.ArrayLike,
+    p: float | None = None,
+    k: int | np.integer | None = None,
+) -> float:
+    """Calculate Grenander's mode.
 
-    This measure is a direct non-parametric estimation of the mode.
-    It is not very robust to outliers.
-    It is recommended to set k > 2p, but it is only possible if x has
-    enough samples.
+    It is a direct (density-free) estimate of the mode: a weighted average of
+    the midpoints of the k-spacings x(i+k) - x(i), with weights
+    (x(i+k) - x(i))^(-p), so that short spacings (high density) dominate.
+
+    For fixed p and k the estimate converges to the f^(p+1)-weighted mean
+    int x f^(p+1) dx / int f^(p+1) dx (Grenander, 1965), which equals the mode
+    only for symmetric unimodal distributions; it approaches the mode as p
+    grows. By default p and k therefore grow with the sample size n, as
+    recommended by Hall (1982): p = n^(2/7), which balances bias and variance,
+    and k = ceil(n^(3/5)). Hall gives p only up to a constant factor; 1 is used.
+    As p tends to infinity, the estimate tends to Venter's mode (the midpoint
+    of the shortest k-spacing).
+
+    Spacings of zero length get infinite weight: if there are any, the mean of
+    their midpoints is returned (as in R's modeest).
 
     Parameters
     ----------
     x : array_like
-        Input array.
-    p : float, default = 1.001
-        Smoothing constant.
-    k : int, default = 2
-        The number of samples to filter.
+        Numeric values.
+    p : float, optional
+        Weight exponent, greater than 1. Defaults to n^(2/7), where n is the
+        number of finite observations.
+    k : int, optional
+        Order of the spacings (each interval contains k + 1 observations).
+        Defaults to ceil(n^(3/5)). Values with 1 < p < k are recommended.
 
     Returns
     -------
     gm : float
-        The value of Grenander's Mode
+        The value of Grenander's mode. NaN if there are at most k finite
+        observations.
 
     References
     ----------
     Grenander, U. (1965).
     Some direct estimates of the mode.
     Annals of Mathematical Statistics, 36, 131-138.
+
+    Hall, P. (1982).
+    Asymptotic theory of Grenander's mode estimator.
+    Zeitschrift fur Wahrscheinlichkeitstheorie und verwandte Gebiete,
+    60, 315-334.
+
+    Chacon, J. E. (2018).
+    The modal age of statistics.
+    arXiv preprint arXiv:1807.02789.
     """
-    if p <= 1:
+    x = np.asarray(x, dtype=np.float64)
+    if p is not None and p <= 1:
         msg = "Parameter p should be a float greater than 1."
         raise ValueError(msg)
-    if (k <= 0) or (not isinstance(k, int)):
+    if k is not None and (
+        isinstance(k, bool) or not isinstance(k, (int, np.integer)) or k <= 0
+    ):
         msg = "Parameter k should be an integer between 1 and length of x."
         raise ValueError(msg)
 
-    x_sort = np.sort(x).astype("float")
-    x_sort = x_sort[np.isfinite(x_sort)]
+    x_sort = np.sort(x[np.isfinite(x)])
+    n = len(x_sort)
+    if p is None:
+        p = n ** (2 / 7)  # Hall (1982): p ~ n^(2/7)
+    if k is None:
+        k = math.ceil(n**0.6)  # Hall (1982): "say k = n^(3/5)"
 
-    if len(x_sort) <= k:
+    if n <= k:
         return np.nan
 
     # precalculate diffs
@@ -415,7 +477,7 @@ def grenanders_m(x: npt.NDArray[np.number], p: float = 1.001, k: int = 2) -> flo
     return float(np.sum(midpoints * weights) / np.sum(weights))
 
 
-def gastwirth_location(x: npt.NDArray[np.number]) -> float:
+def gastwirth_location(x: npt.ArrayLike) -> float:
     """Calculate Gastwirth's location estimator.
 
     This measure is more robust than average.
@@ -423,7 +485,7 @@ def gastwirth_location(x: npt.NDArray[np.number]) -> float:
     Parameters
     ----------
     x : array_like
-        Input array.
+        Numeric values.
 
     Returns
     -------
@@ -436,5 +498,55 @@ def gastwirth_location(x: npt.NDArray[np.number]) -> float:
     On Robust Procedures.
     J. Amer. Statist. Assn., Vol. 61, pp. 929-948.
     """
+    x = np.asarray(x, dtype=np.float64)
     p33, p50, p66 = np.nanquantile(x, [1 / 3, 0.5, 2 / 3])
     return float(0.3 * p33 + 0.4 * p50 + 0.3 * p66)
+
+
+def shorth(x: npt.ArrayLike) -> float:
+    """Calculate the shorth, the mean of the shortest half of the data.
+
+    The shortest half is the shortest interval that contains floor(n/2) + 1
+    observations. The shorth is very robust (50% breakdown point) but
+    converges slowly (at rate n^(-1/3)).
+
+    Parameters
+    ----------
+    x : array_like
+        Numeric values.
+
+    Returns
+    -------
+    sh : float
+        The value of the shorth.
+
+    References
+    ----------
+    Andrews, D. F.; Bickel, P. J.; Hampel, F. R.; Huber, P. J.;
+    Rogers, W. H.; Tukey, J. W. (1972).
+    Robust Estimates of Location: Survey and Advances.
+    Princeton University Press.
+
+    Notes
+    -----
+    If several intervals are equally short, the mean of their means is
+    returned, which keeps the result independent of the order of the data.
+    The least median of squares (LMS) location (Rousseeuw, 1984) is the
+    midpoint of the endpoints of the same interval.
+
+    See Also
+    --------
+    obscure_stats.dispersion.length_of_shortest_half - Length of the shortest half.
+    """
+    x = np.asarray(x, dtype=np.float64)
+    _x = np.ravel(x)
+    _x = np.sort(_x[np.isfinite(_x)])
+    n = len(_x)
+    if n == 0:
+        return np.nan
+    h = n // 2
+    widths = _x[h:] - _x[: n - h]
+    starts = np.flatnonzero(widths == np.min(widths))
+    cs = np.r_[0.0, np.cumsum(_x)]
+    means = (cs[starts + h + 1] - cs[starts]) / (h + 1)
+    return float(np.mean(means))
