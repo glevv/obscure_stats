@@ -14,10 +14,10 @@ from obscure_stats.dispersion import (
     coefficient_of_lvariation,
     coefficient_of_range,
     coefficient_of_variation,
-    cole_index_of_dispersion,
     fisher_index_of_dispersion,
     gini_mean_difference,
     inter_expectile_range,
+    length_of_shortest_half,
     morisita_index_of_dispersion,
     quartile_coefficient_of_dispersion,
     robust_coefficient_of_variation,
@@ -28,10 +28,10 @@ from obscure_stats.dispersion import (
 )
 
 all_functions = [
+    length_of_shortest_half,
     coefficient_of_lvariation,
     coefficient_of_range,
     coefficient_of_variation,
-    cole_index_of_dispersion,
     fisher_index_of_dispersion,
     gini_mean_difference,
     inter_expectile_range,
@@ -57,12 +57,28 @@ def test_mock_aggregation_functions(
     func(data)
 
 
+def test_zero_array() -> None:
+    """Test length_of_shortest_half on zero array."""
+    if not math.isnan(length_of_shortest_half([])):
+        msg = "Statistic should return nan."
+        raise ValueError(msg)
+
+
+def test_length_of_shortest_half(
+    shorth_data: npt.NDArray[np.number],
+) -> None:
+    """Test a hand-computed example with two equally short halves."""
+    res = length_of_shortest_half(shorth_data)
+    if res != pytest.approx(2.0):
+        msg = "Result does not match reference."
+        raise ValueError(msg)
+
+
 @pytest.mark.parametrize(
     "func",
     [
         coefficient_of_lvariation,
         coefficient_of_variation,
-        cole_index_of_dispersion,
         robust_coefficient_of_variation,
         fisher_index_of_dispersion,
         gini_mean_difference,
@@ -129,7 +145,6 @@ def test_invariance_add(
         coefficient_of_lvariation,
         coefficient_of_range,
         coefficient_of_variation,
-        cole_index_of_dispersion,
     ],
 )
 def test_invariance_mult(

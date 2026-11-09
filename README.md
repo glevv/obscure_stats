@@ -37,21 +37,23 @@
     * Midhinge - `midhinge`;
     * Midmean - `midmean`;
     * Midrange - `midrange`;
+    * Shorth - `shorth`;
     * Standard Trimmed Harrell-Davis Quantile - `standard_trimmed_harrell_davis_quantile`;
     * Tau Measure of Location - `tau_location`;
     * Trimean - `trimean`.
 - Collection of measures of dispersion - `obscure_stats.dispersion`:
     * Coefficient of Range - `coefficient_of_range`;
     * Coefficient of Variation - `coefficient_of_variation`;
-    * Cole's Index of Dispersion - `cole_index_of_dispersion`;
     * Fisher's Index of Dispersion - `fisher_index_of_dispersion`;
     * Gini Mean Difference - `gini_mean_difference`;
     * Linear Coefficient of Variation - `coefficient_of_lvariation`;
     * Inter-expectile Range - `inter_expectile_range`;
+    * Length of the Shortest Half - `length_of_shortest_half`;
     * Morisita Index of Dispersion - `morisita_index_of_dispersion`;
     * Quartile Coefficient of Dispersion - `quartile_coefficient_of_dispersion`;
     * Robust Coefficient of Variation - `robust_coefficient_of_variation`;
     * Shamos Estimator - `shamos_estimator`;
+    * Shapiro Coefficient of Variation - `shapiro_coefficient_of_variation`;
     * Standard Quantile Absolute Deviation - `standard_quantile_absolute_deviation`;
     * Studentized Range - `studentized_range`.
 - Collection of measures of skewness - `obscure_stats.skewness`:
@@ -61,10 +63,9 @@
     * Cumulative Skewness Coefficient - `cumulative_skew`;
     * Forhad-Shorna Rank Skewness Coefficient - `forhad_shorna_rank_skew`;
     * Groeneveld Range Skewness Coefficient - `groeneveld_range_skew`;
-    * Hossain-Adnan Skewness Coefficient - `hossain_adnan_skew`;
     * Kelly Skewness Coefficient - `kelly_skew`;
     * Left Quantile Weight - `left_quantile_weight`;
-    * Medeen Skewness Coefficient - `medeen_skew`;
+    * Meeden Skewness Coefficient - `meeden_skew`;
     * Pearson Median Skewness Coefficient - `pearson_median_skew`;
     * Pearson Mode Skewness Coefficient - `pearson_mode_skew`;
     * Right Quantile Weight - `right_quantile_weight`.
@@ -79,9 +80,12 @@
 - Collection of measures of association - `obscure_stats.association`:
     * Blomqvist's Beta - `blomqvist_beta`;
     * Concordance Correlation Coefficient - `concordance_correlation`;
+    * Coefficient of Monotone Association - `coefficient_of_monotone_association`;
     * Concordance Rate - `concordance_rate`;
     * Fechner Correlation Coefficient - `fechner_correlation`;
-    * Gaussian Rank Correlation Coefficient - `gaussain_rank_correlation`;
+    * Gaussian Rank Correlation Coefficient - `gaussian_rank_correlation`;
+    * Gini Correlation Coefficient - `gini_correlation`;
+    * L1 Concordance Correlation Coefficient - `l1_concordance_correlation`;
     * Morisita-Horn Similarity - `morisita_horn_similarity`;
     * Normalized Chatterjee Xi Correlation Coefficient - `normalized_chatterjee_xi`;
     * Quantile Correlation Coefficient - `quantile_correlation`;
@@ -123,7 +127,7 @@
 
 ```
 Out[1]:
-Robust measure of central tendency = 1.09±0.42
+Robust measure of central tendency = 1.09±0.39
 ```
 
 ## Code of Conduct

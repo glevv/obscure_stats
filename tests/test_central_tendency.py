@@ -24,6 +24,7 @@ from obscure_stats.central_tendency import (
     midhinge,
     midmean,
     midrange,
+    shorth,
     standard_trimmed_harrell_davis_quantile,
     tau_location,
     trimean,
@@ -31,6 +32,7 @@ from obscure_stats.central_tendency import (
 from obscure_stats.central_tendency.central_tendency import _beta_hdi
 
 all_functions = [
+    shorth,
     contraharmonic_mean,
     gastwirth_location,
     grenanders_m,
@@ -98,7 +100,6 @@ def test_hls(
     if result != pytest.approx(3.5):
         msg = "Results from the test and paper do not match."
         raise ValueError(msg)
-    # pyrefly: ignore [bad-argument-type]
     result = hodges_lehmann_sen_location(hls_test_data_big)
     if result != pytest.approx(5.75):
         msg = "Results from the test and paper do not match."
@@ -212,6 +213,27 @@ def test_beta_hdi_middle_equal_density_endpoints() -> None:
     pdf = stats.beta(a, b).pdf  # pyrefly: ignore [missing-attribute]
     if pdf(lo) != pytest.approx(pdf(hi), rel=1e-6):
         msg = "HDI endpoints should have equal density."
+        raise ValueError(msg)
+
+
+def test_shorth(
+    shorth_data: npt.NDArray[np.number],
+) -> None:
+    """Test a hand-computed example with two equally short halves."""
+    res = shorth(shorth_data)
+    if res != pytest.approx(2.5):
+        msg = "Result does not match reference."
+        raise ValueError(msg)
+    res = shorth(-shorth_data)
+    if res != pytest.approx(-2.5):
+        msg = "Result does not match reference."
+        raise ValueError(msg)
+
+
+def test_zero_array() -> None:
+    """Test shorth on zero array."""
+    if not math.isnan(shorth([])):
+        msg = "Statistic should return nan."
         raise ValueError(msg)
 
 

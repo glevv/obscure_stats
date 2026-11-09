@@ -9,31 +9,31 @@ import pytest
 
 @pytest.fixture(scope="session")
 def x_list_float() -> list[float]:
-    """List of floats."""
+    """Return a list of floats."""
     return [-1.0, 2.0, 0.0, -2.0, 3.0, 11.0, 0.0, 1.0]
 
 
 @pytest.fixture(scope="session")
 def x_list_int() -> list[int]:
-    """List of integers."""
+    """Return a list of integers."""
     return [-1, 2, 0, -2, 3, 11, 0, 1]
 
 
 @pytest.fixture(scope="session")
 def x_array_int(x_list_int: list[int]) -> npt.NDArray[np.number]:
-    """Array of integers."""
+    """Return an array of integers."""
     return np.asarray(x_list_int, dtype="int")
 
 
 @pytest.fixture(scope="session")
 def x_array_float(x_list_float: npt.NDArray[np.number]) -> npt.NDArray[np.number]:
-    """Array of float."""
+    """Return an array of floats."""
     return np.asarray(x_list_float, dtype="float")
 
 
 @pytest.fixture(scope="session")
 def x_array_nan(x_array_float: npt.NDArray[np.number]) -> npt.NDArray[np.number]:
-    """Array of float with NaN."""
+    """Return an array of floats with a NaN."""
     temp = x_array_float.copy()
     temp[0] = np.nan
     return temp
@@ -41,31 +41,31 @@ def x_array_nan(x_array_float: npt.NDArray[np.number]) -> npt.NDArray[np.number]
 
 @pytest.fixture(scope="session")
 def y_list_float() -> list[float]:
-    """List of floats."""
+    """Return a list of floats."""
     return [-1.0, 1.0, 9.0, 7.0, 0.0, 1.0, 0.0, 1.0]
 
 
 @pytest.fixture(scope="session")
 def y_list_int() -> list[int]:
-    """List of integers."""
+    """Return a list of integers."""
     return [-1, 1, 9, 7, 0, 1, 0, 1]
 
 
 @pytest.fixture(scope="session")
 def y_array_int(y_list_int: list[int]) -> npt.NDArray[np.number]:
-    """Array of integers."""
+    """Return an array of integers."""
     return np.asarray(y_list_int, dtype="int")
 
 
 @pytest.fixture(scope="session")
 def y_array_float(y_list_float: list[float]) -> npt.NDArray[np.number]:
-    """Array of float."""
+    """Return an array of floats."""
     return np.asarray(y_list_float, dtype="float")
 
 
 @pytest.fixture(scope="session")
 def y_array_inf(y_array_float: npt.NDArray[np.number]) -> npt.NDArray[np.number]:
-    """Array of float with NaN."""
+    """Return an array of floats with an inf."""
     temp = y_array_float.copy()
     temp[1] = np.inf
     return temp
@@ -73,19 +73,19 @@ def y_array_inf(y_array_float: npt.NDArray[np.number]) -> npt.NDArray[np.number]
 
 @pytest.fixture(scope="session")
 def c_list_obj() -> list[str]:
-    """List of objects."""
+    """Return a list of strings."""
     return ["a", "b", "r", "a", "c", "a", "d", "a", "b", "r", "a"]
 
 
 @pytest.fixture(scope="session")
 def c_array_obj(c_list_obj: list[str]) -> npt.NDArray[np.number]:
-    """Array of objects."""
+    """Return an array of strings."""
     return np.asarray(c_list_obj)
 
 
 @pytest.fixture(scope="session")
 def c_array_nan(c_array_obj: npt.NDArray[np.number]) -> npt.NDArray[np.number]:
-    """Array of objects."""
+    """Return an array of strings with a NaN."""
     temp = c_array_obj.copy()
     temp[1] = np.nan
     return temp
@@ -93,7 +93,7 @@ def c_array_nan(c_array_obj: npt.NDArray[np.number]) -> npt.NDArray[np.number]:
 
 @pytest.fixture(scope="session")
 def rank_skewness_test_data() -> npt.NDArray[np.number]:
-    """Test data from the paper for Rank Skew."""
+    """Return test data from the paper for Rank Skew."""
     return np.asarray(
         (
             73.3,
@@ -209,7 +209,7 @@ def rank_skewness_test_data() -> npt.NDArray[np.number]:
 
 @pytest.fixture(scope="session")
 def thdme_test_data() -> npt.NDArray[np.number]:
-    """Test data from the paper for Trimmed Harrles-Davies median."""
+    """Return test data from the paper for Trimmed Harrell-Davis median."""
     return np.asarray(
         (-0.565, -0.106, -0.095, 0.363, 0.404, 0.633, 1.371, 1.512, 2.018, 100_000)
     )
@@ -217,17 +217,89 @@ def thdme_test_data() -> npt.NDArray[np.number]:
 
 @pytest.fixture(scope="session")
 def hls_test_data() -> npt.NDArray[np.number]:
-    """Test data from the paper for Hodges-Lehmann-Sen estimator."""
+    """Return test data from the paper for Hodges-Lehmann-Sen estimator."""
     return np.asarray((1, 5, 2, 2, 7, 4, 1, 6))
 
 
 @pytest.fixture(scope="session")
 def hsm_test_data() -> npt.NDArray[np.number]:
-    """Test data for Half Sample Mode."""
+    """Return test data for Half Sample Mode."""
     return np.asarray((1, 2, 2, 2, 7, 4, 1, 6))
 
 
 @pytest.fixture(scope="session")
 def hls_test_data_big() -> list[int]:
-    """Test data from the paper for Hodges-Lehmann-Sen estimator."""
+    """Return test data from the paper for Hodges-Lehmann-Sen estimator."""
     return [10**100, 10**100, 2, 2, 7, 4, 1, 6]
+
+
+@pytest.fixture(scope="session")
+def x_tied_list() -> list[int]:
+    """Return test data for the rank correlations."""
+    return [0, 0, 1, 1, 2, 3, 4, 6, 7, 8, 8]
+
+
+@pytest.fixture(scope="session")
+def y_tied_list() -> list[int]:
+    """Return test data for the rank correlations."""
+    return [2, 2, 2, 1, 4, 4, 4, 0, 9, 1, 3]
+
+
+@pytest.fixture(scope="session")
+def l1_corr_data_big() -> npt.NDArray[np.number]:
+    """Return test data for L1 Concordance correlation."""
+    return np.array(
+        [
+            494,
+            395,
+            516,
+            434,
+            476,
+            557,
+            413,
+            442,
+            650,
+            433,
+            417,
+            656,
+            267,
+            478,
+            178,
+            423,
+            427,
+        ],
+        dtype=float,
+    )
+
+
+@pytest.fixture(scope="session")
+def l1_corr_data_small() -> npt.NDArray[np.number]:
+    """Return test data L1 Concordance correlation."""
+    return np.array(
+        [
+            512,
+            430,
+            520,
+            428,
+            500,
+            600,
+            364,
+            380,
+            658,
+            445,
+            432,
+            626,
+            260,
+            477,
+            259,
+            350,
+            451,
+        ],
+        dtype=float,
+    )
+
+
+@pytest.fixture(scope="session")
+def shorth_data() -> npt.NDArray[np.number]:
+    """Return test data for shorth and length of shortest half."""
+    return np.array([1.0, 2.0, 3.0, 4.0, 10.0])
