@@ -471,7 +471,6 @@ def grenanders_m(
         midpoints = 0.5 * (x_sort[k:][zero_mask] + x_sort[:-k][zero_mask])
         return float(np.mean(midpoints))
 
-    # pyrefly: ignore [unsupported-operation]
     weights = np.power(diff, -p)
     midpoints = 0.5 * (x_sort[k:] + x_sort[:-k])
     return float(np.sum(midpoints * weights) / np.sum(weights))
