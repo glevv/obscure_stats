@@ -118,8 +118,6 @@ def concordance_correlation(x: npt.ArrayLike, y: npt.ArrayLike) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
-    if _check_arrays(x, y):
-        return np.nan
     std_x = np.std(x, ddof=0)
     std_y = np.std(y, ddof=0)
     w = std_y / std_x
@@ -182,8 +180,6 @@ def concordance_rate(
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
-    if _check_arrays(x, y):
-        return np.nan
     keep = np.maximum(np.abs(x), np.abs(y)) > exclusion
     if not np.any(keep):
         return np.nan
@@ -286,8 +282,6 @@ def zhang_i(x: npt.ArrayLike, y: npt.ArrayLike) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
-    if _check_arrays(x, y):
-        return np.nan
     return min(
         1.0,
         max(
@@ -334,8 +328,6 @@ def tanimoto_similarity(x: npt.ArrayLike, y: npt.ArrayLike) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
-    if _check_arrays(x, y):
-        return np.nan
     xy = np.mean(x * y)
     xx = np.mean(x**2)
     yy = np.mean(y**2)
@@ -381,8 +373,6 @@ def blomqvist_beta(x: npt.ArrayLike, y: npt.ArrayLike) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
-    if _check_arrays(x, y):
-        return np.nan
     med_x = np.median(x)
     med_y = np.median(y)
     return float(np.mean(np.sign((x - med_x) * (y - med_y))))
@@ -421,8 +411,6 @@ def fechner_correlation(x: npt.ArrayLike, y: npt.ArrayLike) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
-    if _check_arrays(x, y):
-        return np.nan
     avg_x = np.mean(x)
     avg_y = np.mean(y)
     return float(np.mean(np.sign(x - avg_x) * np.sign(y - avg_y)))
@@ -465,8 +453,6 @@ def winsorized_correlation(x: npt.ArrayLike, y: npt.ArrayLike, k: float = 0.1) -
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
-    if _check_arrays(x, y):
-        return np.nan
     x_w = stats.mstats.winsorize(x, (k, k))
     y_w = stats.mstats.winsorize(y, (k, k))
     return float(np.corrcoef(x_w, y_w)[0, 1])
@@ -511,8 +497,6 @@ def rank_minrelation_coefficient(x: npt.ArrayLike, y: npt.ArrayLike) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
-    if _check_arrays(x, y):
-        return np.nan
     n = len(x)
     m_sq = n**2  # Meyer (2013), eqs. 6-8 divide by m^2
     r_y = stats.rankdata(y)
@@ -558,8 +542,6 @@ def tukey_correlation(x: npt.ArrayLike, y: npt.ArrayLike) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
-    if _check_arrays(x, y):
-        return np.nan
     s_x = gini_mean_difference(x)
     s_y = gini_mean_difference(y)
     x_norm = x / s_x
@@ -600,8 +582,6 @@ def gaussian_rank_correlation(x: npt.ArrayLike, y: npt.ArrayLike) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
-    if _check_arrays(x, y):
-        return np.nan
     n = len(x)
     norm_factor = 1 / (n + 1)
     x_ranks_norm = stats.rankdata(x) * norm_factor
@@ -649,8 +629,6 @@ def quantile_correlation(x: npt.ArrayLike, y: npt.ArrayLike, q: float = 0.5) -> 
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
-    if _check_arrays(x, y):
-        return np.nan
     return float(
         np.mean((q - (y < np.quantile(y, q=q))) * (x - np.mean(x)))
         / (((q - q**2) * np.var(x)) ** 0.5)
@@ -714,8 +692,6 @@ def normalized_chatterjee_xi(x: npt.ArrayLike, y: npt.ArrayLike) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
-    if _check_arrays(x, y):
-        return np.nan
     ratio = stats.chatterjeexi(x, y)[0] / _chatterjee_xi_max(y)
     # Dalitz et al. (2024), eq. 8
     return float(max(-1.0, ratio))
@@ -757,8 +733,6 @@ def morisita_horn_similarity(x: npt.ArrayLike, y: npt.ArrayLike) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
-    if _check_arrays(x, y):
-        return np.nan
     mean_x = np.mean(x)
     mean_y = np.mean(y)
     return float(
@@ -820,8 +794,6 @@ def rank_divergence(
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
-    if _check_arrays(x, y):
-        return np.nan
     r1 = stats.rankdata(-x)
     r2 = stats.rankdata(-y)
     d = _rtd_sum(r1, r2, a)
@@ -872,8 +844,6 @@ def gini_correlation(x: npt.ArrayLike, y: npt.ArrayLike) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
-    if _check_arrays(x, y):
-        return np.nan
     n = len(x)
     # sum_j sign(y_i - y_j) = 2 * midrank(y_i) - n - 1
     num = np.sum(x * (2.0 * stats.rankdata(y) - n - 1.0))
@@ -920,8 +890,6 @@ def coefficient_of_monotone_association(x: npt.ArrayLike, y: npt.ArrayLike) -> f
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
-    if _check_arrays(x, y):
-        return np.nan
     c = (len(x) + 1) / 2
     q = stats.rankdata(x) - c
     r = stats.rankdata(y) - c
@@ -972,8 +940,6 @@ def l1_concordance_correlation(x: npt.ArrayLike, y: npt.ArrayLike) -> float:
     if _check_arrays(x, y):
         return np.nan
     x, y = _prep_arrays(x, y)
-    if _check_arrays(x, y):
-        return np.nan
     n = len(x)
     ys = np.sort(y)
     cs = np.r_[0.0, np.cumsum(ys)]

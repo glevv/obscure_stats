@@ -216,6 +216,27 @@ def test_beta_hdi_middle_equal_density_endpoints() -> None:
         raise ValueError(msg)
 
 
+def test_shorth(
+    shorth_data: npt.NDArray[np.number],
+) -> None:
+    """Test a hand-computed example with two equally short halves."""
+    res = shorth(shorth_data)
+    if res != pytest.approx(2.5):
+        msg = "Result does not match reference."
+        raise ValueError(msg)
+    res = shorth(-shorth_data)
+    if res != pytest.approx(-2.5):
+        msg = "Result does not match reference."
+        raise ValueError(msg)
+
+
+def test_zero_array() -> None:
+    """Test shorth on zero array."""
+    if not math.isnan(shorth([])):
+        msg = "Statistic should return nan."
+        raise ValueError(msg)
+
+
 @given(
     arrays(
         dtype=np.float64,

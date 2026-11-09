@@ -57,6 +57,23 @@ def test_mock_aggregation_functions(
     func(data)
 
 
+def test_zero_array() -> None:
+    """Test length_of_shortest_half on zero array."""
+    if not math.isnan(length_of_shortest_half([])):
+        msg = "Statistic should return nan."
+        raise ValueError(msg)
+
+
+def test_length_of_shortest_half(
+    shorth_data: npt.NDArray[np.number],
+) -> None:
+    """Test a hand-computed example with two equally short halves."""
+    res = length_of_shortest_half(shorth_data)
+    if res != pytest.approx(2.0):
+        msg = "Result does not match reference."
+        raise ValueError(msg)
+
+
 @pytest.mark.parametrize(
     "func",
     [

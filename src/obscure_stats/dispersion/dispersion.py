@@ -368,6 +368,7 @@ def gini_mean_difference(x: npt.ArrayLike) -> float:
     x = np.asarray(x, dtype=np.float64)
     x = np.sort(x)
     x = x[np.isfinite(x)]
+    # pyrefly: ignore [bad-argument-type]
     n = len(x)
 
     if n == 0:
@@ -376,6 +377,7 @@ def gini_mean_difference(x: npt.ArrayLike) -> float:
         return 0.0
 
     indices = np.arange(1, n + 1)
+    # pyrefly: ignore [no-matching-overload, unsupported-operation]
     return float(2.0 * np.sum((2 * indices - n - 1) * x) / (n * (n - 1)))
 
 

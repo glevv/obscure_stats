@@ -231,3 +231,75 @@ def hsm_test_data() -> npt.NDArray[np.number]:
 def hls_test_data_big() -> list[int]:
     """Test data from the paper for Hodges-Lehmann-Sen estimator."""
     return [10**100, 10**100, 2, 2, 7, 4, 1, 6]
+
+
+@pytest.fixture(scope="session")
+def x_tied_list() -> list[int]:
+    """Test data for the rank correlations."""
+    return [0, 0, 1, 1, 2, 3, 4, 6, 7, 8, 8]
+
+
+@pytest.fixture(scope="session")
+def y_tied_list() -> list[int]:
+    """Test data for the rank correlations."""
+    return [2, 2, 2, 1, 4, 4, 4, 0, 9, 1, 3]
+
+
+@pytest.fixture(scope="session")
+def l1_corr_data_big() -> npt.NDArray[np.number]:
+    """Test data for L1 Concordance correlation."""
+    return np.array(
+        [
+            494,
+            395,
+            516,
+            434,
+            476,
+            557,
+            413,
+            442,
+            650,
+            433,
+            417,
+            656,
+            267,
+            478,
+            178,
+            423,
+            427,
+        ],
+        dtype=float,
+    )
+
+
+@pytest.fixture(scope="session")
+def l1_corr_data_small() -> npt.NDArray[np.number]:
+    """Test data L1 Concordance correlation."""
+    return np.array(
+        [
+            512,
+            430,
+            520,
+            428,
+            500,
+            600,
+            364,
+            380,
+            658,
+            445,
+            432,
+            626,
+            260,
+            477,
+            259,
+            350,
+            451,
+        ],
+        dtype=float,
+    )
+
+
+@pytest.fixture(scope="session")
+def shorth_data() -> npt.NDArray[np.number]:
+    """Test data for shorth and length of shortest half."""
+    return np.array([1.0, 2.0, 3.0, 4.0, 10.0])

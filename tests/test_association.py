@@ -158,7 +158,7 @@ def test_const_after_prep(
     corr_test_data[0] = np.nan
     res = func(x_array_float, corr_test_data)
     if not math.isnan(res):
-        msg = f"Corr coef should be 0 with constant input, got {res}"
+        msg = f"Corr coef should be nan with constant input, got {res}"
         raise ValueError(msg)
 
 
@@ -220,6 +220,19 @@ def test_unequal_arrays(
     """Test for unequal arrays."""
     with pytest.warns(match="Lengths of the inputs do not match"):
         func(x_array_int[:4], y_array_int[:3])
+
+
+@pytest.mark.parametrize("func", all_functions)
+def test_unequal_arrays_after_prep(
+    func: typing.Callable[..., float],
+    x_array_int: npt.NDArray[np.number],
+    x_array_nan: npt.NDArray[np.number],
+) -> None:
+    """Test for unequal arrays after preparation."""
+    res = func(x_array_nan[:2], x_array_int[:2])
+    if not math.isnan(res):
+        msg = f"Corr coef should be nan with incorrect input, got {res}"
+        raise ValueError(msg)
 
 
 @pytest.mark.parametrize("a", [-1, 0])
@@ -303,4 +316,39 @@ def test_small_spread_is_not_constant(
         res = func(x, y_array_float)
     if any("is constant" in str(w.message) for w in rec) or math.isnan(res):
         msg = f"{func.__name__} flagged non-constant input as constant."
+        raise ValueError(msg)
+
+
+def test_gini_correlation(
+    x_tied_list: list[int],
+    y_tied_list: list[int],
+) -> None:
+    """Test the U-statistic ratio of Schechtman & Yitzhaki with ties."""
+    n = len(x_tied_list)
+    num = sum(
+        (x_tied_list[i] - x_tied_list[j]) * np.sign(y_tied_list[i] - y_tied_list[j])
+        for i in range(n)
+        for j in range(i + 1, n)
+    )
+    den = sum(
+        abs(x_tied_list[i] - x_tied_list[j]) for i in range(n) for j in range(i + 1, n)
+    )
+    res = gini_correlation(x_tied_list, y_tied_list)
+    if res != pytest.approx(num / den):
+        msg = "Result does not match reference."
+        raise ValueError(msg)
+
+
+def test_l1_concordance_correlation_reference(
+    l1_corr_data_big: npt.NDArray[np.number],
+    l1_corr_data_small: npt.NDArray[np.number],
+) -> None:
+    """Test the Bland-Altman example against R L1pack::l1ccc (U-statistic)."""
+    res = l1_concordance_correlation(l1_corr_data_big, l1_corr_data_small)
+    if res != pytest.approx(0.76416850, abs=1e-8):
+        msg = "Result does not match reference."
+        raise ValueError(msg)
+    res = l1_concordance_correlation(l1_corr_data_big, l1_corr_data_big)
+    if res != 1.0:
+        msg = "Result does not match reference."
         raise ValueError(msg)
