@@ -3,11 +3,12 @@
 from .variation import (
     avdev,
     b_index,
+    brillouin_index,
+    extropy,
     gibbs_m1,
-    gibbs_m2,
     mcintosh_d,
+    mndif,
     mod_vr,
-    negative_extropy,
     range_vr,
     renyi_entropy,
 )
@@ -15,11 +16,12 @@ from .variation import (
 __all__ = [
     "avdev",
     "b_index",
+    "brillouin_index",
+    "extropy",
     "gibbs_m1",
-    "gibbs_m2",
     "mcintosh_d",
+    "mndif",
     "mod_vr",
-    "negative_extropy",
     "range_vr",
     "renyi_entropy",
 ]

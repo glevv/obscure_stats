@@ -25,7 +25,7 @@ def studentized_range(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    sr : float
+    float
         The value of the studentized range.
 
     References
@@ -33,6 +33,13 @@ def studentized_range(x: npt.ArrayLike) -> float:
     Student (1927).
     Errors of routine analysis.
     Biometrika. 19 (1/2): 151-164.
+
+    Examples
+    --------
+    >>> from obscure_stats.dispersion import studentized_range
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(studentized_range(x), 4)
+    3.3285
     """
     x = np.asarray(x, dtype=np.float64)
     std = np.nanstd(x)
@@ -54,7 +61,7 @@ def coefficient_of_lvariation(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    lcv : float
+    float
         The value of the linear coefficient of variation.
 
     References
@@ -63,6 +70,13 @@ def coefficient_of_lvariation(x: npt.ArrayLike) -> float:
     L-moments: analysis and estimation of distributions
     using linear combinations of order statistics.
     Journal of the Royal Statistical Society, Series B. 52 (1): 105-124.
+
+    Examples
+    --------
+    >>> from obscure_stats.dispersion import coefficient_of_lvariation
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(coefficient_of_lvariation(x), 4)
+    0.4286
     """
     x = np.asarray(x, dtype=np.float64)
     # pyrefly: ignore [untyped-import]
@@ -75,6 +89,9 @@ def coefficient_of_lvariation(x: npt.ArrayLike) -> float:
 def coefficient_of_variation(x: npt.ArrayLike) -> float:
     """Calculate coefficient of variation (Standard deviation / Mean).
 
+    It is the standard deviation divided by the mean.
+    Uses the population standard deviation (ddof=0).
+
     Parameters
     ----------
     x : array_like
@@ -82,7 +99,7 @@ def coefficient_of_variation(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    cv : float
+    float
         The value of the coefficient of variation.
 
     References
@@ -90,6 +107,13 @@ def coefficient_of_variation(x: npt.ArrayLike) -> float:
     Brown, C. E. (1998).
     Coefficient of Variation.
     Applied Multivariate Statistics in Geohydrology and Related Sciences. Springer.
+
+    Examples
+    --------
+    >>> from obscure_stats.dispersion import coefficient_of_variation
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(coefficient_of_variation(x), 4)
+    0.7146
     """
     x = np.asarray(x, dtype=np.float64)
     return float(np.nanstd(x) / np.nanmean(x))
@@ -112,7 +136,7 @@ def robust_coefficient_of_variation(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    rcv : float
+    float
         The value of the robust coefficient of variation.
 
     References
@@ -120,6 +144,13 @@ def robust_coefficient_of_variation(x: npt.ArrayLike) -> float:
     Reimann, C.; Filzmoser; P.; Garrett, R. G.; Dutter, R. (2008).
     Statistical Data Analysis Explained: Applied Environmental Statistics with R.
     John Wiley and Sons, New York.
+
+    Examples
+    --------
+    >>> from obscure_stats.dispersion import robust_coefficient_of_variation
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(robust_coefficient_of_variation(x), 4)
+    0.4
     """
     x = np.asarray(x, dtype=np.float64)
     med = np.nanmedian(x)
@@ -128,7 +159,11 @@ def robust_coefficient_of_variation(x: npt.ArrayLike) -> float:
 
 
 def quartile_coefficient_of_dispersion(x: npt.ArrayLike) -> float:
-    """Calculate quartile coefficient of dispersion (IQR / Midhinge).
+    """Calculate quartile coefficient of dispersion (half of IQR / Midhinge).
+
+    It is `(Q3 - Q1) / (Q3 + Q1)`, where Q1 and Q3 are the first and third quartiles:
+    the interquartile range divided by the sum of the quartiles, which is half of the
+    interquartile range divided by the midhinge (the mean of the two quartiles).
 
     Parameters
     ----------
@@ -137,18 +172,25 @@ def quartile_coefficient_of_dispersion(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    qcd : float
+    float
         The value of the quartile coefficient of dispersion.
 
     References
     ----------
-    Shapiro, H. M. (2005).
-    Practical flow cytometry.
-    John Wiley & Sons.
+    Bonett, D. G. (2006).
+    Confidence interval for a coefficient of quartile variation.
+    Computational Statistics & Data Analysis, 50(11), 2953-2957.
+
+    Examples
+    --------
+    >>> from obscure_stats.dispersion import quartile_coefficient_of_dispersion
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(quartile_coefficient_of_dispersion(x), 4)
+    0.3968
     """
     x = np.asarray(x, dtype=np.float64)
     q1, q3 = np.nanquantile(x, [0.25, 0.75])
-    return float(2 * (q3 - q1) / (q3 + q1))
+    return float((q3 - q1) / (q3 + q1))
 
 
 def shapiro_coefficient_of_variation(x: npt.ArrayLike) -> float:
@@ -165,7 +207,7 @@ def shapiro_coefficient_of_variation(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    scv : float
+    float
         The value of Shapiro's coefficient of variation.
 
     References
@@ -173,6 +215,13 @@ def shapiro_coefficient_of_variation(x: npt.ArrayLike) -> float:
     Shapiro, H. M. (2005).
     Practical flow cytometry.
     John Wiley & Sons.
+
+    Examples
+    --------
+    >>> from obscure_stats.dispersion import shapiro_coefficient_of_variation
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(shapiro_coefficient_of_variation(x), 4)
+    0.8333
     """
     x = np.asarray(x, dtype=np.float64)
     q1, q2, q3 = np.nanquantile(x, [0.25, 0.5, 0.75])
@@ -192,7 +241,7 @@ def fisher_index_of_dispersion(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    fi : float
+    float
         The value of the Fisher's index of dispersion.
 
     References
@@ -200,6 +249,13 @@ def fisher_index_of_dispersion(x: npt.ArrayLike) -> float:
     Fisher, R. A. (1925).
     Statistical methods for research workers.
     Hafner, New York.
+
+    Examples
+    --------
+    >>> from obscure_stats.dispersion import fisher_index_of_dispersion
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(fisher_index_of_dispersion(x), 4)
+    18.8919
     """
     x = np.asarray(x, dtype=np.float64)
     n = np.count_nonzero(~np.isnan(np.asarray(x, dtype=np.float64)))
@@ -219,7 +275,7 @@ def morisita_index_of_dispersion(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    mi : float
+    float
         The value of the Morisita's index.
 
     References
@@ -227,6 +283,13 @@ def morisita_index_of_dispersion(x: npt.ArrayLike) -> float:
     Morisita, M. (1959).
     Measuring the dispersion and the analysis of distribution patterns.
     Memoirs of the Faculty of Science, Kyushu University Series e. Biol. 2: 215-235
+
+    Examples
+    --------
+    >>> from obscure_stats.dispersion import morisita_index_of_dispersion
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(morisita_index_of_dispersion(x), 4)
+    1.3303
     """
     x = np.asarray(x, dtype=np.float64)
     x_sum = np.nansum(x)
@@ -247,8 +310,16 @@ def standard_quantile_absolute_deviation(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    sqad : float
+    float
         The value of the standard quantile absolute deviation.
+
+    Notes
+    -----
+    The raw value is returned, without any consistency constant. Multiply by the
+    finite-sample constant K_n from Table 3 of the paper to make it unbiased for the
+    standard deviation of a normal distribution (`K_n ~ 1 + 0.762/n + 0.967/n^2` for n >
+    100; K_n -> 1 as n -> inf), that is a correction slightly above 1 that shrinks
+    towards 1 as the sample grows.
 
     References
     ----------
@@ -256,12 +327,12 @@ def standard_quantile_absolute_deviation(x: npt.ArrayLike) -> float:
     Quantile absolute deviation.
     arXiv preprint arXiv:2208.13459.
 
-    Notes
-    -----
-    The raw value is returned, without any consistency constant.
-    Multiply by the finite-sample constant K_n from Table 3 of the paper to
-    make it unbiased for the standard deviation of a normal distribution
-    (K_n ~ 1 + 0.762/n + 0.967/n^2 for n > 100; K_n -> 1 as n -> inf).
+    Examples
+    --------
+    >>> from obscure_stats.dispersion import standard_quantile_absolute_deviation
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(standard_quantile_absolute_deviation(x), 4)
+    2.5288
     """
     x = np.asarray(x, dtype=np.float64)
     n = int(np.count_nonzero(~np.isnan(x)))
@@ -285,8 +356,19 @@ def shamos_estimator(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    se : float
+    float
         The value of Shamos estimator.
+
+    See Also
+    --------
+    obscure_stats.central_tendency.hodges_lehmann_sen_location : Hodges-Lehmann-Sen loc.
+
+    Notes
+    -----
+    This implementation enumerates all `N(N-1)/2` pairs, so the time and memory
+    complexity are `N^2`. It is best to not use it on large arrays. The raw value is
+    returned, without any consistency constant. Multiply by 1.048358 to make it
+    consistent with the standard deviation of a normal distribution.
 
     References
     ----------
@@ -294,17 +376,12 @@ def shamos_estimator(x: npt.ArrayLike) -> float:
     Geometry and statistics: Problems at the interface (p. 0032).
     Carnegie-Mellon University. Department of Computer Science.
 
-    Notes
-    -----
-    This implementation enumerates all N(N-1)/2 pairs, so the time and memory
-    complexity are N^2. It is best to not use it on large arrays.
-    The raw value is returned, without any consistency constant.
-    Multiply by 1.048358 to make it consistent with the standard deviation
-    of a normal distribution.
-
-    See Also
+    Examples
     --------
-    obscure_stats.central_tendency.hodges_lehmann_sen_location - Hodges-Lehmann-Sen loc.
+    >>> from obscure_stats.dispersion import shamos_estimator
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(shamos_estimator(x), 4)
+    2.75
     """
     x = np.asarray(x, dtype=np.float64)
     _x = np.ravel(x)
@@ -320,7 +397,11 @@ def shamos_estimator(x: npt.ArrayLike) -> float:
 
 
 def coefficient_of_range(x: npt.ArrayLike) -> float:
-    """Calculate coefficient of range (Range / Midrange).
+    """Calculate coefficient of range (half of Range / Midrange).
+
+    It is `(max - min) / (max + min)`: the range divided by the sum of the maximum and
+    the minimum, which is half of the range divided by the midrange (the mean of the
+    maximum and the minimum).
 
     Parameters
     ----------
@@ -329,7 +410,7 @@ def coefficient_of_range(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    cr : float
+    float
         The value of the range coefficient.
 
     References
@@ -337,6 +418,13 @@ def coefficient_of_range(x: npt.ArrayLike) -> float:
     Yadav, S. K., Singh, S.,  &  Gupta, R. (2019).
     Measures of Dispersion.
     In Biomedical Statistics (pp. 59-70). Springer, Singapore
+
+    Examples
+    --------
+    >>> from obscure_stats.dispersion import coefficient_of_range
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(coefficient_of_range(x), 4)
+    0.8462
     """
     x = np.asarray(x, dtype=np.float64)
     min_ = np.nanmin(x)
@@ -347,6 +435,10 @@ def coefficient_of_range(x: npt.ArrayLike) -> float:
 def gini_mean_difference(x: npt.ArrayLike) -> float:
     """Calculate Gini Mean Difference.
 
+    It is `sum over i != j of |x_i - x_j| / (n (n - 1))`: the mean absolute difference
+    between all pairs of distinct observations. It is computed in O(n log n) from the
+    sorted values.
+
     Alternative measure of variability to the usual standard deviation.
 
     Parameters
@@ -356,14 +448,27 @@ def gini_mean_difference(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    gmd : float
+    float
         The value of the Gini Mean Difference.
+
+    Notes
+    -----
+    The raw value is returned, without any consistency constant. Multiply by `sqrt(pi) /
+    2` (~ 0.8862), the square root of pi divided by two, to make it consistent with the
+    standard deviation of a normal distribution.
 
     References
     ----------
     Yitzhaki, S.; Schechtman, E. (2013).
     The Gini Methodology.
     Springer, New York.
+
+    Examples
+    --------
+    >>> from obscure_stats.dispersion import gini_mean_difference
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(gini_mean_difference(x), 4)
+    3.9643
     """
     x = np.asarray(x, dtype=np.float64)
     x = np.sort(x)
@@ -382,6 +487,11 @@ def gini_mean_difference(x: npt.ArrayLike) -> float:
 def inter_expectile_range(x: npt.ArrayLike) -> float:
     """Calculate inter expectile range (IER).
 
+    It is `E(0.75) - E(0.25)`, where the a-expectile E(a) is the value that minimizes
+    the sum of squared deviations weighted by a above it and by 1 - a below it. In
+    words: the difference between the 0.75 and the 0.25 expectiles; expectiles relate to
+    the mean as quantiles relate to the median.
+
     It is the same as IQR, but uses expectile instead of quantile.
 
     Parameters
@@ -391,7 +501,7 @@ def inter_expectile_range(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    ier : float
+    float
         The value of the inter expectile range.
 
     References
@@ -399,6 +509,13 @@ def inter_expectile_range(x: npt.ArrayLike) -> float:
     Bellini, F.; Mercuri, L.; Rroji, E. (2018)
     Implicit expectiles and measures of implied volatility.
     Quantitative Finance, 18(11), pp. 1851-1864.
+
+    Examples
+    --------
+    >>> from obscure_stats.dispersion import inter_expectile_range
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(inter_expectile_range(x), 4)
+    2.875
     """
     x = np.asarray(x, dtype=np.float64)
     # pyrefly: ignore [untyped-import]
@@ -414,8 +531,9 @@ def inter_expectile_range(x: npt.ArrayLike) -> float:
 def length_of_shortest_half(x: npt.ArrayLike) -> float:
     """Calculate the length of the shortest half.
 
-    It is the length of the shortest interval that contains floor(n/2) + 1
-    observations, a very robust measure of scale (50% breakdown point).
+    It is the length of the shortest interval that contains `floor(n/2) + 1`
+    observations (just over half of the data), a very robust measure of scale (50%
+    breakdown point).
 
     Parameters
     ----------
@@ -424,8 +542,18 @@ def length_of_shortest_half(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    lsh : float
+    float
         The value of the length of the shortest half.
+
+    See Also
+    --------
+    obscure_stats.central_tendency.shorth : Mean of the shortest half.
+
+    Notes
+    -----
+    The raw value is returned, without any consistency constant. Divide by 1.349 (= `2 *
+    Phi^(-1)(0.75)`, twice the 0.75 quantile of the standard normal distribution) to
+    make it consistent with the standard deviation of a normal distribution.
 
     References
     ----------
@@ -433,15 +561,12 @@ def length_of_shortest_half(x: npt.ArrayLike) -> float:
     A robust scale estimator based on the shortest half.
     Statistica Neerlandica, 42(2), 103-116.
 
-    Notes
-    -----
-    The raw value is returned, without any consistency constant.
-    Divide by 1.349 (= 2 * Phi^(-1)(0.75)) to make it consistent with the
-    standard deviation of a normal distribution.
-
-    See Also
+    Examples
     --------
-    obscure_stats.central_tendency.shorth - Mean of the shortest half.
+    >>> from obscure_stats.dispersion import length_of_shortest_half
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(length_of_shortest_half(x), 4)
+    3.0
     """
     x = np.asarray(x, dtype=np.float64)
     _x = np.ravel(x)

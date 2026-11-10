@@ -10,6 +10,9 @@ from hypothesis import given
 from hypothesis import strategies as st
 from hypothesis.extra.numpy import array_shapes, arrays
 
+from obscure_stats.central_tendency import (
+    half_sample_mode,
+)
 from obscure_stats.skewness import (
     auc_skew_gamma,
     bickel_mode_skew,
@@ -18,11 +21,9 @@ from obscure_stats.skewness import (
     forhad_shorna_rank_skew,
     groeneveld_range_skew,
     kelly_skew,
-    left_quantile_weight,
     meeden_skew,
     pearson_median_skew,
     pearson_mode_skew,
-    right_quantile_weight,
 )
 
 all_functions = [
@@ -33,11 +34,9 @@ all_functions = [
     forhad_shorna_rank_skew,
     groeneveld_range_skew,
     kelly_skew,
-    left_quantile_weight,
     meeden_skew,
     pearson_median_skew,
     pearson_mode_skew,
-    right_quantile_weight,
 ]
 
 
@@ -54,15 +53,14 @@ def test_mock_aggregation_functions(
 
 
 @pytest.mark.parametrize("func", all_functions)
-@pytest.mark.parametrize("seed", [1, 42, 99])
-def test_skew_sensibility(func: typing.Callable[..., float], seed: int) -> None:
+def test_skew_sensibility(
+    func: typing.Callable[..., float],
+    uniform_data: npt.NDArray[np.number],
+    exponential_data: npt.NDArray[np.number],
+) -> None:
     """Test for result correctness."""
-    rng = np.random.default_rng(seed)
-    # round for the mode estimators to work properly
-    no_skew = np.round(rng.uniform(size=100), 2)
-    left_skew = np.round(rng.exponential(size=100) + 1, 2)
-    no_skew_res = func(no_skew)
-    left_skew_res = func(left_skew)
+    no_skew_res = func(uniform_data)
+    left_skew_res = func(exponential_data)
     if no_skew_res > left_skew_res:
         msg = (
             f"Skewness in the first case should be lower, "
@@ -87,16 +85,6 @@ def test_statistic_with_nans(
     if math.isnan(func(x_array_nan)):
         msg = "Statistic should not return nans."
         raise ValueError(msg)
-
-
-@pytest.mark.parametrize("func", [right_quantile_weight, left_quantile_weight])
-@pytest.mark.parametrize("q", [0.0, 1.0])
-def test_q_in_qw(
-    x_array_float: npt.NDArray[np.number], func: typing.Callable[..., float], q: float
-) -> None:
-    """Test for correctness of q parameter value."""
-    with pytest.raises(ValueError, match="Parameter q should be in range"):
-        func(x_array_float, q=q)
 
 
 @pytest.mark.parametrize("dp", [0, 0.3])
@@ -132,17 +120,6 @@ def test_change_sign(
         raise ValueError(msg)
 
 
-def test_change_sign_for_quantile_weights(
-    x_array_float: npt.NDArray[np.number],
-) -> None:
-    """Test change of sign of statistic if array changed sign."""
-    if left_quantile_weight(-x_array_float) != pytest.approx(
-        right_quantile_weight(x_array_float)
-    ):
-        msg = "Statistics should be equal."
-        raise ValueError(msg)
-
-
 @pytest.mark.parametrize("func", all_functions)
 def test_invariance_mult(
     func: typing.Callable[..., float], x_array_float: npt.NDArray[np.number]
@@ -168,3 +145,45 @@ def test_fuzz_skewnesses(
 ) -> None:
     """Test all functions with fuzz."""
     func(data)
+
+
+def test_auc_skew_matches_paper_estimator(
+    rank_skewness_test_data: npt.NDArray[np.number],
+) -> None:
+    """Test against eq. 8 of Arachchige & Prendergast (mean over a midpoint grid)."""
+    j = 100
+    ps = 0.5 * (np.arange(1, j + 1) - 0.5) / j
+    lo = np.quantile(rank_skewness_test_data, ps, method="median_unbiased")
+    hi = np.quantile(rank_skewness_test_data, 1 - ps, method="median_unbiased")
+    med = np.quantile(rank_skewness_test_data, 0.5, method="median_unbiased")
+    ref = np.mean((hi + lo - 2 * med) / (hi - lo))
+    if auc_skew_gamma(rank_skewness_test_data, dp=0.005) != pytest.approx(ref):
+        msg = "Result does not match reference."
+        raise ValueError(msg)
+
+
+def test_pearson_mode_skew_uses_half_sample_mode(
+    rank_skewness_test_data: npt.NDArray[np.number],
+) -> None:
+    """Test that continuous data uses the half sample mode, not the minimum."""
+    ref = (
+        rank_skewness_test_data.mean() - half_sample_mode(rank_skewness_test_data)
+    ) / rank_skewness_test_data.std()
+    if pearson_mode_skew(rank_skewness_test_data) != pytest.approx(ref):
+        msg = "Result does not match reference."
+        raise ValueError(msg)
+    if pearson_mode_skew(rank_skewness_test_data) == pytest.approx(
+        (rank_skewness_test_data.mean() - rank_skewness_test_data.min())
+        / rank_skewness_test_data.std()
+    ):
+        msg = "The mode must not be the minimum."
+        raise ValueError(msg)
+
+
+def test_pearson_mode_skew_discrete_mode(hsm_test_data: npt.NDArray[np.number]) -> None:
+    """Test that a dominant repeated value (2) is used as the mode."""
+    if pearson_mode_skew(hsm_test_data) != pytest.approx(
+        (hsm_test_data.mean() - 2.0) / hsm_test_data.std()
+    ):
+        msg = "Result does not match reference."
+        raise ValueError(msg)

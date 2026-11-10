@@ -11,6 +11,9 @@ from hypothesis import given
 from hypothesis import strategies as st
 from hypothesis.extra.numpy import array_shapes, arrays
 
+# pyrefly: ignore [untyped-import]
+from scipy import stats
+
 from obscure_stats.association import (
     blomqvist_beta,
     coefficient_of_monotone_association,
@@ -31,6 +34,7 @@ from obscure_stats.association import (
     winsorized_correlation,
     zhang_i,
 )
+from obscure_stats.association.association import _chatterjee_xi_max
 
 all_functions = [
     l1_concordance_correlation,
@@ -107,10 +111,12 @@ def test_signed_corr_sensibility(
     ],
 )
 def test_unsigned_corr_sensibility(
-    func: typing.Callable[..., float], y_array_float: npt.NDArray[np.number]
+    func: typing.Callable[..., float],
+    y_array_float: npt.NDArray[np.number],
+    const_array_float: npt.NDArray[np.number],
 ) -> None:
     """Test for result correctness."""
-    w = np.ones(shape=len(y_array_float))
+    w = const_array_float.copy()
     w[0] = 2
     res_ideal = func(y_array_float, -y_array_float)
     res_normal = func(y_array_float, w)
@@ -138,12 +144,13 @@ def test_unsigned_corr_sensibility(
     ],
 )
 def test_const(
-    func: typing.Callable[..., float], y_array_float: npt.NDArray[np.number]
+    func: typing.Callable[..., float],
+    y_array_float: npt.NDArray[np.number],
+    const_array_float: npt.NDArray[np.number],
 ) -> None:
     """Test for constant input."""
-    x = np.ones(shape=(len(y_array_float),))
     with pytest.warns(match="is constant"):
-        res = func(x, y_array_float)
+        res = func(const_array_float, y_array_float)
     if not math.isnan(res):
         msg = f"Corr coef should be 0 with constant input, got {res}"
         raise ValueError(msg)
@@ -151,12 +158,30 @@ def test_const(
 
 @pytest.mark.parametrize("func", all_functions)
 def test_const_after_prep(
-    func: typing.Callable[..., float], x_array_float: npt.NDArray[np.number]
+    func: typing.Callable[..., float],
+    x_array_float: npt.NDArray[np.number],
+    const_array_float: npt.NDArray[np.number],
 ) -> None:
     """Test the second prep edge case input."""
-    corr_test_data = np.ones(shape=len(x_array_float))
+    corr_test_data = const_array_float.copy()
     corr_test_data[0] = np.nan
     res = func(x_array_float, corr_test_data)
+    if not math.isnan(res):
+        msg = f"Corr coef should be nan with constant input, got {res}"
+        raise ValueError(msg)
+
+
+@pytest.mark.parametrize("func", all_functions)
+def test_const_after_dropping_pairs(
+    func: typing.Callable[..., float],
+    const_array_float: npt.NDArray[np.number],
+    x_array_nan: npt.NDArray[np.number],
+) -> None:
+    """Test x that is constant only after dropping the pair with a missing y."""
+    x = const_array_float.copy()
+    x[0] = 5.0  # x varies only through the pair whose partner (x_array_nan[0]) is NaN
+    with pytest.warns(match="is constant"):
+        res = func(x, x_array_nan)
     if not math.isnan(res):
         msg = f"Corr coef should be nan with constant input, got {res}"
         raise ValueError(msg)
@@ -307,10 +332,11 @@ def test_small_spread_is_not_constant(
     func: typing.Callable[..., float],
     scale: float,
     shift: float,
+    x_array_float: npt.NDArray[np.number],
     y_array_float: npt.NDArray[np.number],
 ) -> None:
     """Test that small-scale or high-level data is not flagged as constant."""
-    x = np.arange(len(y_array_float), dtype=float) * scale + shift
+    x = x_array_float * scale + shift
     with warnings.catch_warnings(record=True) as rec:
         warnings.simplefilter("always")
         res = func(x, y_array_float)
@@ -351,4 +377,175 @@ def test_l1_concordance_correlation_reference(
     res = l1_concordance_correlation(l1_corr_data_big, l1_corr_data_big)
     if res != 1.0:
         msg = "Result does not match reference."
+        raise ValueError(msg)
+
+
+def test_rank_divergence_rank_one_is_largest(
+    rank_divergence_data: tuple[
+        npt.NDArray[np.number], npt.NDArray[np.number], npt.NDArray[np.number]
+    ],
+) -> None:
+    """Test that rank 1 is the largest value (Dodds et al.), so top swaps dominate."""
+    base, top_swap, bottom_swap = rank_divergence_data
+    top = rank_divergence(base, top_swap)
+    bottom = rank_divergence(base, bottom_swap)
+    if not top > bottom:
+        msg = f"Top swap {top} should exceed bottom swap {bottom}."
+        raise ValueError(msg)
+
+
+def test_rank_divergence_normalized(
+    x_array_float: npt.NDArray[np.number], y_array_float: npt.NDArray[np.number]
+) -> None:
+    """Test that normalized RTD lies in [0, 1] and is 0 for identical input."""
+    res = rank_divergence(x_array_float, y_array_float, normalize=True)
+    if not 0.0 <= res <= 1.0:
+        msg = f"Normalized RTD should be in [0, 1], got {res}"
+        raise ValueError(msg)
+    res = rank_divergence(x_array_float, x_array_float, normalize=True)
+    if res != 0.0:
+        msg = f"Normalized RTD should be 0 for identical input, got {res}"
+        raise ValueError(msg)
+
+
+def test_parameters_validated_before_array_checks(
+    const_array_float: npt.NDArray[np.number],
+) -> None:
+    """Test that invalid parameters raise even when the arrays are degenerate."""
+    with pytest.raises(ValueError, match="Parameter a"):
+        rank_divergence(const_array_float, const_array_float, a=0)
+    with pytest.raises(ValueError, match="Parameter k"):
+        winsorized_correlation(const_array_float, const_array_float, k=0.7)
+
+
+def test_rank_minrelation_reference(
+    x_array_float: npt.NDArray[np.number], y_array_float: npt.NDArray[np.number]
+) -> None:
+    """Test against Meyer (2013) eq. 9 with the m^2 normalization."""
+    m_sq = len(x_array_float) ** 2
+    xa = stats.rankdata(x_array_float) ** 2 / m_sq - 0.5
+    ya = stats.rankdata(y_array_float) ** 2 / m_sq - 0.5
+    yd = 0.5 - stats.rankdata(-y_array_float) ** 2 / m_sq
+    lower = np.sum((-xa < ya) * (xa + ya) ** 2)
+    higher = np.sum((xa > yd) * (xa - yd) ** 2)
+    res = rank_minrelation_coefficient(x_array_float, y_array_float)
+    if res != pytest.approx((lower - higher) / (lower + higher)):
+        msg = "Result does not match reference."
+        raise ValueError(msg)
+
+
+@pytest.mark.parametrize(
+    "data", ["x_array_float", "y_array_float", "y_tied_list", "l1_corr_data_big"]
+)
+def test_chatterjee_xi_max_closed_form(
+    data: str, request: pytest.FixtureRequest
+) -> None:
+    """Test that the closed-form normalizer equals scipy's xi(y, y), with ties."""
+    y = np.asarray(request.getfixturevalue(data), dtype=np.float64)
+    if _chatterjee_xi_max(y) != pytest.approx(stats.chatterjeexi(y, y)[0]):
+        msg = "Result does not match reference."
+        raise ValueError(msg)
+
+
+def test_normalized_xi_uses_paired_sample(
+    x_array_nan: npt.NDArray[np.number], y_array_float: npt.NDArray[np.number]
+) -> None:
+    """Test that NaNs in x drop the pair from both numerator and normalizer."""
+    x, y = x_array_nan[1:], y_array_float[1:]
+    ref = stats.chatterjeexi(x, y)[0] / stats.chatterjeexi(y, y)[0]
+    res = normalized_chatterjee_xi(x_array_nan, y_array_float)
+    if res != pytest.approx(max(-1.0, ref)):
+        msg = "Result does not match reference."
+        raise ValueError(msg)
+
+
+def test_concordance_rate_hand_computed(
+    concordance_rate_data: tuple[npt.NDArray[np.number], npt.NDArray[np.number]],
+) -> None:
+    """Test the four-quadrant concordance rate against hand-computed values."""
+    x, y = concordance_rate_data
+    # agreeing directions: (1, 1), (2, 1), (-1, -1) -> 3 of 5
+    if concordance_rate(x, y) != pytest.approx(3 / 5):
+        msg = "Result does not match reference."
+        raise ValueError(msg)
+    # zone max(|x|, |y|) <= 1 drops (1, 1) and (-1, -1): 1 of the remaining 3 agrees
+    if concordance_rate(x, y, exclusion=1.0) != pytest.approx(1 / 3):
+        msg = "Result does not match reference."
+        raise ValueError(msg)
+
+
+def test_concordance_rate_zero_changes(
+    concordance_rate_zero_data: tuple[npt.NDArray[np.number], npt.NDArray[np.number]],
+) -> None:
+    """Test that (0, 0) is dropped and a one-sided change is not concordant."""
+    x, y = concordance_rate_zero_data
+    # (0, 0) dropped by the default zone; (5, 0) kept but not concordant
+    if concordance_rate(x, y) != pytest.approx(2 / 3):
+        msg = "Result does not match reference."
+        raise ValueError(msg)
+
+
+def test_concordance_rate_bounds_and_edge_cases(
+    y_array_float: npt.NDArray[np.number],
+) -> None:
+    """Test the [0, 1] range, an empty result and parameter validation."""
+    if concordance_rate(y_array_float, 2 * y_array_float) != 1.0:
+        msg = "Same-direction changes should give 1."
+        raise ValueError(msg)
+    if concordance_rate(y_array_float, -y_array_float) != 0.0:
+        msg = "Opposite-direction changes should give 0."
+        raise ValueError(msg)
+    if not math.isnan(concordance_rate(y_array_float, y_array_float, exclusion=100.0)):
+        msg = "An empty result should be NaN."
+        raise ValueError(msg)
+    with pytest.raises(ValueError, match="Parameter exclusion"):
+        concordance_rate(y_array_float, y_array_float, exclusion=-1.0)
+
+
+def test_documented_symmetric_xi_relationship(
+    l1_corr_data_big: npt.NDArray[np.number], l1_corr_data_small: npt.NDArray[np.number]
+) -> None:
+    """Test that symmetric normalized xi is xi * (n + 1) / (n - 2) without ties."""
+    n = len(l1_corr_data_big)
+    sym_norm = max(
+        normalized_chatterjee_xi(l1_corr_data_big, l1_corr_data_small),
+        normalized_chatterjee_xi(l1_corr_data_small, l1_corr_data_big),
+    )
+    if sym_norm != pytest.approx(
+        symmetric_chatterjee_xi(l1_corr_data_big, l1_corr_data_small)
+        * (n + 1)
+        / (n - 2)
+    ):
+        msg = "Result does not match reference."
+        raise ValueError(msg)
+
+
+def test_association_converts_integers_to_float(
+    large_int_array: npt.NDArray[np.number],
+) -> None:
+    """Test that large integer inputs do not overflow (they did in x**2)."""
+    x, y = large_int_array, large_int_array[::-1].copy()
+    res_int = morisita_horn_similarity(x, y)
+    res_float = morisita_horn_similarity(x.astype(float), y.astype(float))
+    if res_int != pytest.approx(res_float):
+        msg = f"Integer input gave {res_int}, float input {res_float}."
+        raise ValueError(msg)
+
+
+def test_association_non_numeric_input(
+    c_list_obj: list[str], y_list_float: list[float]
+) -> None:
+    """Test that non-numeric input raises a clear ValueError."""
+    with pytest.raises(ValueError, match="could not convert"):
+        blomqvist_beta(c_list_obj, y_list_float)
+
+
+def test_association_warnings_point_at_caller(
+    const_array_float: npt.NDArray[np.number], x_array_float: npt.NDArray[np.number]
+) -> None:
+    """Test that input warnings are attributed to the caller, not the library."""
+    with pytest.warns(UserWarning, match="is constant") as rec:
+        blomqvist_beta(const_array_float, x_array_float)
+    if rec[0].filename != __file__:
+        msg = f"Warning attributed to {rec[0].filename}"
         raise ValueError(msg)

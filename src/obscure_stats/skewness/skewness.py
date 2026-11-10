@@ -17,11 +17,11 @@ from obscure_stats.central_tendency import half_sample_mode
 def pearson_mode_skew(x: npt.ArrayLike) -> float:
     """Calculate Pearson's mode skew coefficient.
 
-    It is (mean - mode) / standard deviation. The sample mode is not defined
-    for continuous data (all values are distinct), so the mode is estimated
-    with the half sample mode (`half_sample_mode`), which also returns the most
-    frequent value when it clearly dominates discrete data.
-    Uses the population standard deviation (ddof=0).
+    It is `(mean - mode) / standard deviation`: the mean minus the mode, divided by the
+    standard deviation. The sample mode is not defined for continuous data (all values
+    are distinct), so the mode is estimated with the half sample mode
+    (`half_sample_mode`), which also returns the most frequent value when it clearly
+    dominates discrete data. Uses the population standard deviation (ddof=0).
 
     Parameters
     ----------
@@ -30,8 +30,13 @@ def pearson_mode_skew(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    pmods : float
+    float
         The value of Pearson's mode skew coefficient.
+
+    See Also
+    --------
+    obscure_stats.central_tendency.half_sample_mode : Half sample mode.
+    obscure_stats.skewness.bickel_mode_skew : Mode skewness based on signs.
 
     References
     ----------
@@ -43,10 +48,12 @@ def pearson_mode_skew(x: npt.ArrayLike) -> float:
     An Iterative Procedure for Estimating the Mode.
     Journal of the American Statistical Association, 69(348), 1012-1016.
 
-    See Also
+    Examples
     --------
-    obscure_stats.central_tendency.half_sample_mode - Half sample mode.
-    obscure_stats.skewness.bickel_mode_skew - Mode skewness based on signs.
+    >>> from obscure_stats.skewness import pearson_mode_skew
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(pearson_mode_skew(x), 4)
+    0.5674
     """
     x = np.asarray(x, dtype=np.float64)
     mean = np.nanmean(x)
@@ -56,7 +63,11 @@ def pearson_mode_skew(x: npt.ArrayLike) -> float:
 
 
 def bickel_mode_skew(x: npt.ArrayLike) -> float:
-    """Calculate Robust Mode skew with half sample mode.
+    """Calculate robust mode skewness with the half sample mode.
+
+    It is the mean of `sign(x_i - mode)`, with the mode estimated by the half sample
+    mode (`half_sample_mode`). In words: the share of values above the mode minus the
+    share of values below it.
 
     This measure should be more stable than Pearson mode
     skewness coefficient.
@@ -68,7 +79,7 @@ def bickel_mode_skew(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    bms : float
+    float
         The value of Bickel's mode skew coefficient.
 
     References
@@ -76,6 +87,13 @@ def bickel_mode_skew(x: npt.ArrayLike) -> float:
     Bickel, D. R. (2002).
     Robust estimators of the mode and skewness of continuous data.
     Computational Statistics & Data Analysis, Elsevier, 39(2), 153-163.
+
+    Examples
+    --------
+    >>> from obscure_stats.skewness import bickel_mode_skew
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(bickel_mode_skew(x), 4)
+    0.25
     """
     x = np.asarray(x, dtype=np.float64)
     mode = half_sample_mode(x)
@@ -85,6 +103,10 @@ def bickel_mode_skew(x: npt.ArrayLike) -> float:
 def pearson_median_skew(x: npt.ArrayLike) -> float:
     """Calculate Pearson's median skew coefficient.
 
+    It is `3 (mean - median) / standard deviation`: three times the difference between
+    the mean and the median, divided by the standard deviation. Uses the population
+    standard deviation (ddof=0).
+
     Parameters
     ----------
     x : array_like
@@ -92,7 +114,7 @@ def pearson_median_skew(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    pmeds : float
+    float
         The value of Pearson's median skew coefficient.
 
     References
@@ -100,6 +122,13 @@ def pearson_median_skew(x: npt.ArrayLike) -> float:
     Pearson, E.S.; Hartley, H.O. (1966).
     Biometrika Tables for Statisticians, vols. I and II.
     Cambridge University Press, Cambridge.
+
+    Examples
+    --------
+    >>> from obscure_stats.skewness import pearson_median_skew
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(pearson_median_skew(x), 4)
+    0.7943
     """
     x = np.asarray(x, dtype=np.float64)
     mean = np.nanmean(x)
@@ -115,8 +144,9 @@ def meeden_skew(x: npt.ArrayLike) -> float:
     but uses different normalization (mean absolute deviation from the
     median).
 
-    Hossain and Adnan (2007) proposed the same statistic as
-    sum(x - median) / sum(|x - median|).
+    Hossain and Adnan (2007) proposed the same statistic as `sum(x - median) / sum(|x -
+    median|)`: the sum of the deviations from the median divided by the sum of their
+    absolute values.
 
     Parameters
     ----------
@@ -125,7 +155,7 @@ def meeden_skew(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    mss : float
+    float
         The value of Meeden's skewness statistic.
 
     References
@@ -137,6 +167,13 @@ def meeden_skew(x: npt.ArrayLike) -> float:
     Hossain, M. F.; Adnan, M. A. S. A (2007).
     A New Approach to Determine the Asymmetry of a Distribution.
     Journal of Applied Statistical Science, Vol.15, pp. 127-134.
+
+    Examples
+    --------
+    >>> from obscure_stats.skewness import meeden_skew
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(meeden_skew(x), 4)
+    0.35
     """
     x = np.asarray(x, dtype=np.float64)
     median = np.nanmedian(x)
@@ -159,7 +196,7 @@ def bowley_skew(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    bsk : float
+    float
         The value of Bowley's skewness coefficient.
 
     References
@@ -167,6 +204,13 @@ def bowley_skew(x: npt.ArrayLike) -> float:
     Bowley, A. L. (1901).
     Elements of Statistics.
     P.S. King and Son, London.
+
+    Examples
+    --------
+    >>> from obscure_stats.skewness import bowley_skew
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(bowley_skew(x), 4)
+    0.12
     """
     x = np.asarray(x, dtype=np.float64)
     q1, q2, q3 = np.nanquantile(x, [0.25, 0.5, 0.75])
@@ -175,6 +219,10 @@ def bowley_skew(x: npt.ArrayLike) -> float:
 
 def groeneveld_range_skew(x: npt.ArrayLike) -> float:
     """Calculate Groeneveld's skewness coefficient.
+
+    It is `(max + min - 2 median) / (max - min)`: the Bowley coefficient with the
+    minimum and maximum in place of the quartiles. In words: twice the distance from the
+    median to the midrange, relative to the range.
 
     This measure should be more robust than moment based skewness.
     This is the implementation of 'b4' skewness from the paper.
@@ -186,7 +234,7 @@ def groeneveld_range_skew(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    grs : float
+    float
         The value of Groeneveld's range skewness coefficient.
 
     References
@@ -194,6 +242,13 @@ def groeneveld_range_skew(x: npt.ArrayLike) -> float:
     Groeneveld, R. A.; Meeden, G. (1984).
     Measuring Skewness and Kurtosis.
     The Statistician. 33 (4): 391-399.
+
+    Examples
+    --------
+    >>> from obscure_stats.skewness import groeneveld_range_skew
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(groeneveld_range_skew(x), 4)
+    0.5
     """
     x = np.asarray(x, dtype=np.float64)
     m = np.nanmedian(x)
@@ -217,7 +272,7 @@ def kelly_skew(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    ksc : float
+    float
         The value of Kelly's skewness coefficient.
 
     References
@@ -225,6 +280,13 @@ def kelly_skew(x: npt.ArrayLike) -> float:
     David, F. N.; Johnson, N. L. (1956).
     Some tests of significance with ordered variables.
     J. R. Stat. Soc. Ser. B Stat. Methodol. 18, 1-31.
+
+    Examples
+    --------
+    >>> from obscure_stats.skewness import kelly_skew
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(kelly_skew(x), 4)
+    0.3971
     """
     x = np.asarray(x, dtype=np.float64)
     d1, d5, d9 = np.nanquantile(x, [0.1, 0.5, 0.9])
@@ -234,12 +296,12 @@ def kelly_skew(x: npt.ArrayLike) -> float:
 def forhad_shorna_rank_skew(x: npt.ArrayLike) -> float:
     """Calculate Forhad-Shorna coefficient of rank skewness.
 
-    This measure is similar to Meeden's skewness statistic (`meeden_skew`),
-    but uses differences in ranks instead of absolute differences.
-    This measure should be more robust than moment based skewness.
-    The array will be flattened before any calculations.
-    Ties are ranked by their average rank (the paper uses competition
-    ranking), which keeps the statistic antisymmetric: f(-x) = -f(x).
+    This measure is similar to Meeden's skewness statistic (`meeden_skew`), but uses
+    differences in ranks instead of absolute differences. This measure should be more
+    robust than moment based skewness. The array will be flattened before any
+    calculations. Ties are ranked by their average rank (the paper uses competition
+    ranking), which keeps the statistic antisymmetric: `f(-x) = -f(x)`, so negating the
+    data negates the result.
 
     Parameters
     ----------
@@ -248,7 +310,7 @@ def forhad_shorna_rank_skew(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    fsrs : float
+    float
         The value of Forhad-Shorna coefficient of rank skewness.
 
     References
@@ -257,6 +319,13 @@ def forhad_shorna_rank_skew(x: npt.ArrayLike) -> float:
     A New Approach to Determine the Coefficient of Skewness and
     An Alternative Form of Boxplot.
     arXiv preprint arXiv:1908.06400.
+
+    Examples
+    --------
+    >>> from obscure_stats.skewness import forhad_shorna_rank_skew
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(forhad_shorna_rank_skew(x), 4)
+    0.75
     """
     x = np.asarray(x, dtype=np.float64)
     # pyrefly: ignore [untyped-import]
@@ -276,6 +345,13 @@ def forhad_shorna_rank_skew(x: npt.ArrayLike) -> float:
 def auc_skew_gamma(x: npt.ArrayLike, dp: float = 0.01) -> float:
     """Calculate area under the curve of generalized Bowley skewness coefficients.
 
+    It is the mean of the generalized Bowley coefficients `(Q(1 - p) + Q(p) - 2 Q(0.5))
+    / (Q(1 - p) - Q(p))` over an evenly spaced grid of p in (0, 0.5) with step dp, where
+    Q is the sample quantile. In words: for each p, the sum of the upper and lower
+    p-quantiles minus twice the median, divided by their difference, averaged over p;
+    this is the area under the curve of these coefficients divided by the length of the
+    interval (0.5).
+
     This measure tries to combine multiple generalized Bowley skewness coefficients
     into one value.
 
@@ -289,7 +365,7 @@ def auc_skew_gamma(x: npt.ArrayLike, dp: float = 0.01) -> float:
 
     Returns
     -------
-    aucbs : float
+    float
         The value of AUC Bowley skewness.
 
     References
@@ -297,6 +373,13 @@ def auc_skew_gamma(x: npt.ArrayLike, dp: float = 0.01) -> float:
     Arachchige, C. N.; & Prendergast, L. A. (2019).
     Mean skewness measures.
     arXiv preprint arXiv:1912.06996.
+
+    Examples
+    --------
+    >>> from obscure_stats.skewness import auc_skew_gamma
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(auc_skew_gamma(x), 4)
+    0.2264
     """
     x = np.asarray(x, dtype=np.float64)
     if not 0 < dp < 0.25:
@@ -315,85 +398,6 @@ def auc_skew_gamma(x: npt.ArrayLike, dp: float = 0.01) -> float:
     return float(np.mean(skews))
 
 
-def left_quantile_weight(x: npt.ArrayLike, q: float = 0.25) -> float:
-    """Calculate left quantile weight (LQW).
-
-    It is based on inter-percentile ranges (uncentered, unscaled) of the
-    left tail of the distribution.
-    Brys et al. (2006) study q = 0.125 and q = 0.25; the smaller tail fraction
-    has more power, the larger one a higher breakdown point.
-
-    Parameters
-    ----------
-    x : array_like
-        Numeric values.
-    q : float, default = 0.25
-        Quantile to use for the calculation, (0.0, 0.5)
-
-    Returns
-    -------
-    lqw : float
-        The value of left quantile weight.
-
-    References
-    ----------
-    Brys, G.; Hubert, M.; Struyf, A. (2006).
-    Robust measures of tail weight.
-    Computational Statistics and Data Analysis 50(3), 733-759.
-    """
-    x = np.asarray(x, dtype=np.float64)
-    min_q, max_q = 0.0, 0.5
-    if q <= min_q or q >= max_q:
-        msg = "Parameter q should be in range (0, 0.5)."
-        raise ValueError(msg)
-    lower_quantile, q025, upper_quantile = np.nanquantile(
-        x, [q * 0.5, 0.25, (1 - q) * 0.5]
-    )
-    return float(
-        -(upper_quantile + lower_quantile - 2 * q025)
-        / (upper_quantile - lower_quantile)
-    )
-
-
-def right_quantile_weight(x: npt.ArrayLike, q: float = 0.75) -> float:
-    """Calculate right quantile weight (RQW).
-
-    It is based on inter-percentile ranges (uncentered, unscaled) of the
-    right tail of the distribution.
-    Brys et al. (2006) study q = 0.875 and q = 0.75; the larger quantile
-    has more power, the smaller one a higher breakdown point.
-
-    Parameters
-    ----------
-    x : array_like
-        Numeric values.
-    q : float, default = 0.75
-        Quantile to use for the calculation, (0.5, 1.0).
-
-    Returns
-    -------
-    rqw : float
-        The value of right quantile weight.
-
-    References
-    ----------
-    Brys, G.; Hubert, M.; Struyf, A. (2006).
-    Robust measures of tail weight.
-    Computational Statistics and Data Analysis 50(3), 733-759.
-    """
-    x = np.asarray(x, dtype=np.float64)
-    min_q, max_q = 0.5, 1.0
-    if q <= min_q or q >= max_q:
-        msg = "Parameter q should be in range (0.5, 1.0)."
-        raise ValueError(msg)
-    lower_quantile, q075, upper_quantile = np.nanquantile(
-        x, [1 - q * 0.5, 0.75, (1 + q) * 0.5]
-    )
-    return float(
-        (lower_quantile + upper_quantile - 2 * q075) / (upper_quantile - lower_quantile)
-    )
-
-
 def cumulative_skew(x: npt.ArrayLike) -> float:
     """
     Calculate cumulative measure of skewness.
@@ -401,9 +405,9 @@ def cumulative_skew(x: npt.ArrayLike) -> float:
     It is based on calculating the cumulative statistics of the Lorenz curve.
     The array will be flattened before any calculations.
 
-    This implementation shifts input array by min(x), so the Lorenz curve calculations
-    would be correct. This is a deviation from the paper: results differ from
-    the paper for strictly positive data.
+    This implementation shifts input array by `min(x)`, so the Lorenz curve calculations
+    would be correct. This is a deviation from the paper: results differ from the paper
+    for strictly positive data.
 
     Parameters
     ----------
@@ -412,7 +416,7 @@ def cumulative_skew(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    csc : float
+    float
         The value of cumulative skew.
 
     References
@@ -420,6 +424,13 @@ def cumulative_skew(x: npt.ArrayLike) -> float:
     Schlemmer, M. (2022).
     A robust measure of skewness using cumulative statistic calculation.
     arXiv preprint arXiv:2209.10699.
+
+    Examples
+    --------
+    >>> from obscure_stats.skewness import cumulative_skew
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(cumulative_skew(x), 4)
+    0.2703
     """
     x = np.asarray(x, dtype=np.float64)
     _x = np.sort(np.ravel(x))

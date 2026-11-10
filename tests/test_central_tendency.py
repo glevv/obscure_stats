@@ -158,11 +158,11 @@ def test_grenaders_m(x_array_float: npt.NDArray[np.number]) -> None:
 
 
 @pytest.mark.parametrize("func", all_functions)
-@pytest.mark.parametrize("seed", [1, 42, 99])
-def test_sensibility(func: typing.Callable[..., float], seed: int) -> None:
+def test_sensibility(
+    func: typing.Callable[..., float], normal_data: npt.NDArray[np.number]
+) -> None:
     """Test central tendencies convergence for normal distribution."""
-    rng = np.random.default_rng(seed)
-    res = func(rng.normal(loc=10.0, size=100))
+    res = func(normal_data)
     if res != pytest.approx(10.0, abs=0.75):
         msg = f"Central tendency for N(10, 1) should be close to 10.0, got {res}."
         raise ValueError(msg)
@@ -250,3 +250,45 @@ def test_fuzz_central_tendencies(
 ) -> None:
     """Test all functions with fuzz."""
     func(data)
+
+
+def test_grenanders_m_accepts_numpy_int(x_array_float: npt.NDArray[np.number]) -> None:
+    """Test that numpy integers are accepted for k, and booleans are not."""
+    if grenanders_m(x_array_float, k=np.int64(3)) != pytest.approx(
+        grenanders_m(x_array_float, k=3)
+    ):
+        msg = "Result does not match reference."
+        raise ValueError(msg)
+    with pytest.raises(ValueError, match="Parameter k"):
+        grenanders_m(x_array_float, k=True)
+
+
+def test_grenanders_m_default_rule(x_array_float: npt.NDArray[np.number]) -> None:
+    """Test that defaults follow Hall (1982): p = n^(2/7), k = ceil(n^(3/5))."""
+    n = len(x_array_float)
+    ref = grenanders_m(x_array_float, p=n ** (2 / 7), k=math.ceil(n**0.6))
+    if grenanders_m(x_array_float) != pytest.approx(ref):
+        msg = "Result does not match reference."
+        raise ValueError(msg)
+
+
+def test_grenanders_m_targets_the_mode(lognormal_data: npt.NDArray[np.number]) -> None:
+    """Test that defaults estimate the mode, not the f^(p+1)-weighted mean."""
+    mode = math.exp(-0.25)  # 0.779; the old defaults converged to ~0.94
+    res = grenanders_m(lognormal_data)
+    if abs(res - mode) >= 0.08:
+        msg = f"Expected a value near the mode {mode:.3f}, got {res}"
+        raise ValueError(msg)
+
+
+def test_grenanders_m_tiny_samples(x_array_float: npt.NDArray[np.number]) -> None:
+    """Test that samples too small for the default window return NaN."""
+    if not math.isnan(grenanders_m(x_array_float[:1])):
+        msg = "Expected NaN for one observation."
+        raise ValueError(msg)
+    if not math.isnan(grenanders_m(x_array_float[:2])):
+        msg = "Expected NaN for two observations."
+        raise ValueError(msg)
+    if not math.isfinite(grenanders_m(x_array_float[:3])):
+        msg = "Expected a finite value for three observations."
+        raise ValueError(msg)

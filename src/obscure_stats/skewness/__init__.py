@@ -8,11 +8,9 @@ from .skewness import (
     forhad_shorna_rank_skew,
     groeneveld_range_skew,
     kelly_skew,
-    left_quantile_weight,
     meeden_skew,
     pearson_median_skew,
     pearson_mode_skew,
-    right_quantile_weight,
 )
 
 __all__ = [
@@ -23,9 +21,7 @@ __all__ = [
     "forhad_shorna_rank_skew",
     "groeneveld_range_skew",
     "kelly_skew",
-    "left_quantile_weight",
     "meeden_skew",
     "pearson_median_skew",
     "pearson_mode_skew",
-    "right_quantile_weight",
 ]

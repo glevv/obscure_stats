@@ -24,7 +24,7 @@ def midrange(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    mr : float
+    float
         The value of the midrange.
 
     References
@@ -32,6 +32,13 @@ def midrange(x: npt.ArrayLike) -> float:
     Dodge, Y. (2003).
     The Oxford dictionary of Statistical Terms.
     Oxford University Press.
+
+    Examples
+    --------
+    >>> from obscure_stats.central_tendency import midrange
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(midrange(x), 4)
+    6.5
     """
     x = np.asarray(x, dtype=np.float64)
     maximum = np.nanmax(x)
@@ -51,7 +58,7 @@ def midhinge(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    mh : float
+    float
         The value of the midhinge.
 
     References
@@ -59,6 +66,13 @@ def midhinge(x: npt.ArrayLike) -> float:
     Tukey, J. W. (1977).
     Exploratory Data Analysis.
     Addison-Wesley.
+
+    Examples
+    --------
+    >>> from obscure_stats.central_tendency import midhinge
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(midhinge(x), 4)
+    3.9375
     """
     x = np.asarray(x, dtype=np.float64)
     q1, q3 = np.nanquantile(x, [0.25, 0.75])
@@ -66,7 +80,7 @@ def midhinge(x: npt.ArrayLike) -> float:
 
 
 def trimean(x: npt.ArrayLike) -> float:
-    """Calculate trimean, i.e weighted average between 3 quartiles.
+    """Calculate trimean, i.e. weighted average between 3 quartiles.
 
     This measure is more robust than average.
 
@@ -77,7 +91,7 @@ def trimean(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    tm : float
+    float
         The value of the trimean.
 
     References
@@ -85,6 +99,13 @@ def trimean(x: npt.ArrayLike) -> float:
     Tukey, J. W. (1977).
     Exploratory Data Analysis.
     Addison-Wesley.
+
+    Examples
+    --------
+    >>> from obscure_stats.central_tendency import trimean
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(trimean(x), 4)
+    3.8438
     """
     x = np.asarray(x, dtype=np.float64)
     q1, q2, q3 = np.nanquantile(x, [0.25, 0.5, 0.75])
@@ -105,7 +126,7 @@ def contraharmonic_mean(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    chm : float
+    float
         The value of the contraharmonic mean.
 
     References
@@ -113,13 +134,20 @@ def contraharmonic_mean(x: npt.ArrayLike) -> float:
     Bullen, P. S. (1987).
     Handbook of means and their inequalities.
     Springer.
+
+    Examples
+    --------
+    >>> from obscure_stats.central_tendency import contraharmonic_mean
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(contraharmonic_mean(x), 4)
+    6.9865
     """
     x = np.asarray(x, dtype=np.float64)
     return float(np.nansum(np.square(x)) / np.nansum(x))
 
 
 def midmean(x: npt.ArrayLike) -> float:
-    """Calculate interquartile mean, i.e mean inside interquartile range.
+    """Calculate interquartile mean, i.e. mean inside interquartile range.
 
     This measure is more robust than average.
 
@@ -130,7 +158,7 @@ def midmean(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    iqm : float
+    float
         The value of the interquartile mean.
 
     References
@@ -138,6 +166,13 @@ def midmean(x: npt.ArrayLike) -> float:
     Salkind, N. J. (2008).
     Encyclopedia of Research Design.
     SAGE Publications, Inc.
+
+    Examples
+    --------
+    >>> from obscure_stats.central_tendency import midmean
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(midmean(x), 4)
+    3.75
     """
     x = np.asarray(x, dtype=np.float64)
     q1, q3 = np.nanquantile(x, [0.25, 0.75])
@@ -156,8 +191,13 @@ def hodges_lehmann_sen_location(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    hls : float
+    float
         The value of Hodges-Lehmann-Sen estimator.
+
+    Notes
+    -----
+    This implementation enumerates all `N(N+1)/2` Walsh averages (pairs `i <= j`), so
+    the time and memory complexity are `N^2`. It is best to not use it on large arrays.
 
     References
     ----------
@@ -170,11 +210,12 @@ def hodges_lehmann_sen_location(x: npt.ArrayLike) -> float:
     Assays by Distribution-Free Methods.
     Biometrics 19, no. 4: 532-552.
 
-    Notes
-    -----
-    This implementation enumerates all N(N+1)/2 Walsh averages (pairs i <= j),
-    so the time and memory complexity are N^2. It is best to not use it on
-    large arrays.
+    Examples
+    --------
+    >>> from obscure_stats.central_tendency import hodges_lehmann_sen_location
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(hodges_lehmann_sen_location(x), 4)
+    4.0
     """
     x = np.asarray(x, dtype=np.float64)
     _x = np.ravel(x)
@@ -246,19 +287,12 @@ def standard_trimmed_harrell_davis_quantile(x: npt.ArrayLike, q: float = 0.5) ->
 
     Returns
     -------
-    thdq : float
+    float
         The value of Trimmed Harrell-Davis quantile.
-
-    References
-    ----------
-    Akinshin, A. (2022).
-    Trimmed Harrell-Davis quantile estimator based on
-    the highest density interval of the given width.
-    Communications in Statistics - Simulation and Computation, pp. 1-11.
 
     See Also
     --------
-    scipy.stats.mstats.hdquantiles - Harrell-Davis quantile estimates.
+    scipy.stats.mstats.hdquantiles : Harrell-Davis quantile estimates.
 
     Notes
     -----
@@ -267,6 +301,22 @@ def standard_trimmed_harrell_davis_quantile(x: npt.ArrayLike, q: float = 0.5) ->
     (`scipy.optimize.brentq`), as in the paper's reference implementation.
     This is a one-dimensional root search that defines a unique interval, not a
     fit to the data.
+
+    References
+    ----------
+    Akinshin, A. (2022).
+    Trimmed Harrell-Davis quantile estimator based on
+    the highest density interval of the given width.
+    Communications in Statistics - Simulation and Computation, pp. 1-11.
+
+    Examples
+    --------
+    >>> from obscure_stats.central_tendency import (
+    ...     standard_trimmed_harrell_davis_quantile,
+    ... )
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(standard_trimmed_harrell_davis_quantile(x), 4)
+    3.75
     """
     x = np.asarray(x, dtype=np.float64)
     # pyrefly: ignore [untyped-import]
@@ -300,6 +350,11 @@ def standard_trimmed_harrell_davis_quantile(x: npt.ArrayLike, q: float = 0.5) ->
 def half_sample_mode(x: npt.ArrayLike) -> float:
     """Calculate half sample mode.
 
+    It repeatedly keeps the shortest interval that contains half of the sorted values
+    (`ceil(n/2)` of them) until at most three values remain. Of the last three, it
+    returns the mean of the two closest ones, or the middle one if they are equally
+    spaced. If a shortest interval has zero length, its value is returned at once.
+
     This estimator is more stable than regular mode estimation,
     especially for floating point values.
 
@@ -310,8 +365,12 @@ def half_sample_mode(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    hsm : float
+    float
         The value of half sample mode.
+
+    See Also
+    --------
+    scipy.stats.mode : Mode estimator.
 
     References
     ----------
@@ -319,9 +378,12 @@ def half_sample_mode(x: npt.ArrayLike) -> float:
     An Iterative Procedure for Estimating the Mode.
     Journal of the American Statistical Association, 69(348), 1012-1016.
 
-    See Also
+    Examples
     --------
-    scipy.stats.mode - Mode estimator.
+    >>> from obscure_stats.central_tendency import half_sample_mode
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(half_sample_mode(x), 4)
+    2.75
     """
     x = np.asarray(x, dtype=np.float64)
     # heavily inspired by https://github.com/cran/modeest/blob/master/R/hsm.R
@@ -349,6 +411,12 @@ def half_sample_mode(x: npt.ArrayLike) -> float:
 def tau_location(x: npt.ArrayLike, c: float = 4.5) -> float:
     """Calculate Tau measure of location.
 
+    It is a weighted mean, `sum(w_i x_i) / sum(w_i)`, with biweights `w_i = (1 - (u_i /
+    c)^2)^2` for `|u_i| <= c` and 0 otherwise, where `u_i = (x_i - median) / MAD`. In
+    words: each value is weighted by its distance from the median, measured in median
+    absolute deviations; the weight falls smoothly from one at the median to zero at c
+    deviations, and values further away are ignored.
+
     This measure is very robust and has higher efficiency than median.
 
     Parameters
@@ -360,7 +428,7 @@ def tau_location(x: npt.ArrayLike, c: float = 4.5) -> float:
 
     Returns
     -------
-    tml : float
+    float
         The value of Tau location.
 
     References
@@ -368,6 +436,13 @@ def tau_location(x: npt.ArrayLike, c: float = 4.5) -> float:
     Wilcox, R. (2012).
     Introduction to Robust Estimation Hypothesis Testing.
     3rd Edition, Academic Press, New York.
+
+    Examples
+    --------
+    >>> from obscure_stats.central_tendency import tau_location
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(tau_location(x), 4)
+    3.4959
     """
     x = np.asarray(x, dtype=np.float64)
     if c <= 0:
@@ -390,18 +465,21 @@ def grenanders_m(
 ) -> float:
     """Calculate Grenander's mode.
 
-    It is a direct (density-free) estimate of the mode: a weighted average of
-    the midpoints of the k-spacings x(i+k) - x(i), with weights
-    (x(i+k) - x(i))^(-p), so that short spacings (high density) dominate.
+    It is a direct (density-free) estimate of the mode: a weighted average of the
+    midpoints of the k-spacings `x(i+k) - x(i)`, with weights `(x(i+k) - x(i))^(-p)`, so
+    that short spacings (high density) dominate. In words: it looks at every interval
+    spanning k + 1 consecutive sorted values and averages their midpoints, giving each
+    interval a weight equal to its length raised to the power -p, so that short
+    intervals count most.
 
-    For fixed p and k the estimate converges to the f^(p+1)-weighted mean
-    int x f^(p+1) dx / int f^(p+1) dx (Grenander, 1965), which equals the mode
-    only for symmetric unimodal distributions; it approaches the mode as p
-    grows. By default p and k therefore grow with the sample size n, as
-    recommended by Hall (1982): p = n^(2/7), which balances bias and variance,
-    and k = ceil(n^(3/5)). Hall gives p only up to a constant factor; 1 is used.
-    As p tends to infinity, the estimate tends to Venter's mode (the midpoint
-    of the shortest k-spacing).
+    For fixed p and k the estimate converges to the f^(p+1)-weighted mean `int x f^(p+1)
+    dx / int f^(p+1) dx` (Grenander, 1965), an average of x weighted by the density
+    raised to the power p + 1, which equals the mode only for symmetric unimodal
+    distributions; it approaches the mode as p grows. By default p and k therefore grow
+    with the sample size n, as recommended by Hall (1982): `p = n^(2/7)`, which balances
+    bias and variance, and `k = ceil(n^(3/5))`. Hall gives p only up to a constant
+    factor; 1 is used. As p tends to infinity, the estimate tends to Venter's mode (the
+    midpoint of the shortest k-spacing).
 
     Spacings of zero length get infinite weight: if there are any, the mean of
     their midpoints is returned (as in R's modeest).
@@ -419,7 +497,7 @@ def grenanders_m(
 
     Returns
     -------
-    gm : float
+    float
         The value of Grenander's mode. NaN if there are at most k finite
         observations.
 
@@ -437,6 +515,13 @@ def grenanders_m(
     Chacon, J. E. (2018).
     The modal age of statistics.
     arXiv preprint arXiv:1807.02789.
+
+    Examples
+    --------
+    >>> from obscure_stats.central_tendency import grenanders_m
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(grenanders_m(x), 4)
+    3.7441
     """
     x = np.asarray(x, dtype=np.float64)
     if p is not None and p <= 1:
@@ -479,6 +564,10 @@ def grenanders_m(
 def gastwirth_location(x: npt.ArrayLike) -> float:
     """Calculate Gastwirth's location estimator.
 
+    It is `0.3 Q(1/3) + 0.4 Q(1/2) + 0.3 Q(2/3)`, where Q is the sample quantile: a
+    weighted average of the lower tercile, the median and the upper tercile, with
+    weights 0.3, 0.4 and 0.3.
+
     This measure is more robust than average.
 
     Parameters
@@ -488,7 +577,7 @@ def gastwirth_location(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    gle : float
+    float
         The value of the Gastwirth's location.
 
     References
@@ -496,6 +585,13 @@ def gastwirth_location(x: npt.ArrayLike) -> float:
     Gastwirth, J. L. (1966).
     On Robust Procedures.
     J. Amer. Statist. Assn., Vol. 61, pp. 929-948.
+
+    Examples
+    --------
+    >>> from obscure_stats.central_tendency import gastwirth_location
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(gastwirth_location(x), 4)
+    3.75
     """
     x = np.asarray(x, dtype=np.float64)
     p33, p50, p66 = np.nanquantile(x, [1 / 3, 0.5, 2 / 3])
@@ -505,9 +601,9 @@ def gastwirth_location(x: npt.ArrayLike) -> float:
 def shorth(x: npt.ArrayLike) -> float:
     """Calculate the shorth, the mean of the shortest half of the data.
 
-    The shortest half is the shortest interval that contains floor(n/2) + 1
-    observations. The shorth is very robust (50% breakdown point) but
-    converges slowly (at rate n^(-1/3)).
+    The shortest half is the shortest interval that contains `floor(n/2) + 1`
+    observations, i.e. just over half of the data. The shorth is very robust (50%
+    breakdown point) but converges slowly (at rate `n^(-1/3)`).
 
     Parameters
     ----------
@@ -516,15 +612,12 @@ def shorth(x: npt.ArrayLike) -> float:
 
     Returns
     -------
-    sh : float
+    float
         The value of the shorth.
 
-    References
-    ----------
-    Andrews, D. F.; Bickel, P. J.; Hampel, F. R.; Huber, P. J.;
-    Rogers, W. H.; Tukey, J. W. (1972).
-    Robust Estimates of Location: Survey and Advances.
-    Princeton University Press.
+    See Also
+    --------
+    obscure_stats.dispersion.length_of_shortest_half : Length of the shortest half.
 
     Notes
     -----
@@ -533,9 +626,19 @@ def shorth(x: npt.ArrayLike) -> float:
     The least median of squares (LMS) location (Rousseeuw, 1984) is the
     midpoint of the endpoints of the same interval.
 
-    See Also
+    References
+    ----------
+    Andrews, D. F.; Bickel, P. J.; Hampel, F. R.; Huber, P. J.;
+    Rogers, W. H.; Tukey, J. W. (1972).
+    Robust Estimates of Location: Survey and Advances.
+    Princeton University Press.
+
+    Examples
     --------
-    obscure_stats.dispersion.length_of_shortest_half - Length of the shortest half.
+    >>> from obscure_stats.central_tendency import shorth
+    >>> x = [1.0, 2.0, 2.5, 3.0, 4.5, 5.0, 7.0, 12.0]
+    >>> round(shorth(x), 4)
+    3.4
     """
     x = np.asarray(x, dtype=np.float64)
     _x = np.ravel(x)

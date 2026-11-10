@@ -16,10 +16,19 @@ Removed and renamed functions are gone without a deprecation period:
 | `skewness.medeen_skew` | `skewness.meeden_skew` | misspelled name (Groeneveld & Meeden, 1984) |
 | `skewness.hossain_adnan_skew` | `skewness.meeden_skew` | numerically identical: both are (mean - median) / mean(\|x - median\|) |
 | `dispersion.cole_index_of_dispersion` | `dispersion.coefficient_of_variation` | redundant: Cole's index is exactly (1 + CV²) / n |
+| `skewness.left_quantile_weight(x, q)` | `kurtosis.quantile_weight(x, q)` with q in (0, 0.5) | merged: one tail-weight function for both tails; moved to `kurtosis` because it measures tail weight, not skewness |
+| `skewness.right_quantile_weight(x, q)` | `kurtosis.quantile_weight(x, q)` with q in (0.5, 1) (default 0.75) | merged, see above |
 | `association.symmetric_normalized_chatterjee_xi` | `max(normalized_chatterjee_xi(x, y), normalized_chatterjee_xi(y, x))` | redundant: without ties it is exactly `symmetric_chatterjee_xi` · (n + 1) / (n − 2) |
+| `kurtosis.moors_kurt` | `scipy.stats.kurtosis(x, fisher=False)` | numerically identical: var(z²) + 1 is the moment kurtosis |
+| `variation.gibbs_m2` | `variation.gibbs_m1` | redundant: M2 is exactly M1 · k / (k − 1), with k the number of categories |
+| `variation.negative_extropy` | `variation.extropy` | misnamed: it returns extropy as defined by Lad et al. (2015), which is already non-negative; values are unchanged |
 
 Functions whose results change:
 
+- `dispersion.quartile_coefficient_of_dispersion` now returns (Q3 - Q1) / (Q3 + Q1), the
+  coefficient of quartile variation of Bonett (2006). Before, it returned twice that
+  (IQR / midhinge). This makes it consistent with `dispersion.coefficient_of_range`,
+  (max - min) / (max + min).
 - `association.concordance_rate` is now the four-quadrant concordance rate of paired
   *changes* (Critchley, Lee & Ho, 2010). The quadrants are centered at 0. A square
   exclusion zone is set by the new `exclusion=` keyword (default `0.0`: only pairs where
@@ -53,6 +62,9 @@ Functions whose results change:
 
 ### Fixed
 
+- `association.zhang_i` returned a NumPy scalar instead of a Python `float`.
+- `variation.avdev`, `variation.b_index` and `variation.range_vr` returned 1 (maximum
+  variation) for data with a single category; they now return 0, like the other measures.
 - Association functions no longer return NaN with an "input is constant" warning for
   small-scale data (e.g. values around 1e-9) or data with a large level and a small
   spread (e.g. prices). The constant check used a tolerance; it is now exact.
@@ -62,6 +74,11 @@ Functions whose results change:
   raises `ValueError`.
 - Input warnings of association functions (constant input, inf, missing values, length
   mismatch) now point at the caller's line instead of inside the library.
+- Association functions validate their inputs in one pass: lengths and infinite values are
+  checked on the raw input, incomplete pairs are dropped, and the remaining pairs are checked
+  for size and constant variables. Before, input that became constant only after dropping the
+  pairs with missing values could return a number (e.g. -0.217 for `symmetric_chatterjee_xi`)
+  or inf instead of NaN.
 - `variation.renyi_entropy(alpha=np.inf)` returns the min-entropy instead of raising.
 - `central_tendency.grenanders_m` accepts numpy integers for `k`.
 - `association.winsorized_correlation` and `association.rank_divergence` validate their
@@ -80,6 +97,11 @@ Functions whose results change:
   paper uses competition ranking), which keeps f(-x) = -f(x).
 - Docstrings: corrected references and typos, and documented the exact relationships
   between related functions (e.g. Rényi entropy with alpha = 2 = -log2(1 - Gibbs M1)).
+- Docstrings: every function now states what it computes, with the formula in plain text
+  (in backticks) and a description in words next to it. See Also entries use the numpydoc
+  `name : description` format and point at real functions.
+- `variation.renyi_entropy`: the error for a negative `alpha` now says "non-negative"
+  (`alpha = 0` is valid).
 - `association.zhang_i` documents that ties in x are broken by input order (inherited from
   Chatterjee's xi), so with ties the result depends on the order of the observations.
 - `central_tendency.standard_trimmed_harrell_davis_quantile` documents that its highest
@@ -101,6 +123,9 @@ Functions whose results change:
   - `association.l1_concordance_correlation`: rho_1 agreement coefficient (Vallejos, Osorio &
     Ferrer, 2025).
   - `association.gini_correlation` (Schechtman & Yitzhaki, 1987).
+  - `variation.mndif`: MNDif, the mean difference analogue (Wilcox, 1973).
+  - `variation.brillouin_index`: Brillouin's diversity index, in nats (Brillouin, 1956).
+- Every function has an `Examples` section; the examples run as doctests in the test suite.
 - `obscure_stats.__version__`.
 - The wheel ships `py.typed` and the license file (PEP 639 metadata), plus project URLs and keywords.
 - Releases are built and published by a tag-triggered workflow with PyPI trusted publishing

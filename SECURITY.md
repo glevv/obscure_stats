@@ -6,16 +6,10 @@ Authors of `obscure_stats` library take the security of the open source code rep
 
 ## Supported Versions
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 0.1.x   | :x:                |
-| 0.2.x   | :x:                |
-| 0.3.x   | :x:                |
-| 0.4.x   | :x:                |
-| 0.5.x   | :x:                |
-| 0.6.x   | :x:                |
-| 0.7.x   | :x:                |
-| 0.8.x   | :white_check_mark: |
+| Version | Supported |
+| ------- | --------- |
+| 0.8.x   | Yes       |
+| < 0.8   | No        |
 
 ## Reporting a Vulnerability
 
