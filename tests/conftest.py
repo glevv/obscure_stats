@@ -6,6 +6,9 @@ import numpy as np
 import numpy.typing as npt
 import pytest
 
+# pyrefly: ignore [untyped-import]
+from scipy import stats
+
 
 @pytest.fixture(scope="session")
 def x_list_float() -> list[float]:
@@ -26,7 +29,7 @@ def x_array_int(x_list_int: list[int]) -> npt.NDArray[np.number]:
 
 
 @pytest.fixture(scope="session")
-def x_array_float(x_list_float: npt.NDArray[np.number]) -> npt.NDArray[np.number]:
+def x_array_float(x_list_float: list[float]) -> npt.NDArray[np.number]:
     """Return an array of floats."""
     return np.asarray(x_list_float, dtype="float")
 
@@ -78,13 +81,13 @@ def c_list_obj() -> list[str]:
 
 
 @pytest.fixture(scope="session")
-def c_array_obj(c_list_obj: list[str]) -> npt.NDArray[np.number]:
+def c_array_obj(c_list_obj: list[str]) -> npt.NDArray[np.str_]:
     """Return an array of strings."""
     return np.asarray(c_list_obj)
 
 
 @pytest.fixture(scope="session")
-def c_array_nan(c_array_obj: npt.NDArray[np.number]) -> npt.NDArray[np.number]:
+def c_array_nan(c_array_obj: npt.NDArray[np.str_]) -> npt.NDArray[np.str_]:
     """Return an array of strings with a NaN."""
     temp = c_array_obj.copy()
     temp[1] = np.nan
@@ -303,3 +306,128 @@ def l1_corr_data_small() -> npt.NDArray[np.number]:
 def shorth_data() -> npt.NDArray[np.number]:
     """Return test data for shorth and length of shortest half."""
     return np.array([1.0, 2.0, 3.0, 4.0, 10.0])
+
+
+@pytest.fixture(scope="session")
+def const_array_float() -> npt.NDArray[np.number]:
+    """Return a constant array of floats."""
+    return np.ones(8)
+
+
+@pytest.fixture(scope="session")
+def empty_array() -> npt.NDArray[np.number]:
+    """Return an empty array."""
+    return np.array([])
+
+
+@pytest.fixture(scope="session")
+def rank_divergence_data() -> tuple[
+    npt.NDArray[np.number], npt.NDArray[np.number], npt.NDArray[np.number]
+]:
+    """Return a base array, a swap of its top values and a swap of its bottom values."""
+    return (
+        np.array([100.0, 3.0, 2.0, 1.0]),
+        np.array([3.0, 100.0, 2.0, 1.0]),
+        np.array([100.0, 3.0, 1.0, 2.0]),
+    )
+
+
+@pytest.fixture(scope="session")
+def concordance_rate_data() -> tuple[npt.NDArray[np.number], npt.NDArray[np.number]]:
+    """Return paired changes for a hand-computed concordance rate."""
+    return np.array([1.0, 2.0, -1.0, -2.0, 3.0]), np.array([1.0, 1.0, -1.0, 2.0, -0.5])
+
+
+@pytest.fixture(scope="session")
+def concordance_rate_zero_data() -> tuple[
+    npt.NDArray[np.number], npt.NDArray[np.number]
+]:
+    """Return paired changes with no change at all and a change in one variable only."""
+    return np.array([0.0, 5.0, 1.0, -1.0]), np.array([0.0, 0.0, 2.0, -3.0])
+
+
+@pytest.fixture(scope="session")
+def large_int_array() -> npt.NDArray[np.number]:
+    """Return integers that overflow int64 when squared."""
+    return np.array([4_000_000_000, 4_000_000_001, 4_000_000_005, 4_000_000_002])
+
+
+@pytest.fixture(scope="session")
+def lognormal_data() -> npt.NDArray[np.number]:
+    """Return lognormal(0, 0.5) quantiles at evenly spaced probabilities.
+
+    A deterministic stand-in for a large sample; its mode is exp(-0.25).
+    """
+    n = 20_000
+    return stats.lognorm(0.5).ppf((np.arange(n) + 0.5) / n)
+
+
+def _quantile_grid(n: int) -> npt.NDArray[np.number]:
+    """Return n evenly spaced probabilities in (0, 1)."""
+    return (np.arange(n) + 0.5) / n
+
+
+@pytest.fixture(scope="session")
+def normal_data() -> npt.NDArray[np.number]:
+    """Return N(10, 1) quantiles at 100 evenly spaced probabilities."""
+    return stats.norm(loc=10.0).ppf(_quantile_grid(100))
+
+
+@pytest.fixture(scope="session")
+def uniform_data() -> npt.NDArray[np.number]:
+    """Return U(0, 1) quantiles at 100 evenly spaced probabilities, rounded."""
+    return np.round(stats.uniform().ppf(_quantile_grid(100)), 2)
+
+
+@pytest.fixture(scope="session")
+def exponential_data() -> npt.NDArray[np.number]:
+    """Return Exp(1) + 1 quantiles at 100 evenly spaced probabilities, rounded."""
+    return np.round(stats.expon().ppf(_quantile_grid(100)) + 1, 2)
+
+
+@pytest.fixture(scope="session")
+def exponential_wide_data() -> npt.NDArray[np.number]:
+    """Return Exp(10) + 1 quantiles at 100 evenly spaced probabilities, rounded."""
+    return np.round(stats.expon(scale=10).ppf(_quantile_grid(100)) + 1, 2)
+
+
+@pytest.fixture(scope="session")
+def even_categories() -> npt.NDArray[np.str_]:
+    """Return 100 categories with equal frequencies (25 each of a, b, c, d)."""
+    return np.repeat(np.array(["a", "b", "c", "d"]), [25, 25, 25, 25])
+
+
+@pytest.fixture(scope="session")
+def uneven_categories() -> npt.NDArray[np.str_]:
+    """Return 100 categories with frequencies 75, 15, 5 and 5."""
+    return np.repeat(np.array(["a", "b", "c", "d"]), [75, 15, 5, 5])
+
+
+@pytest.fixture(scope="session")
+def laplace_data() -> npt.NDArray[np.number]:
+    """Return Laplace(0, 1) quantiles at 100 evenly spaced probabilities."""
+    return stats.laplace().ppf(_quantile_grid(100))
+
+
+@pytest.fixture(scope="session")
+def gamma_data() -> npt.NDArray[np.number]:
+    """Return Gamma(2) quantiles at 257 evenly spaced probabilities."""
+    return stats.gamma(2.0).ppf(_quantile_grid(257))
+
+
+@pytest.fixture(scope="session")
+def poisson_data() -> npt.NDArray[np.number]:
+    """Return Poisson(5) quantiles at 30 evenly spaced probabilities (with ties)."""
+    return stats.poisson(5).ppf(_quantile_grid(30))
+
+
+@pytest.fixture(scope="session")
+def all_nan_array() -> npt.NDArray[np.number]:
+    """Return an array of NaNs only."""
+    return np.array([np.nan, np.nan])
+
+
+@pytest.fixture(scope="session")
+def three_point_data() -> npt.NDArray[np.number]:
+    """Return three points whose closest pair is on the left (1 and 2)."""
+    return np.array([1.0, 2.0, 10.0])

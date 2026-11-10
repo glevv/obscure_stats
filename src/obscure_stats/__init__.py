@@ -1,4 +1,14 @@
-"""Collection of lesser-known statistical functions."""
+"""Collection of lesser-known statistical functions.
+
+Modules:
+
+- `obscure_stats.association`: measures of association between two variables.
+- `obscure_stats.central_tendency`: measures of central tendency.
+- `obscure_stats.dispersion`: measures of dispersion.
+- `obscure_stats.kurtosis`: measures of kurtosis and tail weight.
+- `obscure_stats.skewness`: measures of skewness.
+- `obscure_stats.variation`: measures of qualitative variation (categorical data).
+"""
 
 from importlib.metadata import PackageNotFoundError, version
 

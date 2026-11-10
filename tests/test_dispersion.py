@@ -2,6 +2,7 @@
 
 import math
 import typing
+import warnings
 
 import numpy as np
 import numpy.typing as npt
@@ -90,14 +91,14 @@ def test_length_of_shortest_half(
         coefficient_of_range,
     ],
 )
-@pytest.mark.parametrize("seed", [1, 42, 99])
-def test_dispersion_sensibility(func: typing.Callable[..., float], seed: int) -> None:
+def test_dispersion_sensibility(
+    func: typing.Callable[..., float],
+    exponential_data: npt.NDArray[np.number],
+    exponential_wide_data: npt.NDArray[np.number],
+) -> None:
     """Test for result correctness."""
-    rng = np.random.default_rng(seed)
-    low_disp = np.round(rng.exponential(scale=1, size=100) + 1, 2)
-    high_disp = np.round(rng.exponential(scale=10, size=100) + 1, 2)
-    low_disp_res = func(low_disp)
-    high_disp_res = func(high_disp)
+    low_disp_res = func(exponential_data)
+    high_disp_res = func(exponential_wide_data)
     if low_disp_res > high_disp_res:
         msg = (
             f"Dispersion in the first case should be lower, "
@@ -171,3 +172,48 @@ def test_fuzz_dispersions(
 ) -> None:
     """Test all functions with fuzz."""
     func(data)
+
+
+def test_sqad_has_no_consistency_constant(
+    x_array_float: npt.NDArray[np.number],
+) -> None:
+    """Test that SQAD returns the raw 68.27% quantile of |x - median|."""
+    dev = np.abs(x_array_float - np.median(x_array_float))
+    ref = np.quantile(dev, 0.6826894921370850)
+    if standard_quantile_absolute_deviation(x_array_float) != pytest.approx(ref):
+        msg = "Result does not match reference."
+        raise ValueError(msg)
+
+
+def test_robust_cvs_have_no_consistency_constant(
+    x_array_float: npt.NDArray[np.number],
+) -> None:
+    """Test that robust CVs return raw MAD / median and IQR / median."""
+    med = np.median(x_array_float)
+    q1, q3 = np.quantile(x_array_float, [0.25, 0.75])
+    mad = np.median(np.abs(x_array_float - med))
+    if robust_coefficient_of_variation(x_array_float) != pytest.approx(mad / med):
+        msg = "Result does not match reference."
+        raise ValueError(msg)
+    if shapiro_coefficient_of_variation(x_array_float) != pytest.approx(
+        (q3 - q1) / med
+    ):
+        msg = "Result does not match reference."
+        raise ValueError(msg)
+
+
+def test_degenerate_inputs_return_nan(
+    x_array_float: npt.NDArray[np.number], x_array_nan: npt.NDArray[np.number]
+) -> None:
+    """Test that empty or all-NaN inputs return NaN without warnings."""
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        if not math.isnan(standard_quantile_absolute_deviation(x_array_nan[:1])):
+            msg = "Expected NaN for all-NaN input."
+            raise ValueError(msg)
+        if not math.isnan(gini_mean_difference(x_array_float[:0])):
+            msg = "Expected NaN for empty input."
+            raise ValueError(msg)
+    if gini_mean_difference(x_array_float[:1]) != 0.0:
+        msg = "Expected 0 for one observation."
+        raise ValueError(msg)
